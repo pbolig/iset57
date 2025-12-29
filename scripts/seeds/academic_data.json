@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Tecnicatura Superior en Desarrollo de Software",
+        "short_name": "DS",
+        "description": "Carrera orientada a la programación y diseño de sistemas.",
+        "subjects": [
+            {"name": "Programación I", "year": 1},
+            {"name": "Sistemas de Organización", "year": 1},
+            {"name": "Matemática", "year": 1},
+            {"name": "Inglés Técnico I", "year": 1},
+            {"name": "Programación II", "year": 2},
+            {"name": "Base de Datos I", "year": 2},
+            {"name": "Práctica Profesionalizante I", "year": 2},
+            {"name": "Ingeniería de Software", "year": 3}
+        ]
+    },
+    {
+        "name": "Tecnicatura Superior en Enfermería",
+        "short_name": "ENF",
+        "description": "Formación profesional en el área de salud.",
+        "subjects": [
+            {"name": "Anatomía", "year": 1},
+            {"name": "Fundamentos de Enfermería", "year": 1},
+            {"name": "Salud Pública", "year": 1},
+            {"name": "Enfermería del Adulto", "year": 2},
+            {"name": "Práctica Hospitalaria", "year": 3}
+        ]
+    }
+]

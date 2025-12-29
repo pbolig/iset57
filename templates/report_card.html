@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @page { size: A4; margin: 2cm; }
+        body { font-family: Helvetica, sans-serif; font-size: 12px; color: #333; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #444; padding-bottom: 10px; }
+        h1 { font-size: 18px; text-transform: uppercase; margin: 0; }
+        h2 { font-size: 14px; margin-top: 5px; font-weight: normal; }
+        
+        .student-info { margin-bottom: 20px; background-color: #f0f0f0; padding: 10px; }
+        .student-info p { margin: 5px 0; font-weight: bold; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #444; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        .section-title { font-size: 14px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #444; border-left: 5px solid #444; padding-left: 10px; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 10px; color: #777; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Instituto Superior de Educación Técnica</h1>
+        <h2>Libreta Digital del Estudiante</h2>
+    </div>
+
+    <div class="student-info">
+        <p>Alumno: {{ student.last_name }}, {{ student.first_name }}</p>
+        <p>DNI: {{ student.dni }}</p>
+        <p>Email: {{ student.email }}</p>
+    </div>
+
+    <div class="section-title">Estado de Cursadas</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Año</th>
+                <th>Materia</th>
+                <th>Condición</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cursada in cursadas %}
+            <tr>
+                <td>{{ cursada.subject.get_year_level_display }}</td>
+                <td>{{ cursada.subject.name }}</td>
+                <td>{{ cursada.get_condition_display }}</td>
+                <td>{{ cursada.get_status_display }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No hay cursadas registradas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="section-title">Exámenes Finales</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Materia</th>
+                <th>Nota</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for final in finales %}
+            <tr>
+                <td>{{ final.exam_session.date|date:"d/m/Y" }}</td>
+                <td>{{ final.exam_session.subject.name }}</td>
+                <td><strong>{{ final.grade }}</strong></td>
+                <td>
+                    {% if final.grade >= 6 %} <span style="color: green;">APROBADO</span>
+                    {% else %}
+                        <span style="color: red;">DESAPROBADO</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No ha rendido exámenes finales aún.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Documento generado automáticamente el {{ fecha_emision|date:"d/m/Y H:i" }}
+    </div>
+</body>
+</html>

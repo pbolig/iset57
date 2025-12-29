@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Instituto Digital{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            500: '#3B82F6', // Azul principal
+                            600: '#2563EB',
+                            900: '#1E3A8A',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-brand-900 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Instituto<span class="text-brand-500">App</span></span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-6">
+                    {% if user.is_authenticated %}
+                        <span class="text-gray-300 text-sm">Hola, {{ user.first_name }}</span>
+                        
+                        {% if user.role == 'TEACHER' %}
+                            <a href="#" class="hover:text-brand-500 transition">Mis Mesas</a>
+                        {% endif %}
+                        
+                        {% if user.role == 'STUDENT' %}
+                            <a href="#" class="hover:text-brand-500 transition">Mis Notas</a>
+                            <a href="#" class="hover:text-brand-500 transition">Inscribirse</a>
+                        {% endif %}
+
+                        {% if user.is_superuser %}
+                            <a href="/admin/" target="_blank" class="bg-red-600 px-3 py-1 rounded text-sm hover:bg-red-700">Admin Panel</a>
+                        {% endif %}
+
+                        <form action="{% url 'logout' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="border border-white/20 px-4 py-1 rounded hover:bg-white hover:text-brand-900 transition">
+                                Salir
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="hover:text-brand-500 transition">Ingresar</a>
+                        <a href="#" class="bg-brand-600 px-4 py-2 rounded hover:bg-brand-500 transition">Registrarse</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm">
+        <p>&copy; 2025 Instituto Superior de Educación Técnica. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

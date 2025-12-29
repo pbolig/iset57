@@ -1,0 +1,58 @@
+instituto_project
+instituto_project/
+├── .env.dev               # Variables entorno local
+├── .env.prod              # Variables entorno producción
+├── .gitignore
+├── docker-compose.yml     # Orquestación de servicios (App + MySQL + Nginx)
+├── Dockerfile             # Definición de la imagen del sistema
+├── Makefile               # Comandos rápidos (ej: make setup_db)
+├── requirements.txt       # Dependencias
+├── manage.py
+│
+├── config/                # Configuración global del proyecto
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py        # Aquí va la lógica SQLite vs MySQL
+│   ├── urls.py            # Ruteo principal
+│   └── wsgi.py
+│
+├── apps/                  # Lógica del negocio dividida por dominios
+│   ├── __init__.py
+│   ├── users/             # Todo lo referido a Login, Roles, Documentación
+│   │   ├── models.py      # Usuario custom, Perfiles
+│   │   ├── services.py    # Lógica de emails de validación
+│   │   └── views.py
+│   │
+│   ├── academic/          # Carreras, Materias, Planes de estudio
+│   │   ├── models.py      # Carrera, Materia, Cursada
+│   │   └── logic.py       # Reglas de correlatividades
+│   │
+│   └── exams/             # Circuito de examen (El corazón complejo)
+│       ├── models.py      # MesaExamen, InscripcionExamen, Acta
+│       ├── tasks.py       # Tareas asíncronas (Emails automáticos, cierre de actas)
+│       └── views.py
+│
+├── static/                # Archivos CSS/JS/Images del sistema
+├── media/                 # Donde se guardan los PDFs/Docs subidos por usuarios
+│
+├── scripts/               # Tu requerimiento de seeds
+│   ├── __init__.py
+│   ├── setup_db.py        # Script para cargar carreras/materias iniciales
+│   └── seeds/             # Archivos JSON/CSV con datos base
+│
+└── tests/                 # Tu carpeta de pruebas
+    ├── __init__.py
+    ├── test_inscription.py
+    ├── test_exam_flow.py
+    └── factories.py       # Para generar datos falsos de prueba
+	
+# Crear el entorno virtual llamado "venv"
+python -m venv venv
+
+# Activar el entorno (verás que aparece (venv) al inicio de la línea)
+.\venv\Scripts\activate
+
+# Instalar Django
+
+
+python manage.py runserver
