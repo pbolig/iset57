@@ -33,6 +33,10 @@
                     <span>Instituto<span class="text-brand-500">App</span></span>
                 </a>
 
+                <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none p-2">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+
                 <div class="hidden md:flex items-center space-x-6">
                     {% if user.is_authenticated %}
                         <span class="text-gray-300 text-sm">Hola, {{ user.first_name }}</span>
@@ -62,6 +66,52 @@
                     {% endif %}
                 </div>
             </div>
+
+            <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-blue-800/30 mt-2">
+                <div class="flex flex-col space-y-3 mt-4">
+                    {% if user.is_authenticated %}
+                        <div class="text-gray-300 text-sm border-b border-blue-800/30 pb-2 mb-2">
+                            Hola, {{ user.first_name }} <span class="text-xs text-brand-500">({{ user.role }})</span>
+                        </div>
+
+                        {% if user.role == 'TEACHER' %}
+                            <a href="#" class="block py-2 hover:text-brand-500 transition px-2 hover:bg-brand-800 rounded">
+                                <i class="fa-solid fa-chalkboard-user mr-2 w-5"></i> Mis Mesas
+                            </a>
+                        {% endif %}
+                        
+                        {% if user.role == 'STUDENT' %}
+                            <a href="#" class="block py-2 hover:text-brand-500 transition px-2 hover:bg-brand-800 rounded">
+                                <i class="fa-solid fa-book mr-2 w-5"></i> Mis Notas
+                            </a>
+                            <a href="#" class="block py-2 hover:text-brand-500 transition px-2 hover:bg-brand-800 rounded">
+                                <i class="fa-solid fa-pen mr-2 w-5"></i> Inscribirse
+                            </a>
+                        {% endif %}
+
+                        {% if user.is_superuser %}
+                            <a href="/admin/" target="_blank" class="block py-2 text-red-400 hover:text-red-300 transition px-2">
+                                <i class="fa-solid fa-lock mr-2 w-5"></i> Admin Panel
+                            </a>
+                        {% endif %}
+
+                        <form action="{% url 'logout' %}" method="post" class="block pt-2">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left py-2 text-red-300 hover:text-red-400 transition px-2 hover:bg-brand-800 rounded">
+                                <i class="fa-solid fa-right-from-bracket mr-2 w-5"></i> Salir
+                            </button>
+                        </form>
+
+                    {% else %}
+                        <a href="{% url 'login' %}" class="block py-2 hover:text-brand-500 transition px-2">
+                            <i class="fa-solid fa-right-to-bracket mr-2 w-5"></i> Ingresar
+                        </a>
+                        <a href="#" class="block py-2 bg-brand-600 text-white text-center rounded hover:bg-brand-500 transition">
+                            Registrarse
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -69,7 +119,7 @@
         {% if messages %}
             <div class="mb-6 space-y-2">
                 {% for message in messages %}
-                    <div class="p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                    <div class="p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} shadow-sm border">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -81,8 +131,18 @@
     </main>
 
     <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm">
-        <p>&copy; 2025 Instituto Superior de Educación Técnica. Todos los derechos reservados.</p>
+        <p>&copy; 2025 - Instituto Superior de Educación Técnica. Todos los derechos reservados.</p>
     </footer>
 
+    <script>
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+    </script>
 </body>
 </html>

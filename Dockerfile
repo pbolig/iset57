@@ -1,33 +1,42 @@
-# Usamos una imagen oficial de Python liviana
-FROM python:3.11-slim
+# 1. Imagen base: Python 3.12 versión "slim" (ligera, basada en Debian)
+FROM python:3.12-slim
 
-# Evita que Python escriba archivos .pyc y fuerza la salida estándar (logs) en tiempo real
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# 2. Variables de entorno para optimizar Python en Docker
+# Evita la creación de archivos .pyc y asegura que los logs se vean en tiempo real
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Directorio de trabajo dentro del contenedor
+# 3. Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Instalamos dependencias del sistema necesarias para mysqlclient y otras herramientas
-# build-essential y default-libmysqlclient-dev son claves para conectar con MySQL luego
+# 4. INSTALACIÓN DE DEPENDENCIAS DEL SISTEMA (La parte crítica para tus PDFs)
+# - build-essential, pkg-config, python3-dev: Para compilar extensiones de C
+# - libcairo2-dev: OBLIGATORIO para pycairo/rlPyCairo
+# - libffi-dev, libssl-dev: Para cryptography y pyHanko
+# - libjpeg-dev, zlib1g-dev: Para Pillow (manejo de imágenes en PDFs)
 RUN apt-get update && apt-get install -y \
     build-essential \
-    default-libmysqlclient-dev \
     pkg-config \
-    netcat-openbsd \
+    python3-dev \
+    libcairo2-dev \
+    libffi-dev \
+    libssl-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    # Limpiamos caché para que la imagen pese menos
     && rm -rf /var/lib/apt/lists/*
 
-# Copiamos primero los requerimientos para aprovechar la caché de Docker
-COPY requirements.txt /app/
+# 5. Instalar dependencias de Python
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Instalamos las dependencias de Python
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# 6. Copiar el resto del código del proyecto
+COPY . .
 
-# Copiamos el resto del código del proyecto
-COPY . /app/
-
-# Exponemos el puerto donde correrá Django
+# 7. Exponer el puerto (informativo)
 EXPOSE 8000
 
-# Por defecto corremos este comando, pero docker-compose lo puede sobreescribir
+# 8. Comando de arranque
+# Nota: Para producción real deberías usar Gunicorn, pero para probar usa este:
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

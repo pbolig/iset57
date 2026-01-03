@@ -69,7 +69,7 @@ def auto_delete_file_on_document_delete(sender, instance, **kwargs):
                 folder_path = os.path.dirname(instance.file.path)
                 # Verificamos si existe antes de listar para evitar error
                 if os.path.exists(folder_path) and not os.listdir(folder_path):
-                     os.rmdir(folder_path)
+                    os.rmdir(folder_path)
             except Exception as e:
                 pass # Silenciamos errores menores aquí
 

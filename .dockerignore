@@ -1,0 +1,8 @@
+.env/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+db.sqlite3
+# Si tienes una carpeta de media/static local que no quieras subir:
+# media/

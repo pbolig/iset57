@@ -160,8 +160,11 @@ else:
 
 # --- AUTENTICACIÓN PERSONALIZADA ---
 AUTHENTICATION_BACKENDS = [
-    'apps.users.backends.EmailOrUsernameModelBackend', # El nuestro
-    'django.contrib.auth.backends.ModelBackend',       # El default (backup)
+    # Nuestro backend personalizado (Usuario O Email)
+    'apps.users.backends.EmailOrUsernameModelBackend',
+    
+    # El backend por defecto de Django (necesario para el admin)
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 # A dónde ir después de loguearse exitosamente
