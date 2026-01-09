@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %}Panel Principal | Instituto{% endblock %}
 
 {% block content %}
@@ -15,10 +17,19 @@
                 </span>
             </p>
         </div>
-        <div class="h-16 w-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl text-gray-500">
-            {{ user.first_name|first }}{{ user.last_name|first }}
+
+        <div class="h-20 w-20 rounded-full overflow-hidden border-4 border-gray-100 shadow-sm">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" 
+                     alt="Foto de perfil" 
+                     class="h-full w-full object-cover">
+            {% else %}
+                <img src="{% static 'img/default_profile.png' %}" 
+                     alt="Foto por defecto" 
+                     class="h-full w-full object-cover">
+            {% endif %}
         </div>
-    </div>
+        </div>
 
     {% if user.role == 'STUDENT' %}
     <div class="grid md:grid-cols-2 gap-6">
@@ -28,7 +39,7 @@
             </div>
             <h3 class="text-xl font-bold text-gray-800 mb-2">Libreta Digital</h3>
             <p class="text-gray-500 text-sm mb-4">Descarga tu historial académico completo, cursadas y finales rendidos en formato PDF.</p>
-            <a href="{% url 'download_libreta' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+            <a href="{% url 'academic:download_report_card' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
                 Descargar PDF
             </a>
         </div>

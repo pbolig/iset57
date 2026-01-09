@@ -79,6 +79,14 @@ class SubjectEnrollment(models.Model):
         default='CURSANDO',
         verbose_name="Estado Académico"
     )
+    
+    final_grade = models.DecimalField(
+    max_digits=4, 
+    decimal_places=2, 
+    null=True, 
+    blank=True, 
+    verbose_name="Nota Final"
+    )
 
     class Meta:
         verbose_name = "Cursada / Materia"
