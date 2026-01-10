@@ -7,7 +7,9 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth.decorators import login_required
+from .forms import UserProfileForm
 
 # No necesitamos IntegrityError porque el form ya valida duplicados antes de guardar
 from .forms import StudentRegistrationForm
@@ -97,3 +99,19 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'El link de activación es inválido o expiró.')
         return redirect('login')
+    
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        # request.FILES es vital para que lleguen las imágenes
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '¡Tu perfil ha sido actualizado correctamente!')
+            # Redirigimos al dashboard para que vea el cambio
+            return redirect('academic:dashboard') 
+    else:
+        # Cargamos el formulario con los datos actuales del usuario
+        form = UserProfileForm(instance=request.user)
+    
+    return render(request, 'users/profile_edit.html', {'form': form})

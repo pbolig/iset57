@@ -8,6 +8,7 @@
 <div class="max-w-4xl mx-auto">
     
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-8 flex items-center justify-between">
+        
         <div>
             <h1 class="text-3xl font-bold text-gray-800">Hola, {{ user.first_name }} 👋</h1>
             <p class="text-gray-500 mt-2">
@@ -16,9 +17,14 @@
                     {{ user.get_role_display }}
                 </span>
             </p>
+            
+            <a href="{% url 'edit_profile' %}" class="inline-flex items-center mt-3 text-sm text-blue-600 hover:text-blue-800 hover:underline transition">
+                <i class="fa-solid fa-pen-to-square mr-2"></i> Editar mis datos
+            </a>
         </div>
 
-        <div class="h-20 w-20 rounded-full overflow-hidden border-4 border-gray-100 shadow-sm">
+        <div class="relative group h-20 w-20 rounded-full overflow-hidden border-4 border-gray-100 shadow-sm flex-shrink-0">
+            
             {% if user.profile_picture %}
                 <img src="{{ user.profile_picture.url }}" 
                      alt="Foto de perfil" 
@@ -28,9 +34,13 @@
                      alt="Foto por defecto" 
                      class="h-full w-full object-cover">
             {% endif %}
-        </div>
-        </div>
 
+            <a href="{% url 'edit_profile' %}" class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                <i class="fa-solid fa-camera text-white text-xl"></i>
+            </a>
+
+        </div>
+    </div>
     {% if user.role == 'STUDENT' %}
     <div class="grid md:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">

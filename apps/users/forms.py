@@ -38,3 +38,25 @@ class StudentRegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+# 4. Formulario para que el ALUMNO edite su propio perfil (Sin claves ni roles)
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        # Permitimos editar solo datos personales y la foto.
+        # NO incluimos 'dni' ni 'username' para evitar problemas administrativos.
+        fields = ['first_name', 'last_name', 'email', 'profile_picture']
+        
+        # Estilos CSS (Tailwind) para que se vea bonito
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'}),
+            'last_name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'}),
+            'email': forms.EmailInput(attrs={'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'}),
+            'profile_picture': forms.FileInput(attrs={'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'}),
+        }
+        labels = {
+            'first_name': 'Nombre',
+            'last_name': 'Apellido',
+            'email': 'Correo Electrónico',
+            'profile_picture': 'Foto de Perfil',
+        }
