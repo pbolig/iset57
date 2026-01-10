@@ -18,6 +18,7 @@ urlpatterns = [
     # --- ACADÉMICO ---
     path('academic/', include('apps.enrollments.urls')),
     path('academic/', include('apps.academic.urls')),
+    path('examenes/', include('apps.exams.urls')),
     
     # --- REDIRECCIÓN ---
     # Redirigir la raíz (http://localhost:8000) al login directamente

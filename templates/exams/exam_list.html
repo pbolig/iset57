@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Inscripción a Exámenes{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Mesas de Examen</h1>
+            <p class="text-gray-500 mt-1">Inscripciones abiertas para el turno actual.</p>
+        </div>
+        <a href="{% url 'academic:dashboard' %}" class="text-gray-500 hover:text-blue-600 font-medium">
+            &larr; Volver al Dashboard
+        </a>
+    </div>
+
+    {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+                <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        {% if exams %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Fecha y Hora</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Materia / Carrera</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Cierre Inscripción</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm text-center">Estado</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm text-right">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for exam in exams %}
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-gray-800">{{ exam.date|date:"d/m/Y" }}</div>
+                                    <div class="text-sm text-gray-500">{{ exam.date|date:"H:i" }} hs</div>
+                                </td>
+                                
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-900">{{ exam.subject.name }}</div>
+                                    <div class="text-xs text-gray-400 uppercase tracking-wide">{{ exam.subject.career.name }}</div>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    {% if now > exam.inscription_deadline %}
+                                        <span class="text-red-600 font-medium text-sm">Cerrada</span>
+                                    {% else %}
+                                        <span class="text-gray-600 text-sm">{{ exam.inscription_deadline|date:"d/m/Y" }}</span>
+                                        <div class="text-xs text-gray-400">Hasta las {{ exam.inscription_deadline|date:"H:i" }}</div>
+                                    {% endif %}
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    {% if exam.id in enrolled_exam_ids %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fa-solid fa-check mr-1"></i> Inscrito
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            Disponible
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="px-6 py-4 text-right">
+                                    {% if exam.id in enrolled_exam_ids %}
+                                        <button disabled class="text-gray-400 cursor-not-allowed font-medium text-sm">
+                                            Ya registrado
+                                        </button>
+                                    {% else %}
+                                        {% if now > exam.inscription_deadline %}
+                                            <button disabled class="text-gray-400 cursor-not-allowed font-medium text-sm" title="La fecha límite ha pasado">
+                                                Cerrada
+                                            </button>
+                                        {% else %}
+                                            <form action="{% url 'exams:enroll' exam.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <button type="submit" onclick="return confirm('¿Confirmas la inscripción a {{ exam.subject.name }}?')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm">
+                                                    Inscribirse
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="p-10 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4 text-gray-400">
+                    <i class="fa-regular fa-calendar-xmark text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900">No hay mesas disponibles</h3>
+                <p class="text-gray-500 mt-1">Actualmente no hay mesas de examen abiertas para inscripción.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
