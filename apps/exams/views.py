@@ -1,9 +1,13 @@
+from django.views.generic.edit import CreateView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from .models import ExamSession, ExamEnrollment
+from .forms import ExamSessionForm
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 @login_required
 def exam_list(request):
@@ -67,3 +71,19 @@ def exam_inscription(request, exam_id):
             messages.error(request, 'Ocurrió un error inesperado al inscribirse.')
 
     return redirect('exams:list')
+
+# --- VISTA PARA ADMINISTRADORES ---
+class ExamCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = ExamSession
+    form_class = ExamSessionForm
+    template_name = 'exams/exam_form.html'
+    success_url = reverse_lazy('academic:dashboard') # Al terminar, vuelve al dashboard
+
+    def test_func(self):
+        # Solo permite acceso si es SUPERUSER o tiene rol ADMIN
+        user = self.request.user
+        return user.is_superuser or user.role == 'ADMIN'
+
+    def form_valid(self, form):
+        messages.success(self.request, f"Mesa de examen para '{form.instance.subject}' creada correctamente.")
+        return super().form_valid(form)

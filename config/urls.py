@@ -16,7 +16,6 @@ urlpatterns = [
     path('accounts/', include('apps.users.urls')),
 
     # --- ACADÉMICO ---
-    path('academic/', include('apps.enrollments.urls')),
     path('academic/', include('apps.academic.urls')),
     path('examenes/', include('apps.exams.urls')),
     

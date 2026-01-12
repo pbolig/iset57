@@ -14,6 +14,7 @@ from xhtml2pdf import pisa
 from apps.users.decorators import admin_required
 from apps.enrollments.models import SubjectEnrollment 
 from apps.exams.models import ExamEnrollment
+from django.views.decorators.http import require_POST
 
 # LIBRERÍAS DE IMAGEN (Protección contra archivos rotos)
 from PIL import Image, ImageFile
@@ -22,26 +23,61 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 User = get_user_model()
 
 # --- VISTAS ADMIN ---
-@admin_required
+@admin_required  # O @login_required si aún no tienes el decorador listo
 def dashboard_view(request):
-    pending_students = User.objects.filter(role=User.Role.STUDENT, is_active=False).order_by('-date_joined')
-    return render(request, 'academic/dashboard.html', {'pending_students': pending_students})
+    """
+    Vista EXCLUSIVA para el Panel Administrativo.
+    """
+    user = request.user
+    
+    # Filtramos solo si es admin o superusuario
+    if user.role == 'ADMIN' or user.is_superuser:
+        
+        # Lógica de datos administrativos
+        pending_students = User.objects.filter(role='STUDENT', is_active=False).order_by('-date_joined')
+        
+        context = {
+            'pending_students': pending_students
+        }
+        
+        print("✅ CARGANDO PANEL ADMINISTRATIVO (academic/dashboard.html)")
+        return render(request, 'academic/dashboard.html', context)
+    
+    else:
+        # Si un alumno intenta entrar aquí, lo mandamos a su home
+        return redirect('home')
 
 @admin_required
+@require_POST
 def approve_student(request, user_id):
     student = get_object_or_404(User, pk=user_id)
     student.is_active = True
     student.save()
+    
+    # Mejora: El try/except solo debe envolver el envío de email, no el save()
     try:
-        send_mail('Bienvenido', 'Tu cuenta ha sido aprobada.', settings.DEFAULT_FROM_EMAIL, [student.email])
-        messages.success(request, f'Estudiante {student.email} aprobado.')
-    except:
-        messages.warning(request, 'Aprobado sin email.')
+        send_mail(
+            'Bienvenido a ISET 57', 
+            'Tu cuenta ha sido aprobada. Ya puedes iniciar sesión en el sistema.', 
+            settings.DEFAULT_FROM_EMAIL, 
+            [student.email],
+            fail_silently=False
+        )
+        messages.success(request, f'Estudiante {student.last_name} aprobado y notificado.')
+    except Exception as e:
+        # El alumno se aprueba igual, pero avisamos que falló el correo
+        print(f"Error enviando mail: {e}") 
+        messages.warning(request, f'Estudiante aprobado, pero falló el envío del email ({e}).')
+        
     return redirect('academic:dashboard')
 
 @admin_required
+@require_POST  # <--- IMPORTANTE: Evita borrados accidentales por URL
 def reject_student(request, user_id):
-    get_object_or_404(User, pk=user_id).delete()
+    user = get_object_or_404(User, pk=user_id)
+    email = user.email
+    user.delete()
+    messages.error(request, f'Solicitud de {email} rechazada y eliminada.')
     return redirect('academic:dashboard')
 
 # --- VISTAS ALUMNO ---
@@ -116,3 +152,31 @@ def generar_pdf_final(request):
         return HttpResponse('Error generando PDF')
     
     return response
+
+@login_required
+def home_redirect(request):
+    """
+    Esta vista actúa como un SEMÁFORO.
+    Recibe al usuario y lo redirige a su panel correspondiente según su rol.
+    """
+    user = request.user
+    
+    if user.role == 'ADMIN' or user.is_superuser:
+        print(f"🚦 Semáforo: Usuario {user.email} es ADMIN -> Redirigiendo a Panel Administrativo")
+        return redirect('academic:dashboard') # Esta es la vista que arreglamos antes
+        
+    elif user.role == 'STUDENT':
+        print(f"🚦 Semáforo: Usuario {user.email} es ALUMNO -> Redirigiendo a Panel Alumno")
+        return redirect('academic:student_dashboard') # <--- OJO AQUÍ, crearemos esta url en el paso 2
+        
+    elif user.role == 'TEACHER':
+        return redirect('academic:teacher_dashboard') # Futuro panel docente
+        
+    else:
+        return redirect('academic:student_dashboard') # Por defecto
+
+# --- Asegúrate de tener también la vista del estudiante ---
+@login_required
+def student_dashboard_view(request):
+    # Aquí renderizamos el dashboard.html genérico (el que tiene las opciones de alumno)
+    return render(request, 'dashboard.html', {'user': request.user})
