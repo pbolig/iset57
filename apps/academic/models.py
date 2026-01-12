@@ -6,6 +6,9 @@ class Career(models.Model):
     short_name = models.CharField(max_length=50, verbose_name="Abreviatura")
     description = models.TextField(blank=True, verbose_name="Descripción")
     is_active = models.BooleanField(default=True, verbose_name="Activa")
+    
+    def __str__(self):
+        return f"{self.name} ({'Activa' if self.is_active else 'Inactiva'})"
 
     class Meta:
         verbose_name = "Carrera"

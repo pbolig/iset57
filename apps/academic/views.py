@@ -1,6 +1,7 @@
 import os
 import io
 import base64
+from .models import Career
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
@@ -15,6 +16,10 @@ from apps.users.decorators import admin_required
 from apps.enrollments.models import SubjectEnrollment 
 from apps.exams.models import ExamEnrollment
 from django.views.decorators.http import require_POST
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 
 # LIBRERÍAS DE IMAGEN (Protección contra archivos rotos)
 from PIL import Image, ImageFile
@@ -180,3 +185,36 @@ def home_redirect(request):
 def student_dashboard_view(request):
     # Aquí renderizamos el dashboard.html genérico (el que tiene las opciones de alumno)
     return render(request, 'dashboard.html', {'user': request.user})
+
+class CareerListView(LoginRequiredMixin, ListView):
+    model = Career
+    template_name = 'academic/career_list.html'
+    context_object_name = 'careers'
+
+class CareerCreateView(LoginRequiredMixin, CreateView):
+    model = Career
+    template_name = 'academic/career_form.html'
+    fields = ['name', 'short_name', 'description'] # Ajusta según tus campos en models.py
+    success_url = reverse_lazy('academic:career_list')
+
+class CareerUpdateView(LoginRequiredMixin, UpdateView):
+    model = Career
+    template_name = 'academic/career_form.html'
+    fields = ['name', 'short_name', 'description']
+    success_url = reverse_lazy('academic:career_list')
+
+class CareerDeleteView(LoginRequiredMixin, DeleteView):
+    model = Career
+    template_name = 'academic/career_confirm_delete.html'
+    success_url = reverse_lazy('academic:career_list')
+
+    # Sobreescribimos el método que se ejecuta al confirmar
+    def form_valid(self, form):
+        # En lugar de borrar, desactivamos
+        self.object.is_active = False
+        self.object.save()
+        
+        # Opcional: Mensaje de éxito (si tienes mensajes configurados)
+        # messages.success(self.request, "La carrera se ha desactivado correctamente.")
+        
+        return HttpResponseRedirect(self.success_url)

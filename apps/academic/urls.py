@@ -10,4 +10,10 @@ urlpatterns = [
     path('reject/<int:user_id>/', views.reject_student, name='reject_student'),
     path('libreta/descargar/', views.generar_pdf_final, name='download_report_card'),
     path('student-dashboard/', views.student_dashboard_view, name='student_dashboard'),
+    
+    # --- CRUD CARRERAS ---
+    path('carreras/', views.CareerListView.as_view(), name='career_list'),
+    path('carreras/crear/', views.CareerCreateView.as_view(), name='career_create'),
+    path('carreras/editar/<int:pk>/', views.CareerUpdateView.as_view(), name='career_update'),
+    path('carreras/borrar/<int:pk>/', views.CareerDeleteView.as_view(), name='career_delete'),
 ]

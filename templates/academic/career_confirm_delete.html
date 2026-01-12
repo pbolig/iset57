@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Desactivar Carrera{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-20 bg-white p-8 rounded-xl shadow-lg text-center border border-gray-100">
+    
+    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-orange-100 mb-6">
+        <i class="fa-solid fa-power-off text-orange-600 text-3xl"></i>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-2">¿Desactivar Carrera?</h2>
+    
+    <p class="text-gray-600 mb-6">
+        Estás a punto de desactivar <strong>"{{ object.name }}"</strong>.
+    </p>
+
+    <div class="bg-blue-50 text-blue-800 text-sm p-4 rounded-lg text-left mb-6 border border-blue-100">
+        <i class="fa-solid fa-circle-info mr-2"></i>
+        <strong>Nota de Seguridad:</strong> No se eliminarán los alumnos ni las materias asociadas. La carrera simplemente dejará de estar disponible para nuevas inscripciones.
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex flex-col sm:flex-row justify-center gap-3">
+            <button type="submit" class="w-full sm:w-auto bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition font-medium shadow-sm">
+                Sí, Desactivar
+            </button>
+            <a href="{% url 'academic:career_list' %}" class="w-full sm:w-auto bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition font-medium">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
