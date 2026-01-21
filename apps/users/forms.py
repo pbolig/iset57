@@ -1,16 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import User
+from apps.academic.models import Career
+# Importamos el modelo de inscripción para vincular al alumno
+from apps.enrollments.models import CareerEnrollment 
 
 # 1. Formulario para CREAR usuarios (Admin)
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        # Solo listamos tus campos personalizados + username/email.
-        # UserCreationForm se encarga MÁGICAMENTE de agregar password_1 y password_2 al final.
         fields = ('username', 'email', 'dni', 'first_name', 'last_name', 'role')
-
-    # No hace falta reescribir save() ni clean_password_2(), Django ya lo hace por ti.
 
 
 # 2. Formulario para EDITAR usuarios (Admin)
@@ -22,32 +21,50 @@ class CustomUserChangeForm(UserChangeForm):
 
 # 3. Formulario para Registro de Estudiantes (Público)
 class StudentRegistrationForm(UserCreationForm):
+    # Campo para elegir la carrera (Se mostrará como un desplegable bonito)
+    career = forms.ModelChoiceField(
+        queryset=Career.objects.filter(is_active=True),
+        label="Carrera a cursar",
+        empty_label="-- Selecciona tu carrera --",
+        widget=forms.Select(attrs={'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'})
+    )
+
     class Meta:
         model = User
-        # Aquí NO ponemos 'role' para que el estudiante no pueda elegirse como Admin
+        # No incluimos 'role' ni 'career' en fields directos del modelo User
         fields = ('username', 'first_name', 'last_name', 'email', 'dni')
     
     def save(self, commit=True):
+        # 1. Creamos la instancia del usuario pero no la guardamos en BD todavía
         user = super().save(commit=False)
         
-        # CORRECCIÓN IMPORTANTE:
-        # Usamos la constante del modelo en lugar de escribir 'student' a mano.
-        # En tu modelo definiste: STUDENT = "STUDENT" (Mayúsculas probables)
+        # 2. Asignamos datos forzados
         user.role = User.Role.STUDENT 
+        user.is_active = False # El admin debe aprobarlo después
         
         if commit:
+            # 3. Guardamos al usuario para que tenga un ID (pk)
             user.save()
+            
+            # 4. Ahora que el usuario existe, creamos la inscripción a la carrera
+            selected_career = self.cleaned_data.get('career')
+            
+            if selected_career:
+                CareerEnrollment.objects.create(
+                    student=user,
+                    career=selected_career,
+                    # is_active=True viene por defecto en tu modelo, así que está bien
+                )
+
         return user
+
 
 # 4. Formulario para que el ALUMNO edite su propio perfil (Sin claves ni roles)
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        # Permitimos editar solo datos personales y la foto.
-        # NO incluimos 'dni' ni 'username' para evitar problemas administrativos.
         fields = ['first_name', 'last_name', 'email', 'profile_picture']
         
-        # Estilos CSS (Tailwind) para que se vea bonito
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'}),
             'last_name': forms.TextInput(attrs={'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'}),

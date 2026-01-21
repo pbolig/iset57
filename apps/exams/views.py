@@ -8,6 +8,8 @@ from .models import ExamSession, ExamEnrollment
 from .forms import ExamSessionForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from apps.enrollments.models import Subject
+from django.http import JsonResponse
 
 @login_required
 def exam_list(request):
@@ -87,3 +89,18 @@ class ExamCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, f"Mesa de examen para '{form.instance.subject}' creada correctamente.")
         return super().form_valid(form)
+    
+def load_subjects(request):
+    """
+    Vista AJAX para devolver materias filtradas por carrera.
+    """
+    career_id = request.GET.get('career_id')
+    subjects = Subject.objects.none()
+    
+    if career_id:
+        subjects = Subject.objects.filter(career_id=career_id).order_by('year_level', 'name')
+    
+    # Creamos una lista de diccionarios con lo que necesita el select
+    data = [{'id': s.id, 'name': f"{s.year_level}° - {s.name}"} for s in subjects]
+    
+    return JsonResponse(data, safe=False)

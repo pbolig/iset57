@@ -11,6 +11,24 @@
         <div class="grid md:grid-cols-3 gap-6">
 
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                <div class="h-12 w-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4 text-xl">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Docentes</h3>
+                <p class="text-gray-500 text-sm mb-4">Dar de alta nuevos profesores y enviar credenciales de acceso.</p>
+                
+                <div class="flex gap-2">
+                    <button disabled class="flex-1 text-center bg-gray-50 border border-gray-200 text-gray-400 px-3 py-2 rounded-lg text-sm cursor-not-allowed">
+                        Ver Listado
+                    </button>
+                    
+                    <a href="{% url 'create_teacher' %}" class="flex-1 text-center bg-purple-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-purple-700 transition font-medium">
+                        + Nuevo
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
                 <div class="h-12 w-12 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center mb-4 text-xl">
                     <i class="fa-solid fa-university"></i>
                 </div>

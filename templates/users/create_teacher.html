@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-10 bg-white p-8 rounded-xl shadow border border-gray-100">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Alta de Nuevo Docente</h2>
+    
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Nombre</label>
+            <input type="text" name="first_name" required class="w-full border rounded p-2">
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Apellido</label>
+            <input type="text" name="last_name" required class="w-full border rounded p-2">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Email Institucional/Personal</label>
+            <input type="email" name="email" required class="w-full border rounded p-2">
+        </div>
+
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">DNI (Será su clave inicial)</label>
+            <input type="text" name="dni" required class="w-full border rounded p-2">
+        </div>
+
+        <button type="submit" class="w-full bg-brand-600 text-white p-2 rounded hover:bg-brand-700 mt-4">
+            Registrar Docente
+        </button>
+    </form>
+</div>
+{% endblock %}

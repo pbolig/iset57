@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Materia{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 bg-white p-8 rounded-xl shadow border border-gray-100">
+    <div class="flex items-center gap-3 mb-6">
+        <div class="h-10 w-10 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center">
+            <i class="fa-solid fa-link"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800">Asignar Materia a Docente</h2>
+    </div>
+    
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+        
+        <div>
+            <label class="block text-gray-700 font-bold mb-2">{{ form.teacher.label }}</label>
+            {{ form.teacher }}
+        </div>
+
+        <div class="p-5 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
+            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">Selección de Cátedra</h3>
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">{{ form.career.label }}</label>
+                {{ form.career }}
+            </div>
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">{{ form.subject.label }}</label>
+                {{ form.subject }}
+            </div>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+            <button type="submit" class="flex-1 bg-teal-600 text-white p-3 rounded hover:bg-teal-700 font-bold transition">
+                Guardar Asignación
+            </button>
+            <a href="{% url 'academic:dashboard' %}" class="px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const careerSelect = document.getElementById('id_career');
+    const subjectSelect = document.getElementById('id_subject');
+
+    careerSelect.addEventListener('change', function() {
+        const careerId = this.value;
+        subjectSelect.innerHTML = '<option value="">Cargando materias...</option>';
+
+        if (careerId) {
+            // Reutilizamos la URL AJAX que creaste en Exams
+            fetch(`{% url 'exams:ajax_load_subjects' %}?career_id=${careerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    subjectSelect.innerHTML = '<option value="">-- Seleccione Materia --</option>';
+                    data.forEach(item => {
+                        subjectSelect.add(new Option(item.name, item.id));
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            subjectSelect.innerHTML = '<option value="">-- Primero seleccione carrera --</option>';
+        }
+    });
+</script>
+{% endblock %}

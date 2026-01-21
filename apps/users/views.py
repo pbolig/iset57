@@ -7,13 +7,15 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 from .forms import UserProfileForm
-
-# No necesitamos IntegrityError porque el form ya valida duplicados antes de guardar
 from .forms import StudentRegistrationForm
-from .models import UserDocument
+from .models import UserDocument, User
+
+# Si tu archivo decorators.py está en la carpeta users:
+from .decorators import admin_required
 
 User = get_user_model()
 
@@ -115,3 +117,63 @@ def edit_profile(request):
         form = UserProfileForm(instance=request.user)
     
     return render(request, 'users/profile_edit.html', {'form': form})
+
+@admin_required
+def create_teacher_view(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        dni = request.POST.get('dni')
+        
+        # 1. VERIFICAR EMAIL (Primero buscamos por mail)
+        user_by_email = User.objects.filter(email=email).first()
+        
+        if user_by_email:
+            # Si el mail existe, aplicamos tu lógica inteligente
+            if user_by_email.role == 'TEACHER':
+                messages.info(request, f"ℹ️ El docente {user_by_email.first_name} ya existe con ese email. Redirigiendo a asignación.")
+                return redirect('academic:assign_teacher')
+            else:
+                messages.error(request, f"⛔ Error: El email {email} ya pertenece a un {user_by_email.get_role_display()}. No se puede duplicar.")
+                return redirect('create_teacher') # Nos quedamos en el formulario
+
+        # 2. VERIFICAR DNI (¡Esto es lo que faltaba!)
+        # Si llegamos acá, el email es nuevo. Pero... ¿y el DNI?
+        user_by_dni = User.objects.filter(dni=dni).first()
+        
+        if user_by_dni:
+            # Si el DNI existe (pero con otro mail), es un conflicto de datos
+            messages.error(request, f"⛔ Error de Integridad: El DNI {dni} ya está registrado a nombre de {user_by_dni.first_name} {user_by_dni.last_name} ({user_by_dni.email}).")
+            return redirect('create_teacher')
+
+        # 3. CREAR USUARIO (Solo si pasó los dos filtros anteriores)
+        try:
+            user = User.objects.create(
+                username=email,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                dni=dni,
+                role='TEACHER',
+                is_active=True,
+                password=make_password(dni)
+            )
+            
+            # Enviar mail
+            send_mail(
+                'Bienvenido al Plantel Docente',
+                f'Hola {first_name}, tu cuenta ha sido creada.\n\nUsuario: {email}\nClave provisoria: {dni}\n\nIngresa en: http://127.0.0.1:8000/accounts/login/',
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                fail_silently=True # Para que no explote si falla el mail en local
+            )
+            
+            messages.success(request, f"✅ Docente {first_name} {last_name} creado exitosamente.")
+            return redirect('academic:assign_teacher')
+
+        except Exception as e:
+            # Captura cualquier otro error raro de base de datos
+            messages.error(request, f"Ocurrió un error inesperado al guardar: {e}")
+
+    return render(request, 'users/create_teacher.html')

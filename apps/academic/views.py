@@ -20,6 +20,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
+from .models import TeacherAssignment
+from .forms import TeacherAssignmentForm
 
 # LIBRERÍAS DE IMAGEN (Protección contra archivos rotos)
 from PIL import Image, ImageFile
@@ -218,3 +220,13 @@ class CareerDeleteView(LoginRequiredMixin, DeleteView):
         # messages.success(self.request, "La carrera se ha desactivado correctamente.")
         
         return HttpResponseRedirect(self.success_url)
+    
+class TeacherAssignmentView(LoginRequiredMixin, CreateView):
+    model = TeacherAssignment
+    form_class = TeacherAssignmentForm
+    template_name = 'academic/teacher_assignment_form.html'
+    success_url = reverse_lazy('academic:dashboard')
+
+    def form_valid(self, form):
+        messages.success(self.request, f"Materia asignada correctamente al docente {form.instance.teacher.last_name}.")
+        return super().form_valid(form)

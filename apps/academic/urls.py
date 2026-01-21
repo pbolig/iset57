@@ -10,6 +10,7 @@ urlpatterns = [
     path('reject/<int:user_id>/', views.reject_student, name='reject_student'),
     path('libreta/descargar/', views.generar_pdf_final, name='download_report_card'),
     path('student-dashboard/', views.student_dashboard_view, name='student_dashboard'),
+    path('docentes/asignar/', views.TeacherAssignmentView.as_view(), name='assign_teacher'),
     
     # --- CRUD CARRERAS ---
     path('carreras/', views.CareerListView.as_view(), name='career_list'),

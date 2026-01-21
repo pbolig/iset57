@@ -44,7 +44,7 @@ class ExamSession(models.Model):
         limit_choices_to={'role__in': ['TEACHER', 'CAREER_HEAD']},
         verbose_name="Tribunal Docente"
     )
-
+    
     class Meta:
         verbose_name = "Mesa de Examen"
         verbose_name_plural = "Mesas de Examen"
