@@ -230,3 +230,24 @@ class TeacherAssignmentView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, f"Materia asignada correctamente al docente {form.instance.teacher.last_name}.")
         return super().form_valid(form)
+
+@login_required
+def teacher_dashboard_view(request):
+    """
+    Panel principal del DOCENTE.
+    Muestra las materias que tiene asignadas.
+    """
+    # 1. Seguridad: Si no es docente, lo echamos al home general
+    if request.user.role != 'TEACHER':
+        return redirect('academic:home')
+
+    # 2. Buscamos sus materias asignadas
+    my_assignments = TeacherAssignment.objects.filter(
+        teacher=request.user, 
+        is_active=True
+    ).select_related('subject', 'subject__career') # Optimizamos la consulta
+
+    context = {
+        'assignments': my_assignments
+    }
+    return render(request, 'academic/teacher_dashboard.html', context)

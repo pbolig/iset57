@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Inscripción a Materias{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-8">
+    
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Inscripción a Cursadas {{ current_year }}</h1>
+        <p class="text-gray-500">
+            Carrera: <strong class="text-indigo-600">{{ career.name }}</strong>
+        </p>
+    </div>
+
+    <form method="post" class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        {% csrf_token %}
+        
+        <div class="p-6 space-y-8">
+            {% regroup subjects by year_level as year_list %}
+
+            {% for year in year_list %}
+            <div>
+                <h3 class="text-lg font-bold text-gray-700 border-b border-gray-200 pb-2 mb-4">
+                    {{ year.grouper }}° Año
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for subject in year.list %}
+                    <label class="flex items-start p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition 
+                        {% if subject.id in existing_ids %}bg-green-50 border-green-200 cursor-not-allowed{% endif %}">
+                        
+                        <div class="flex items-center h-5">
+                            {% if subject.id in existing_ids %}
+                                <input type="checkbox" disabled checked class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
+                            {% else %}
+                                <input type="checkbox" name="subjects" value="{{ subject.id }}" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                            {% endif %}
+                        </div>
+                        
+                        <div class="ml-3 text-sm">
+                            <span class="font-medium {% if subject.id in existing_ids %}text-green-700{% else %}text-gray-900{% endif %}">
+                                {{ subject.name }}
+                            </span>
+                            {% if subject.id in existing_ids %}
+                                <p class="text-green-600 text-xs mt-1">Ya estás inscripto</p>
+                            {% endif %}
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+            <a href="{% url 'academic:student_dashboard' %}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                Cancelar
+            </a>
+            <button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-sm transition">
+                Confirmar Inscripción
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
