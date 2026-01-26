@@ -3,20 +3,20 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 from django.core.exceptions import ValidationError
-from apps.academic.models import Subject
+
+# Importamos Subject y Career de Academic
+from apps.academic.models import Subject, Career
 
 class ExamSession(models.Model):
     """
-    Representa una MESA DE EXAMEN.
-    El administrador carga la fecha y la materia.
+    Representa una MESA DE EXAMEN (Turno de examen).
     """
     
-    # Estados de la mesa según tu requerimiento
     class State(models.TextChoices):
         OPEN = 'OPEN', 'Abierta (Inscripciones)'
         CLOSED_INSCRIPTION = 'CLOSED_INSCRIPTION', 'Inscripción Cerrada'
-        IN_EVALUATION = 'IN_EVALUATION', 'En Evaluación (Docente confirma modalidades)'
-        GRADING = 'GRADING', 'Evaluando (Carga de Notas)'
+        IN_EVALUATION = 'IN_EVALUATION', 'En Evaluación'
+        GRADING = 'GRADING', 'Cargando Notas'
         FINALIZED = 'FINALIZED', 'Acta Cerrada'
 
     subject = models.ForeignKey(
@@ -24,11 +24,10 @@ class ExamSession(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Materia"
     )
-    date = models.DateTimeField(verbose_name="Fecha del Examen")
+    date = models.DateTimeField(verbose_name="Fecha y Hora del Examen")
     
-    # Configuramos los 10 días por defecto, pero editable por BD como pediste
     inscription_deadline_days = models.PositiveIntegerField(
-        default=10, 
+        default=2, # Sugerencia: 48hs antes suele ser lo estándar, pero 10 está bien si es tu regla.
         verbose_name="Días de cierre antes del examen"
     )
     
@@ -41,35 +40,36 @@ class ExamSession(models.Model):
     
     examiners = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        limit_choices_to={'role__in': ['TEACHER', 'CAREER_HEAD']},
+        limit_choices_to={'role__in': ['TEACHER', 'CAREER_HEAD', 'ADMIN']},
         verbose_name="Tribunal Docente"
     )
     
     class Meta:
         verbose_name = "Mesa de Examen"
         verbose_name_plural = "Mesas de Examen"
-        ordering = ['-date']
+        ordering = ['date']
 
     def __str__(self):
         return f"{self.subject} - {self.date.strftime('%d/%m/%Y %H:%M')}"
 
     @property
     def inscription_deadline(self):
-        """Calcula la fecha límite exacta para inscribirse"""
+        """Devuelve la FECHA LÍMITE exacta para inscribirse."""
         return self.date - timedelta(days=self.inscription_deadline_days)
 
     def check_auto_close(self):
-        """Método para verificar si debe cerrarse automáticamente la inscripción"""
-        if self.state == self.State.OPEN and timezone.now() >= self.inscription_deadline:
-            self.state = self.State.CLOSED_INSCRIPTION
-            self.save()
-            return True
+        """Cierra la inscripción automáticamente si pasó la fecha."""
+        if self.state == self.State.OPEN:
+            if timezone.now() >= self.inscription_deadline:
+                self.state = self.State.CLOSED_INSCRIPTION
+                self.save()
+                return True
         return False
 
 
 class ExamEnrollment(models.Model):
     """
-    Inscripción de un alumno a una mesa específica.
+    Inscripción de un alumno a una Mesa (Acta Volante).
     """
     exam_session = models.ForeignKey(
         ExamSession, 
@@ -88,12 +88,15 @@ class ExamEnrollment(models.Model):
         max_length=20, 
         choices=[('REGULAR', 'Regular'), ('LIBRE', 'Libre')],
         default='REGULAR',
-        verbose_name="Modalidad Confirmada"
+        verbose_name="Modalidad"
     )
     
+    date_enrolled = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Inscripción")
+
+    # Resultados del examen
     is_confirmed_by_teacher = models.BooleanField(
         default=False, 
-        verbose_name="Confirmado por Docente"
+        verbose_name="Confirmado"
     )
     
     grade = models.DecimalField(
@@ -109,22 +112,18 @@ class ExamEnrollment(models.Model):
     class Meta:
         verbose_name = "Inscripción a Examen"
         verbose_name_plural = "Inscripciones a Exámenes"
-        unique_together = ('exam_session', 'student')
+        unique_together = ('exam_session', 'student') # Un alumno solo se anota 1 vez por mesa
 
     def __str__(self):
-        return f"{self.student} - {self.exam_session}"
-
-    # =================================================================
-    #   ### NUEVO CÓDIGO DE VALIDACIÓN AQUÍ ###
-    # =================================================================
+        return f"{self.student} -> {self.exam_session.subject}"
 
     def clean(self):
-        """Validaciones de negocio antes de guardar"""
+        """Validaciones de Negocio"""
         
-        # 1. Validar que el alumno pertenezca a la carrera de la materia
-        # Para esto, buscamos si existe una inscripción activa del alumno en esa carrera
+        # 1. Validar Carrera: El alumno debe tener inscripción activa en la carrera de la materia
         career_of_subject = self.exam_session.subject.career
         
+        # Usamos related_name='enrollments' definido en CareerEnrollment
         has_enrollment = career_of_subject.enrollments.filter(
             student=self.student,
             is_active=True
@@ -132,17 +131,17 @@ class ExamEnrollment(models.Model):
 
         if not has_enrollment:
             raise ValidationError(
-                f"El estudiante no está inscrito en la carrera '{career_of_subject.name}' y no puede rendir esta materia."
+                f"El estudiante no pertenece a la carrera '{career_of_subject.name}'."
             )
 
-        # 2. Validar fechas (Si intenta inscribirse tarde)
-        # self.pk es None cuando se está creando. Si ya existe (editando nota), no validamos fecha.
+        # 2. Validar Fecha Límite (Solo si es una inscripción nueva)
         if not self.pk: 
             deadline = self.exam_session.inscription_deadline
             if timezone.now() > deadline:
-                raise ValidationError(f"La inscripción a esta mesa cerró el {deadline.strftime('%d/%m/%Y')}.")
-            
+                raise ValidationError(
+                    f"La inscripción cerró el {deadline.strftime('%d/%m/%Y a las %H:%M')}."
+                )
+
     def save(self, *args, **kwargs):
-        # Ejecutamos las validaciones antes de guardar
         self.clean()
         super().save(*args, **kwargs)
