@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import JsonResponse
+from django.db import transaction
 
 # Modelos
 from .models import ExamSession, ExamEnrollment
@@ -137,3 +138,62 @@ def load_subjects(request):
     data = [{'id': s.id, 'name': f"{s.year_level}° - {s.name}"} for s in subjects]
     
     return JsonResponse(data, safe=False)
+
+@login_required
+def grading_view(request, exam_id):
+    """
+    Vista para que el Tribunal Docente cargue las notas.
+    """
+    # 1. Obtenemos la mesa
+    exam = get_object_or_404(ExamSession, pk=exam_id)
+
+    # 2. SEGURIDAD: Solo el tribunal (o admin) puede entrar
+    is_examiner = request.user in exam.examiners.all()
+    if not is_examiner and not request.user.is_superuser:
+        messages.error(request, "No tienes permiso para calificar esta mesa.")
+        return redirect('academic:teacher_dashboard')
+
+    # 3. Obtenemos los alumnos inscritos (Acta Volante)
+    enrollments = exam.enrollments.select_related('student').order_by('student__last_name')
+
+    if request.method == 'POST':
+        try:
+            with transaction.atomic(): # Si uno falla, no se guarda nada (seguridad)
+                for enrollment in enrollments:
+                    # Buscamos los inputs del HTML (nombres tipo: grade_15, absent_15)
+                    grade_key = f'grade_{enrollment.id}'
+                    absent_key = f'absent_{enrollment.id}'
+
+                    raw_grade = request.POST.get(grade_key)
+                    is_absent = request.POST.get(absent_key) == 'on'
+
+                    # Lógica de guardado
+                    if is_absent:
+                        enrollment.absent = True
+                        enrollment.grade = None # Si está ausente no tiene nota numérica
+                    else:
+                        enrollment.absent = False
+                        if raw_grade:
+                            # Convertimos la coma en punto por si acaso
+                            enrollment.grade = raw_grade.replace(',', '.') 
+                        else:
+                            # Si borró la nota, lo dejamos vacío
+                            enrollment.grade = None 
+                    
+                    enrollment.save()
+
+                # Actualizamos el estado de la mesa a "Cargando Notas"
+                exam.state = ExamSession.State.GRADING
+                exam.save()
+
+                messages.success(request, "✅ Las notas se han guardado correctamente.")
+                return redirect('exams:grading', exam_id=exam.id)
+
+        except Exception as e:
+            messages.error(request, f"Error al guardar notas: {e}")
+
+    context = {
+        'exam': exam,
+        'enrollments': enrollments
+    }
+    return render(request, 'exams/grading_form.html', context)

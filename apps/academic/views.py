@@ -14,7 +14,7 @@ from django.utils import timezone
 from xhtml2pdf import pisa
 from apps.users.decorators import admin_required
 from apps.enrollments.models import SubjectEnrollment 
-from apps.exams.models import ExamEnrollment
+from apps.exams.models import ExamEnrollment, ExamSession
 from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -22,6 +22,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from .models import TeacherAssignment
 from .forms import TeacherAssignmentForm
+from django.db.models import Avg
 
 # LIBRERÍAS DE IMAGEN (Protección contra archivos rotos)
 from PIL import Image, ImageFile
@@ -145,7 +146,7 @@ def generar_pdf_final(request):
     }
 
     # 4. RENDERIZADO
-    template_path = 'libreta_final.html'
+    template_path = 'academic/libreta_final.html'
     response = HttpResponse(content_type='application/pdf')
     filename = f"Libreta_{student.dni}.pdf"
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
@@ -235,19 +236,51 @@ class TeacherAssignmentView(LoginRequiredMixin, CreateView):
 def teacher_dashboard_view(request):
     """
     Panel principal del DOCENTE.
-    Muestra las materias que tiene asignadas.
+    Muestra sus materias y sus próximas mesas de examen.
     """
-    # 1. Seguridad: Si no es docente, lo echamos al home general
     if request.user.role != 'TEACHER':
         return redirect('academic:home')
 
-    # 2. Buscamos sus materias asignadas
+    # 1. Sus Materias (Cursadas)
     my_assignments = TeacherAssignment.objects.filter(
         teacher=request.user, 
         is_active=True
-    ).select_related('subject', 'subject__career') # Optimizamos la consulta
+    ).select_related('subject', 'subject__career')
+
+    # 2. Sus Mesas de Examen (Donde es tribunal)
+    # Buscamos mesas que NO estén finalizadas (para que las vea pendientes)
+    # Opcional: mostrar solo las futuras o recientes.
+    my_exams = ExamSession.objects.filter(
+        examiners=request.user
+    ).exclude(state=ExamSession.State.FINALIZED).order_by('date')
 
     context = {
-        'assignments': my_assignments
+        'assignments': my_assignments,
+        'my_exams': my_exams, # Pasamos las mesas al template
+        'now': timezone.now()
     }
     return render(request, 'academic/teacher_dashboard.html', context)
+
+@login_required
+def academic_history_view(request):
+    """
+    Muestra el historial académico (Libreta) del alumno.
+    """
+    # 1. Solo para alumnos
+    if request.user.role != 'STUDENT':
+        return redirect('academic:home')
+
+    # 2. Buscamos los exámenes CON NOTA (excluyendo los que aún no se corrigieron)
+    history = ExamEnrollment.objects.filter(
+        student=request.user,
+        grade__isnull=False # Solo traemos los que ya tienen nota cargada
+    ).select_related('exam_session', 'exam_session__subject').order_by('-exam_session__date')
+
+    # 3. Calculamos Promedio General (Opcional pero queda pro)
+    average = history.aggregate(Avg('grade'))['grade__avg']
+
+    context = {
+        'history': history,
+        'average': average
+    }
+    return render(request, 'academic/academic_history.html', context)

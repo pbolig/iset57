@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Carga de Notas{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto mt-6">
+    
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6 flex justify-between items-start">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">{{ exam.subject.name }}</h2>
+            <p class="text-gray-500">{{ exam.subject.career.name }}</p>
+            <div class="mt-4 flex gap-4 text-sm">
+                <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg font-medium">
+                    <i class="fa-regular fa-calendar mr-2"></i> {{ exam.date|date:"d/m/Y H:i" }} hs
+                </span>
+                <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg">
+                    Inscritos: <strong>{{ enrollments.count }}</strong>
+                </span>
+            </div>
+        </div>
+        
+        <a href="{% url 'academic:teacher_dashboard' %}" class="text-gray-500 hover:text-gray-700">
+            &larr; Volver
+        </a>
+    </div>
+
+    <form method="post" class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        {% csrf_token %}
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-4">Estudiante</th>
+                        <th class="px-6 py-4">Condición</th>
+                        <th class="px-6 py-4 w-32 text-center">Ausente</th>
+                        <th class="px-6 py-4 w-40">Nota (1-10)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for enroll in enrollments %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-gray-800">{{ enroll.student.last_name }}, {{ enroll.student.first_name }}</div>
+                            <div class="text-xs text-gray-400">DNI: {{ enroll.student.dni }}</div>
+                        </td>
+                        
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs rounded font-bold
+                                {% if enroll.modality == 'REGULAR' %}bg-green-100 text-green-700
+                                {% else %}bg-orange-100 text-orange-700{% endif %}">
+                                {{ enroll.modality }}
+                            </span>
+                        </td>
+
+                        <td class="px-6 py-4 text-center">
+                            <input type="checkbox" 
+                                name="absent_{{ enroll.id }}" 
+                                id="absent_{{ enroll.id }}"
+                                {% if enroll.absent %}checked{% endif %}
+                                onchange="toggleGradeInput('{{ enroll.id }}')"
+                                lass="w-5 h-5 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer">
+                        </td>
+
+                        <td class="px-6 py-4">
+                            <input type="number" 
+                                name="grade_{{ enroll.id }}" 
+                                id="grade_{{ enroll.id }}"
+                                value="{{ enroll.grade|default:'' }}"
+                                step="0.01" min="1" max="10"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-center font-bold text-gray-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition disabled:bg-gray-100 disabled:text-gray-400"
+                                {% if enroll.absent %}disabled{% endif %}>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                            No hay alumnos inscritos en esta mesa.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+            <div class="text-sm text-gray-500">
+                <i class="fa-solid fa-circle-info mr-1"></i> Recuerda guardar los cambios antes de salir.
+            </div>
+            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Notas
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function toggleGradeInput(id) {
+    // Al poner comillas arriba, 'id' llega como texto, pero funciona igual para buscar el elemento
+    const checkBox = document.getElementById('absent_' + id);
+    const gradeInput = document.getElementById('grade_' + id);
+    
+    if (checkBox.checked) {
+        gradeInput.value = '';
+        gradeInput.disabled = true;
+        gradeInput.classList.add('bg-gray-100'); // Opcional: efecto visual gris
+    } else {
+        gradeInput.disabled = false;
+        gradeInput.classList.remove('bg-gray-100');
+    }
+}
+</script>
+{% endblock %}

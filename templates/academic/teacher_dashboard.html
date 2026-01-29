@@ -54,5 +54,68 @@
         </div>
         {% endfor %}
     </div>
+
+    <div class="mt-12 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 px-1 flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-purple-600"></i>
+            Mis Mesas de Examen / Actas Volantes
+        </h2>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            {% if my_exams %}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-purple-50 border-b border-purple-100 text-purple-800">
+                            <tr>
+                                <th class="px-6 py-3 font-semibold text-sm">Fecha</th>
+                                <th class="px-6 py-3 font-semibold text-sm">Materia</th>
+                                <th class="px-6 py-3 font-semibold text-sm">Inscritos</th>
+                                <th class="px-6 py-3 font-semibold text-sm">Estado</th>
+                                <th class="px-6 py-3 font-semibold text-sm text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for exam in my_exams %}
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-gray-800">{{ exam.date|date:"d/m/Y" }}</div>
+                                    <div class="text-xs text-gray-500">{{ exam.date|date:"H:i" }} hs</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-900">{{ exam.subject.name }}</div>
+                                    <div class="text-xs text-gray-400">{{ exam.subject.career.name }}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">
+                                        {{ exam.enrollments.count }} Alumnos
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if exam.state == 'OPEN' %}
+                                        <span class="text-green-600 text-xs font-bold bg-green-50 px-2 py-1 rounded border border-green-100">Inscripción Abierta</span>
+                                    {% elif exam.state == 'CLOSED_INSCRIPTION' %}
+                                        <span class="text-orange-600 text-xs font-bold bg-orange-50 px-2 py-1 rounded border border-orange-100">Cerrada / Evaluar</span>
+                                    {% elif exam.state == 'GRADING' %}
+                                        <span class="text-blue-600 text-xs font-bold bg-blue-50 px-2 py-1 rounded border border-blue-100">Cargando Notas</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <a href="{% url 'exams:grading' exam.id %}" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition shadow-sm">
+                                        <i class="fa-solid fa-pen-to-square mr-1"></i> Gestionar Acta
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="p-8 text-center text-gray-500">
+                    <p>No tienes mesas de examen asignadas próximamente.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
 </div>
 {% endblock %}

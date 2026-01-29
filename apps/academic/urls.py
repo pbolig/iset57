@@ -18,4 +18,7 @@ urlpatterns = [
     path('carreras/crear/', views.CareerCreateView.as_view(), name='career_create'),
     path('carreras/editar/<int:pk>/', views.CareerUpdateView.as_view(), name='career_update'),
     path('carreras/borrar/<int:pk>/', views.CareerDeleteView.as_view(), name='career_delete'),
+    
+    # RUTA LIBRETA DIGITAL
+    path('mi-historial/', views.academic_history_view, name='academic_history'),
 ]
