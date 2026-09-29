@@ -118,39 +118,232 @@
     "espacios": [
       {
         "id": "digitales",
-        "titulo": "Tecnicatura en Tecnologías Digitales",
-        "descripcion": "Desarrollo de software, redes, bases de datos y ciberseguridad, con prácticas en laboratorio.",
+        "titulo": "Tecnicatura Superior en Tecnologías Digitales",
+        "tituloCorto": "Tecnologías Digitales",
+        "descripcion": "Formación integral en desarrollo de software, infraestructura de redes, bases de datos y ciberseguridad con prácticas intensivas en laboratorio.",
         "enlace": "digitales.html",
-        "color": "#74acdf"
+        "color": "#74acdf",
+        "duracion": "3 años",
+        "modalidad": "Presencial",
+        "turno": "Vespertino (18:00 a 22:30 h)",
+        "tituloOtorgado": "Técnico/a Superior en Tecnologías Digitales",
+        "validez": "Título oficial con validez nacional",
+        "perfil": [
+          "Desarrollo de software frontend, backend y aplicaciones móviles con estándares modernos.",
+          "Administración, configuración y aseguramiento de redes informáticas y servidores.",
+          "Modelado, diseño y gestión de bases de datos relacionales y no relacionales.",
+          "Implementación de arquitecturas en la nube, microservicios y protocolos de ciberseguridad.",
+          "Gestión ágil de proyectos tecnológicos e integración continua (CI/CD)."
+        ],
+        "campoLaboral": [
+          "Empresas de desarrollo de software, startups y factorías tecnológicas.",
+          "Áreas de sistemas, IT e infraestructura de empresas públicas y privadas.",
+          "Consultoría técnica, soporte especializado y seguridad informática.",
+          "Emprendimientos propios y desarrollo profesional independiente (freelance)."
+        ],
+        "planEstudios": [
+          {
+            "año": "1° Año",
+            "materias": [
+              "Programación I",
+              "Arquitectura de Computadoras",
+              "Sistemas Operativos",
+              "Matemática y Lógica Computacional",
+              "Inglés Técnico I",
+              "Práctica Profesionalizante I"
+            ]
+          },
+          {
+            "año": "2° Año",
+            "materias": [
+              "Programación II",
+              "Bases de Datos",
+              "Redes y Comunicaciones",
+              "Ingeniería de Software",
+              "Inglés Técnico II",
+              "Práctica Profesionalizante II"
+            ]
+          },
+          {
+            "año": "3° Año",
+            "materias": [
+              "Desarrollo Web y Móvil",
+              "Seguridad Informática y Criptografía",
+              "Gestión de Proyectos Tecnológicos",
+              "Cloud Computing y DevOps",
+              "Ética y Deontología Profesional",
+              "Práctica Profesionalizante III"
+            ]
+          }
+        ],
+        "contactoCoordinacion": {
+          "coordinador": "Coordinación de Tecnologías Digitales",
+          "email": "digitales@iset57.edu.ar",
+          "horario": "Lunes a viernes de 18:00 a 21:00 h"
+        }
       },
       {
         "id": "higiene",
-        "titulo": "Tecnicatura en Higiene y Seguridad",
-        "descripcion": "Prevención de riesgos laborales, normativa y gestión ambiental en el ámbito industrial y de servicios.",
+        "titulo": "Tecnicatura Superior en Higiene y Seguridad en el Trabajo",
+        "tituloCorto": "Higiene y Seguridad",
+        "descripcion": "Prevención de riesgos laborales, normativa, ergonomía y gestión ambiental en el ámbito industrial, comercial y de servicios.",
         "enlace": "higiene.html",
-        "color": "#f6b40e"
+        "color": "#f6b40e",
+        "duracion": "3 años",
+        "modalidad": "Presencial",
+        "turno": "Vespertino (18:00 a 22:30 h)",
+        "tituloOtorgado": "Técnico/a Superior en Higiene y Seguridad en el Trabajo",
+        "validez": "Título oficial con validez nacional",
+        "perfil": [
+          "Identificación, evaluación y control de riesgos en ambientes de trabajo.",
+          "Elaboración de planes de evacuación, simulacros y programas de emergencia.",
+          "Capacitación del personal en normas de bioseguridad, ergonomía y uso de EPP.",
+          "Auditorías de seguridad e implementación de sistemas de gestión integrados."
+        ],
+        "campoLaboral": [
+          "Industrias manufactureras, metalúrgicas, químicas y alimentarias.",
+          "Empresas de construcción, logística, transporte y servicios.",
+          "Aseguradoras de Riesgos del Trabajo (ART) y consultoras de seguridad.",
+          "Organismos estatales de fiscalización y control laboral."
+        ],
+        "planEstudios": [
+          {
+            "año": "1° Año",
+            "materias": [
+              "Física Aplicada",
+              "Química General e Industrial",
+              "Seguridad I",
+              "Medicina del Trabajo",
+              "Legislación Laboral I",
+              "Práctica Profesionalizante I"
+            ]
+          },
+          {
+            "año": "2° Año",
+            "materias": [
+              "Higiene Laboral I",
+              "Seguridad II (Incendios y Explosiones)",
+              "Ergonomía",
+              "Psicología Laboral",
+              "Estadística Aplicada",
+              "Práctica Profesionalizante II"
+            ]
+          },
+          {
+            "año": "3° Año",
+            "materias": [
+              "Higiene Laboral II (Toxicología y Radiaciones)",
+              "Gestión Ambiental y Sustentabilidad",
+              "Auditorías y Control de Gestión",
+              "Ética y Deontología Profesional",
+              "Práctica Profesionalizante III"
+            ]
+          }
+        ],
+        "contactoCoordinacion": {
+          "coordinador": "Coordinación de Higiene y Seguridad",
+          "email": "higiene@iset57.edu.ar",
+          "horario": "Lunes a viernes de 18:00 a 21:00 h"
+        }
       },
       {
         "id": "enfermeria",
-        "titulo": "Tecnicatura en Enfermería",
-        "descripcion": "Formación en cuidado integral de la salud, con prácticas profesionales en instituciones sanitarias.",
+        "titulo": "Tecnicatura Superior en Enfermería",
+        "tituloCorto": "Enfermería",
+        "descripcion": "Formación integral en el cuidado de la salud humana con prácticas profesionalizantes tempranas en instituciones sanitarias y centros de salud.",
         "enlace": "enfermeria.html",
         "color": "#e07a8e",
+        "duracion": "3 años",
+        "modalidad": "Presencial con prácticas clínicas",
+        "turno": "Tarde / Vespertino (17:30 a 22:00 h)",
+        "tituloOtorgado": "Enfermero/a Profesional",
+        "validez": "Título oficial con validez nacional",
         "requisitosParticulares": [
           {
             "item": "Esquema de Vacunación Completo",
             "detalle": "Doble Adultos / Antitetánica y esquema completo contra Hepatitis B (requisito indispensable para prácticas en efectores de salud)."
           }
-        ]
+        ],
+        "perfil": [
+          "Atención directa y cuidado humanizado de pacientes en distintos niveles de complejidad.",
+          "Promoción de la salud comunitaria, prevención de enfermedades y educación sanitaria.",
+          "Administración segura de medicación y ejecución de procedimientos asistenciales.",
+          "Trabajo interdisciplinario en equipos de salud hospitalarios y de atención primaria."
+        ],
+        "campoLaboral": [
+          "Hospitales públicos, sanatorios privados y clínicas polivalentes.",
+          "Centros de salud comunitarios y dispensarios de atención primaria.",
+          "Servicios de emergencias médicas y atención domiciliaria.",
+          "Centros de rehabilitación y residencias de adultos mayores."
+        ],
+        "planEstudios": [
+          {
+            "año": "1° Año",
+            "materias": [
+              "Anatomía y Fisiología",
+              "Fundamentos de Enfermería",
+              "Salud Pública y Comunitaria",
+              "Microbiología y Parasitología",
+              "Psicología Evolutiva",
+              "Práctica Profesionalizante I"
+            ]
+          },
+          {
+            "año": "2° Año",
+            "materias": [
+              "Enfermería del Adulto y Anciano I",
+              "Farmacología en Enfermería",
+              "Nutrición y Dietoterapia",
+              "Bioética y Aspectos Legales",
+              "Práctica Profesionalizante II"
+            ]
+          },
+          {
+            "año": "3° Año",
+            "materias": [
+              "Enfermería Materno Infantil y del Adolescente",
+              "Enfermería en Salud Mental",
+              "Gestión y Administración en Enfermería",
+              "Enfermería en Cuidados Críticos",
+              "Práctica Profesionalizante III (Rotación Hospitalaria)"
+            ]
+          }
+        ],
+        "contactoCoordinacion": {
+          "coordinador": "Coordinación de Enfermería",
+          "email": "enfermeria@iset57.edu.ar",
+          "horario": "Lunes a viernes de 17:00 a 20:30 h"
+        }
       },
       {
         "id": "simulacion",
         "titulo": "Centro Regional de Simulación Clínica",
-        "descripcion": "Espacio de entrenamiento con simuladores de alta fidelidad para estudiantes y equipos de salud de la región.",
+        "tituloCorto": "Simulación Clínica",
+        "descripcion": "Espacio de entrenamiento de vanguardia con simuladores de alta fidelidad para estudiantes de salud y equipos sanitarios de la región.",
         "enlace": "simulacion.html",
         "color": "#5aa88a",
+        "duracion": "Entrenamiento continuo",
+        "modalidad": "Talleres y escenarios prácticos",
+        "turno": "Horarios según comisiones y capacitaciones",
         "inscripcionExcluida": true,
-        "notaInscripcion": "Espacio formativo y de prácticas avanzadas para alumnos de Enfermería y profesionales de la región (no requiere inscripción inicial independiente)."
+        "notaInscripcion": "Espacio formativo y de prácticas avanzadas para alumnos de Enfermería y profesionales de la región (no requiere inscripción inicial independiente).",
+        "equipamiento": [
+          "Maniquíes de alta fidelidad computarizados (adulto, pediátrico y neonatal).",
+          "Salas de debriefing con registro y reproducción en video de alta definición.",
+          "Unidad de cuidados intensivos y shockroom simulado.",
+          "Dispositivos de entrenamiento de habilidades específicas (punciones, vía aérea, RCP avanzado)."
+        ],
+        "actividades": [
+          "Prácticas integradas de las cátedras de la carrera de Enfermería.",
+          "Cursos de actualización en Reanimación Cardiopulmonar (RCP) y primeros auxilios.",
+          "Talleres de manejo de emergencias y trabajo en equipo para efectores de salud.",
+          "Jornadas interinstitucionales y ateneos clínicos con simulación."
+        ],
+        "contactoCoordinacion": {
+          "coordinador": "Dirección del Centro de Simulación",
+          "email": "simulacion@iset57.edu.ar",
+          "horario": "Lunes a viernes de 9:00 a 18:00 h"
+        }
       }
     ]
   },

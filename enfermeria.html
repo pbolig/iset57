@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tecnicatura en Enfermería – ISET N° 57</title>
+<meta name="description" content="Tecnicatura Superior en Enfermería en ISET N° 57. Formación integral en salud con prácticas en efectores sanitarios y simulación clínica.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#14213d; --celeste:#74acdf; --celeste-suave:#e6f0fa; --sol:#f6b40e;
+  --fondo:#f5f8fb; --papel:#ffffff; --texto:#1f2a3d; --suave:#56647a; --borde:#d3dde9;
+  --alerta:#b3261e; --radio:10px;
+  --c-espacio:#e07a8e;
+  --f-titulo:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --f-texto:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font:400 1.0625rem/1.6 var(--f-texto);
+  overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom;overflow-wrap:anywhere}
+img,canvas,svg{max-width:100%}
+a{color:var(--tinta)}
+:focus-visible{outline:3px solid var(--sol);outline-offset:3px;border-radius:4px}
+.saltar{position:absolute;left:-999px;top:0;background:var(--sol);color:var(--tinta);padding:.6rem 1rem;z-index:10;font-weight:700}
+.saltar:focus{left:0}
+.wrap{width:min(1100px,100%);margin-inline:auto;
+  padding-inline:max(1.25rem,env(safe-area-inset-left)) max(1.25rem,env(safe-area-inset-right))}
+
+/* Hero */
+header{background:var(--tinta);color:#fff;border-bottom:8px solid var(--c-espacio)}
+.hero{text-align:center;padding-top:max(clamp(2.5rem,6vw,4rem),calc(env(safe-area-inset-top) + 1.5rem));padding-bottom:clamp(2rem,4vw,3rem)}
+.hero .tipo{margin:0 0 .5rem;color:var(--c-espacio);font-weight:700}
+.hero h1{margin:0;font:800 clamp(2.1rem,6.5vw,3.6rem)/1.1 var(--f-titulo);letter-spacing:-.02em}
+.hero .lema{max-width:54ch;margin:1rem auto 0;font-size:clamp(1.05rem,2.2vw,1.25rem);color:#dbe6f3}
+
+/* Pills de datos rápidos */
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin:1.5rem auto 0;max-width:700px}
+.pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:.4rem 1rem;font-size:.92rem;color:#fff;font-weight:700}
+
+nav{margin-top:1.8rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
+nav a{display:inline-flex;align-items:center;min-height:44px;color:#fff;text-decoration:none;padding:.5rem 1.1rem;border:2px solid rgba(255,255,255,.4);border-radius:999px;font-weight:700;animation:sutilFlotar 4s ease-in-out infinite}
+nav a:nth-child(2){animation-delay:.6s}
+nav a:nth-child(3){animation-delay:1.2s}
+nav a:hover{background:#fff;color:var(--tinta)}
+
+/* Secciones */
+main section{padding:clamp(2.5rem,5vw,3.5rem) 0}
+h2{margin:0 0 .5rem;text-align:center;font:800 clamp(1.6rem,5vw,2.2rem)/1.15 var(--f-titulo);color:var(--tinta)}
+.intro{margin:0 auto 2rem;text-align:center;color:var(--suave);max-width:60ch}
+
+/* Grilla Perfil & Campo */
+.dos-columnas{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))}
+.caja-info{background:var(--papel);border:1px solid var(--borde);border-top:6px solid var(--c-espacio);border-radius:var(--radio);padding:1.6rem;box-shadow:0 2px 8px rgba(20,33,61,.04)}
+.caja-info h3{margin:0 0 1rem;font:800 1.3rem/1.2 var(--f-titulo);color:var(--tinta);display:flex;align-items:center;gap:.6rem}
+.caja-info ul{margin:0;padding-left:1.3rem}
+.caja-info li{margin-bottom:.55rem}
+
+/* Plan de Estudios */
+.plan-grid{display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.plan-card{background:var(--papel);border:1px solid var(--borde);border-radius:var(--radio);padding:1.4rem}
+.plan-card h3{margin:0 0 .8rem;font:800 1.25rem var(--f-titulo);color:var(--tinta);border-bottom:2px solid var(--celeste-suave);padding-bottom:.4rem}
+.plan-card ul{list-style:none;padding:0;margin:0}
+.plan-card li{padding:.5rem .6rem;margin-bottom:.4rem;background:var(--fondo);border-radius:6px;font-size:.95rem;font-weight:700;color:var(--texto);border-left:4px solid var(--c-espacio)}
+
+/* Caja Requisito Específico */
+.aviso-vacunas{background:#fff8f9;border:2px solid var(--c-espacio);border-radius:var(--radio);padding:1.25rem 1.5rem;margin-top:1.5rem}
+.aviso-vacunas h4{margin:0 0 .4rem;font:800 1.15rem var(--f-titulo);color:var(--tinta)}
+.aviso-vacunas p{margin:0;color:var(--suave);font-size:.96rem}
+
+/* Caja CTA Inscripción */
+.cta-sec{background:var(--celeste-suave);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)}
+.cta-caja{background:var(--papel);border:2px solid var(--c-espacio);border-radius:var(--radio);padding:2rem;text-align:center;max-width:760px;margin:0 auto}
+.cta-caja h3{margin:0 0 .5rem;font:800 1.5rem var(--f-titulo);color:var(--tinta)}
+.cta-caja p{margin:0 auto 1.2rem;max-width:55ch;color:var(--suave)}
+.enlace{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.6rem 1.6rem;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;animation:sutilFlotar 3.5s ease-in-out infinite;animation-delay:.3s}
+
+/* Animaciones y Hover */
+@keyframes sutilFlotar{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+nav a,.enlace,.caja-info,.plan-card{transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease,border-color .2s ease}
+@media (hover:hover){
+  nav a:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);box-shadow:0 4px 0 var(--c-espacio)}
+  .enlace:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);background:var(--c-espacio);color:var(--tinta);box-shadow:0 4px 0 var(--tinta)}
+  .caja-info:hover,.plan-card:hover{transform:translateY(-4px);border-color:var(--tinta);box-shadow:0 6px 0 var(--tinta)}
+}
+nav a:focus-visible,.enlace:focus-visible{animation-play-state:paused;transform:translateY(-4px)}
+nav a:active,.enlace:active{animation-play-state:paused;transform:translateY(1px) scale(.96);box-shadow:none}
+
+/* Celulares */
+@media(max-width:640px){
+  body{font-size:1rem}
+  main section{padding:2rem 0}
+  .dos-columnas{grid-template-columns:1fr}
+}
+
+footer{background:var(--tinta);color:#dbe6f3;padding:2rem 0 max(2rem,calc(env(safe-area-inset-bottom) + 1rem));font-size:.98rem;text-align:center}
+footer a{color:#fff}
+footer p{margin:.2rem 0}
+.error{background:#fff3f2;border:2px solid var(--alerta);border-radius:var(--radio);padding:1rem 1.25rem}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+  nav a,.enlace,.caja-info,.plan-card{transform:none!important}
+}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header>
+  <div class="wrap hero">
+    <p class="tipo" id="h-inst">ISET N° 57 · Oferta Académica</p>
+    <h1 id="h-titulo">Tecnicatura Superior en Enfermería</h1>
+    <p class="lema" id="h-desc"></p>
+    <div class="pills" id="h-pills"></div>
+    <nav aria-label="Navegación">
+      <a href="index.html">← Volver al inicio</a>
+      <a href="#perfil">Perfil y Campo Laboral</a>
+      <a href="#plan">Plan de Estudios</a>
+      <a href="inscripcion.html">Inscripción 2027</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenido">
+  <!-- Perfil y Campo Laboral -->
+  <section id="perfil" aria-labelledby="t-perfil">
+    <div class="wrap">
+      <h2 id="t-perfil">Perfil Profesional y Alcance</h2>
+      <p class="intro">Formación humanizada con foco en la atención sanitaria y la práctica hospitalaria comunitaria.</p>
+      <div class="dos-columnas">
+        <article class="caja-info">
+          <h3><span>🩺</span> Perfil del Egresado</h3>
+          <ul id="perfil-list">
+            <li>Cargando perfil…</li>
+          </ul>
+        </article>
+
+        <article class="caja-info">
+          <h3><span>🏥</span> Campo Laboral</h3>
+          <ul id="campo-list">
+            <li>Cargando campo laboral…</li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- Particularidad de vacunas -->
+      <div class="aviso-vacunas" id="box-vacunas" style="display:none">
+        <h4>💉 Requisito Específico de la Carrera</h4>
+        <p id="txt-vacunas"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plan de Estudios -->
+  <section id="plan" style="background:var(--papel);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)" aria-labelledby="t-plan">
+    <div class="wrap">
+      <h2 id="t-plan">Estructura Curricular y Plan de Estudios</h2>
+      <p class="intro">Trayecto formativo de 3 años con formación teórica, talleres en el Centro de Simulación y rotaciones hospitalarias.</p>
+      <div class="plan-grid" id="plan-container">
+        <p>Cargando materias…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Inscripción -->
+  <section class="cta-sec" aria-labelledby="t-cta">
+    <div class="wrap">
+      <div class="cta-caja">
+        <h3 id="t-cta">¿Querés cursar Enfermería?</h3>
+        <p id="cta-fechas">Las inscripciones para el Ciclo Lectivo 2027 se encuentran abiertas. La carrera es pública, presencial y 100% gratuita.</p>
+        <a class="enlace" href="inscripcion.html">Ver requisitos e inscribirme</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contacto">
+  <div class="wrap" id="pie"></div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const ID_ESPACIO = "enfermeria";
+  const h = (tag, attrs = {}, ...hijos) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v; else n.setAttribute(k, v);
+    }
+    hijos.flat().forEach(c => { if (c != null) n.append(c.nodeType ? c : document.createTextNode(c)); });
+    return n;
+  };
+  const $ = id => document.getElementById(id);
+
+  function render(d) {
+    const i = d.institucion || {};
+    const espacios = (d.ofertaAcademica && d.ofertaAcademica.espacios) || [];
+    const esp = espacios.find(e => e.id === ID_ESPACIO) || {};
+    const insG = d.inscripcionGeneral || {};
+
+    document.title = (esp.titulo || "Enfermería") + " – " + (i.nombre || "ISET N° 57");
+    $("h-inst").textContent = (i.nombre || "ISET N° 57") + " · " + (i.gestion || "Carrera Terciaria Pública");
+    $("h-titulo").textContent = esp.titulo || "Tecnicatura Superior en Enfermería";
+    $("h-desc").textContent = esp.descripcion || "";
+
+    // Color temático
+    if (esp.color) {
+      document.documentElement.style.setProperty("--c-espacio", esp.color);
+    }
+
+    // Pills
+    const pills = [
+      esp.duracion ? "⏱️ " + esp.duracion : null,
+      esp.modalidad ? "📍 " + esp.modalidad : null,
+      esp.turno ? "🌙 " + esp.turno : null,
+      esp.validez ? "🎓 " + esp.validez : null
+    ].filter(Boolean);
+
+    $("h-pills").replaceChildren(...pills.map(p => h("span", { class: "pill" }, p)));
+
+    // Perfil
+    if (esp.perfil && esp.perfil.length) {
+      $("perfil-list").replaceChildren(...esp.perfil.map(p => h("li", {}, p)));
+    }
+
+    // Campo Laboral
+    if (esp.campoLaboral && esp.campoLaboral.length) {
+      $("campo-list").replaceChildren(...esp.campoLaboral.map(c => h("li", {}, c)));
+    }
+
+    // Requisito particular de vacunas
+    if (esp.requisitosParticulares && esp.requisitosParticulares.length) {
+      $("box-vacunas").style.display = "block";
+      const rp = esp.requisitosParticulares[0];
+      $("txt-vacunas").textContent = (typeof rp === "string" ? rp : (rp.item + ": " + rp.detalle));
+    }
+
+    // Plan de Estudios
+    if (esp.planEstudios && esp.planEstudios.length) {
+      $("plan-container").replaceChildren(...esp.planEstudios.map(pe =>
+        h("article", { class: "plan-card" },
+          h("h3", {}, pe.año),
+          h("ul", {}, pe.materias.map(m => h("li", {}, m)))
+        )
+      ));
+    }
+
+    // Fechas de inscripción en el CTA
+    const p1 = (insG.periodos && insG.periodos[0]) || {};
+    if (p1.fechas) {
+      $("cta-fechas").textContent = "Inscripciones para el Ciclo Lectivo " + (insG.ciclo || "2027") + ": del " + p1.fechas + " (" + (p1.horario || "en Secretaría") + "). Carrera pública, gratuita y con título oficial nacional.";
+    }
+
+    // Pie
+    const c = i.contacto || {};
+    const coord = esp.contactoCoordinacion || {};
+    $("pie").replaceChildren(
+      h("p", {}, h("strong", {}, i.nombre + " · " + (esp.titulo || ""))),
+      coord.email ? h("p", {}, "Contacto de carrera: ", h("a", { href: "mailto:" + coord.email }, coord.email), coord.horario ? " (" + coord.horario + ")" : "") : null,
+      c.direccion ? h("p", {}, c.direccion) : null,
+      c.telefono ? h("p", {}, "Tel.: " + c.telefono) : null
+    );
+  }
+
+  fetch("data.json", { cache: "no-cache" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(render)
+    .catch(err => {
+      console.error(err);
+      $("plan-container").replaceChildren(h("div", { class: "error", role: "alert" },
+        "No pudimos cargar la información de la carrera. Probá recargar la página en unos minutos."));
+    });
+})();
+</script>
+</body>
+</html>
