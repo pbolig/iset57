@@ -5,13 +5,12 @@
     "gestion": "Institución pública de formación terciaria",
     "lema": "Formación técnica pública, gratuita y de calidad.",
     "contacto": {
-      "direccion": "Calle Ejemplo 1234, Rosario, Santa Fe",
+      "direccion": "Necochea 1339, Rosario, Santa Fe",
       "telefono": "(0341) 000-0000",
-      "email": "contacto@iset57.edu.ar",
-      "horario": "Lunes a viernes de 8 a 21 h"
+      "email": "iset57@gmail.com",
+      "horario": "Lunes a viernes de 18 a 21 h"
     }
   },
-
   "inscripcionGeneral": {
     "ciclo": "2027",
     "titulo": "Inscripción a Tecnicaturas",
@@ -111,7 +110,6 @@
       "telefono": "(0341) 000-0000"
     }
   },
-
   "ofertaAcademica": {
     "titulo": "Oferta académica",
     "introduccion": "Elegí un espacio para conocer más. También podés escanear el código QR desde tu celular.",
@@ -347,7 +345,6 @@
       }
     ]
   },
-
   "informacionGeneral": {
     "titulo": "Novedades",
     "introduccion": "Información para estudiantes, aspirantes y visitantes. Se actualiza desde este mismo archivo.",
@@ -365,17 +362,77 @@
         "titulo": "Mesas de examen – turno diciembre 2026",
         "contenido": {
           "titulo": "Cronograma de exámenes finales",
-          "columnas": ["Materia", "Carrera", "Fecha", "Hora", "Aula"],
+          "columnas": [
+            "Materia",
+            "Carrera",
+            "Fecha",
+            "Hora",
+            "Aula"
+          ],
           "filas": [
-            ["Programación I", "Tecnologías Digitales", "Lun 7/12/2026", "18:00", "Aula 3"],
-            ["Redes y Comunicaciones", "Tecnologías Digitales", "Mié 9/12/2026", "19:00", "Lab. 1"],
-            ["Bases de Datos", "Tecnologías Digitales", "Vie 11/12/2026", "18:30", "Lab. 2"],
-            ["Seguridad I", "Higiene y Seguridad", "Lun 7/12/2026", "18:00", "Aula 4"],
-            ["Higiene Industrial", "Higiene y Seguridad", "Jue 10/12/2026", "18:30", "Aula 5"],
-            ["Legislación Laboral I", "Higiene y Seguridad", "Lun 14/12/2026", "19:00", "Aula 5"],
-            ["Anatomía y Fisiología", "Enfermería", "Vie 11/12/2026", "17:00", "Aula 2"],
-            ["Enfermería del Adulto", "Enfermería", "Lun 14/12/2026", "17:30", "Aula 2"],
-            ["Fundamentos de Enfermería", "Enfermería", "Mié 16/12/2026", "17:00", "Aula 1"]
+            [
+              "Programación I",
+              "Tecnologías Digitales",
+              "Lun 7/12/2026",
+              "18:00",
+              "Aula 3"
+            ],
+            [
+              "Redes y Comunicaciones",
+              "Tecnologías Digitales",
+              "Mié 9/12/2026",
+              "19:00",
+              "Lab. 1"
+            ],
+            [
+              "Bases de Datos",
+              "Tecnologías Digitales",
+              "Vie 11/12/2026",
+              "18:30",
+              "Lab. 2"
+            ],
+            [
+              "Seguridad I",
+              "Higiene y Seguridad",
+              "Lun 7/12/2026",
+              "18:00",
+              "Aula 4"
+            ],
+            [
+              "Higiene Industrial",
+              "Higiene y Seguridad",
+              "Jue 10/12/2026",
+              "18:30",
+              "Aula 5"
+            ],
+            [
+              "Legislación Laboral I",
+              "Higiene y Seguridad",
+              "Lun 14/12/2026",
+              "19:00",
+              "Aula 5"
+            ],
+            [
+              "Anatomía y Fisiología",
+              "Enfermería",
+              "Vie 11/12/2026",
+              "17:00",
+              "Aula 2"
+            ],
+            [
+              "Enfermería del Adulto",
+              "Enfermería",
+              "Lun 14/12/2026",
+              "17:30",
+              "Aula 2"
+            ],
+            [
+              "Fundamentos de Enfermería",
+              "Enfermería",
+              "Mié 16/12/2026",
+              "17:00",
+              "Aula 1"
+            ]
           ]
         },
         "nota": "Inscripción a mesas: hasta 48 h antes, por el sistema de gestión estudiantil."
