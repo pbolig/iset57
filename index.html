@@ -58,10 +58,17 @@ h2{margin:0 0 .5rem;text-align:center;font:800 clamp(1.7rem,6vw,2.4rem)/1.1 var(
 .aviso p{margin:.4rem 0;max-width:70ch}
 .aviso ul{margin:.4rem 0;padding-left:1.2rem}
 .nota{color:var(--suave);font-size:.95rem}
-.tabla-wrap{overflow-x:auto;margin:.75rem 0;border:1px solid var(--borde);border-radius:8px}
+.tabla-wrap{overflow-x:auto;margin:.75rem 0;border:1px solid var(--borde);border-radius:8px;background:var(--papel)}
+.tabla-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding:.7rem 1rem;background:var(--celeste-suave);border-bottom:1px solid var(--borde)}
+.tabla-toolbar-title{font:800 1rem var(--f-titulo);color:var(--tinta);margin:0}
+.tabla-filtro{display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--tinta);font-weight:700}
+.tabla-select{padding:.35rem .85rem;border:1px solid var(--borde);border-radius:999px;background:#fff;color:var(--tinta);font:700 .86rem var(--f-texto);cursor:pointer;outline:none;transition:border-color .2s ease,box-shadow .2s ease}
+.tabla-select:focus{border-color:var(--tinta);box-shadow:0 0 0 2px var(--celeste)}
+.badge-carrera{display:inline-flex;align-items:center;justify-content:center;padding:.22rem .85rem;border-radius:999px;font:700 .84rem var(--f-texto);color:#fff;background:var(--c,#14213d);white-space:nowrap;box-shadow:0 1px 3px rgba(20,33,61,.12);letter-spacing:.01em}
+.badge-carrera.dark-text{color:var(--tinta)}
+.tabla-vacia{text-align:center;padding:1.5rem;color:var(--suave);font-style:italic}
 table{width:100%;border-collapse:collapse;min-width:520px;font-size:.98rem}
-caption{text-align:left;padding:.6rem .9rem;font-weight:700;background:var(--celeste-suave)}
-th,td{text-align:left;padding:.6rem .9rem;border-top:1px solid var(--borde)}
+th,td{text-align:left;padding:.65rem .9rem;border-top:1px solid var(--borde)}
 thead th{background:var(--tinta);color:#fff;border-top:0}
 tbody tr:nth-child(even){background:var(--fondo)}
 .enlace{display:flex;align-items:center;justify-content:center;width:fit-content;max-width:100%;min-height:44px;margin:1rem auto 0;padding:.5rem 1.4rem;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;text-align:center;animation:sutilFlotar 3.5s ease-in-out infinite;animation-delay:.3s}
@@ -178,24 +185,124 @@ footer p{margin:.2rem 0}
   const $ = id => document.getElementById(id);
   const urlAbsoluta = ruta => new URL(ruta, document.baseURI).href;
 
-  // Tabla: {titulo?, columnas:[...], filas:[[...],[...]]}
-  function tabla(t) {
+  function buscarColorCarrera(nombreCarrera, espacios = []) {
+    if (!nombreCarrera) return { color: "#14213d", darkText: false };
+    const norm = String(nombreCarrera).toLowerCase().trim();
+    const esp = espacios.find(e => {
+      const t = (e.titulo || "").toLowerCase();
+      const tc = (e.tituloCorto || "").toLowerCase();
+      const id = (e.id || "").toLowerCase();
+      return norm.includes(tc) || norm.includes(id) || t.includes(norm) || norm.includes(t);
+    });
+    const color = (esp && esp.color) ? esp.color : "#14213d";
+    const darkText = color.toLowerCase() === "#f6b40e";
+    return { color, darkText };
+  }
+
+  // Tabla interactiva: ordenada por Carrera y Fecha, con badges de color y filtro
+  function tabla(t, d) {
+    const espacios = (d && d.ofertaAcademica && d.ofertaAcademica.espacios) || [];
+    const cols = t.columnas || [];
+    const idxCarrera = cols.findIndex(c => c.toLowerCase().includes("carrera"));
+    const idxFecha = cols.findIndex(c => c.toLowerCase().includes("fecha"));
+
+    // Ordenar automáticamente por Carrera y luego por Fecha
+    const filasOriginales = (t.filas || []).map(f => [...f]);
+    filasOriginales.sort((a, b) => {
+      if (idxCarrera !== -1) {
+        const cA = String(a[idxCarrera] || "");
+        const cB = String(b[idxCarrera] || "");
+        const cmpC = cA.localeCompare(cB, "es", { sensitivity: "base" });
+        if (cmpC !== 0) return cmpC;
+      }
+      if (idxFecha !== -1) {
+        const fA = String(a[idxFecha] || "");
+        const fB = String(b[idxFecha] || "");
+        return fA.localeCompare(fB, "es", { sensitivity: "base" });
+      }
+      return 0;
+    });
+
+    const celda = (valor, colIdx) => {
+      if (colIdx === idxCarrera) {
+        const infoColor = buscarColorCarrera(valor, espacios);
+        const spanClass = "badge-carrera" + (infoColor.darkText ? " dark-text" : "");
+        return h("span", { class: spanClass, style: "--c:" + infoColor.color }, valor);
+      }
+      return valor;
+    };
+
+    const tbody = h("tbody");
+    const renderFilas = (filas) => {
+      if (!filas.length) {
+        tbody.replaceChildren(
+          h("tr", {}, h("td", { colspan: cols.length || 1, class: "tabla-vacia" }, "No hay materias programadas para la carrera seleccionada."))
+        );
+        return;
+      }
+      tbody.replaceChildren(
+        ...filas.map(f =>
+          h("tr", { "data-carrera": idxCarrera !== -1 ? String(f[idxCarrera]) : "" },
+            f.map((c, i) => h("td", { "data-label": cols[i] }, celda(c, i)))
+          )
+        )
+      );
+    };
+
+    renderFilas(filasOriginales);
+
+    let toolbar = null;
+    if (idxCarrera !== -1) {
+      const carrerasUnicas = [...new Set(filasOriginales.map(f => String(f[idxCarrera]).trim()))].filter(Boolean);
+      const select = h("select", { class: "tabla-select", "aria-label": "Filtrar por carrera" },
+        h("option", { value: "todas" }, "Todas las carreras (" + filasOriginales.length + ")"),
+        ...carrerasUnicas.map(c => {
+          const count = filasOriginales.filter(f => String(f[idxCarrera]).trim() === c).length;
+          return h("option", { value: c }, c + " (" + count + ")");
+        })
+      );
+
+      select.addEventListener("change", (e) => {
+        const sel = e.target.value;
+        if (sel === "todas") {
+          renderFilas(filasOriginales);
+        } else {
+          renderFilas(filasOriginales.filter(f => String(f[idxCarrera]).trim() === sel));
+        }
+      });
+
+      toolbar = h("div", { class: "tabla-toolbar" },
+        t.titulo ? h("h4", { class: "tabla-toolbar-title" }, t.titulo) : h("span"),
+        h("div", { class: "tabla-filtro" },
+          h("label", {}, "Carrera:"),
+          select
+        )
+      );
+    } else if (t.titulo) {
+      toolbar = h("div", { class: "tabla-toolbar" },
+        h("h4", { class: "tabla-toolbar-title" }, t.titulo)
+      );
+    }
+
+    const tableEl = h("table", {},
+      h("thead", {}, h("tr", {}, cols.map(c => h("th", { scope: "col" }, c)))),
+      tbody
+    );
+
     return h("div", { class: "tabla-wrap", role: "region", "aria-label": t.titulo || "Tabla", tabindex: "0" },
-      h("table", {},
-        t.titulo ? h("caption", {}, t.titulo) : null,
-        h("thead", {}, h("tr", {}, (t.columnas || []).map(c => h("th", { scope: "col" }, c)))),
-        h("tbody", {}, (t.filas || []).map(f => h("tr", {}, f.map((c, i) => h("td", { "data-label": (t.columnas || [])[i] }, c)))))
-      ));
+      toolbar,
+      tableEl
+    );
   }
 
   // "contenido" puede ser: string | array de strings (lista) | objeto tabla | array mixto
-  function contenido(c) {
+  function contenido(c, d) {
     if (typeof c === "string") return [h("p", {}, c)];
     if (Array.isArray(c)) {
       if (c.every(x => typeof x === "string")) return [h("ul", {}, c.map(x => h("li", {}, x)))];
-      return c.flatMap(contenido);
+      return c.flatMap(item => contenido(item, d));
     }
-    if (c && c.columnas) return [tabla(c)];
+    if (c && c.columnas) return [tabla(c, d)];
     return [];
   }
 
@@ -242,7 +349,7 @@ footer p{margin:.2rem 0}
         badge = h("span", {
           class: "badge-espacio",
           style: espacio.color ? "background-color:" + espacio.color : null
-        }, espacio.titulo.replace(/^Tecnicatura en\s+/i, ""));
+        }, espacio.titulo.replace(/^Tecnicatura Superior en\s+|^Tecnicatura en\s+/i, ""));
       }
     }
 
@@ -251,7 +358,7 @@ footer p{margin:.2rem 0}
         badge,
         h("h3", {}, a.titulo)
       ),
-      contenido(a.contenido),
+      contenido(a.contenido, d),
       a.nota ? h("p", { class: "nota" }, a.nota) : null,
       a.enlace ? h("a", { class: "enlace", href: a.enlace.url }, a.enlace.texto) : null
     );
