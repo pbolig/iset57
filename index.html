@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ISET N° 57</title>
+<meta name="description" content="Instituto Superior de Educación Técnica N° 57. Institución pública de formación terciaria.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<style>
+:root{
+  --tinta:#14213d; --celeste:#74acdf; --celeste-suave:#e6f0fa; --sol:#f6b40e;
+  --fondo:#f5f8fb; --papel:#ffffff; --texto:#1f2a3d; --suave:#56647a; --borde:#d3dde9;
+  --alerta:#b3261e; --radio:10px;
+  --f-titulo:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --f-texto:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font:400 1.0625rem/1.6 var(--f-texto);
+  overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom;overflow-wrap:anywhere}
+img,canvas,svg{max-width:100%}
+a{color:var(--tinta)}
+:focus-visible{outline:3px solid var(--sol);outline-offset:3px;border-radius:4px}
+.saltar{position:absolute;left:-999px;top:0;background:var(--sol);color:var(--tinta);padding:.6rem 1rem;z-index:10;font-weight:700}
+.saltar:focus{left:0}
+.wrap{width:min(1100px,100%);margin-inline:auto;
+  padding-inline:max(1.25rem,env(safe-area-inset-left)) max(1.25rem,env(safe-area-inset-right))}
+
+/* Hero */
+header{background:var(--tinta);color:#fff;border-bottom:8px solid var(--celeste)}
+.hero{text-align:center;padding-top:max(clamp(2.5rem,7vw,5rem),calc(env(safe-area-inset-top) + 1.5rem));padding-bottom:clamp(2rem,5vw,3.5rem)}
+.hero .tipo{margin:0 0 .5rem;color:var(--celeste);font-weight:700}
+.hero h1{margin:0;font:800 clamp(2.1rem,7.5vw,4.5rem)/1.05 var(--f-titulo);letter-spacing:-.02em}
+.hero .lema{max-width:34ch;margin:1.25rem auto 0;font-size:clamp(1.05rem,2.4vw,1.4rem);color:#dbe6f3}
+nav{margin-top:2rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
+nav a{display:inline-flex;align-items:center;min-height:44px;color:#fff;text-decoration:none;padding:.5rem 1.1rem;border:2px solid rgba(255,255,255,.4);border-radius:999px;font-weight:700;animation:sutilFlotar 4s ease-in-out infinite}
+nav a:nth-child(2){animation-delay:.6s}
+nav a:nth-child(3){animation-delay:1.2s}
+nav a:hover{background:#fff;color:var(--tinta)}
+
+/* Secciones */
+main section{padding:clamp(2.5rem,6vw,4rem) 0}
+h2{margin:0 0 .5rem;text-align:center;font:800 clamp(1.7rem,6vw,2.4rem)/1.1 var(--f-titulo);color:var(--tinta)}
+.intro{margin:0 auto 2rem;text-align:center;color:var(--suave);max-width:60ch}
+
+/* Novedades */
+.avisos{display:grid;gap:1.25rem}
+.aviso{background:var(--papel);border:1px solid var(--borde);border-left:8px solid var(--celeste);border-radius:var(--radio);padding:1.25rem 1.5rem}
+.aviso.importante{border-left-color:var(--alerta)}
+.aviso.fecha{border-left-color:var(--sol)}
+.aviso.info{border-left-color:var(--celeste)}
+.aviso-header{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
+.badge-espacio{display:inline-block;padding:.2rem .7rem;border-radius:999px;font:700 .82rem var(--f-texto);color:#fff;background:var(--celeste)}
+.aviso h3{margin:0;text-align:center;font:800 1.3rem/1.2 var(--f-titulo);color:var(--tinta)}
+.aviso p{margin:.4rem 0;max-width:70ch}
+.aviso ul{margin:.4rem 0;padding-left:1.2rem}
+.nota{color:var(--suave);font-size:.95rem}
+.tabla-wrap{overflow-x:auto;margin:.75rem 0;border:1px solid var(--borde);border-radius:8px}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:.98rem}
+caption{text-align:left;padding:.6rem .9rem;font-weight:700;background:var(--celeste-suave)}
+th,td{text-align:left;padding:.6rem .9rem;border-top:1px solid var(--borde)}
+thead th{background:var(--tinta);color:#fff;border-top:0}
+tbody tr:nth-child(even){background:var(--fondo)}
+.enlace{display:flex;align-items:center;justify-content:center;width:fit-content;max-width:100%;min-height:44px;margin:1rem auto 0;padding:.5rem 1.4rem;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;text-align:center;animation:sutilFlotar 3.5s ease-in-out infinite;animation-delay:.3s}
+
+/* Oferta */
+.oferta{background:var(--celeste-suave)}
+.cards{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,470px),1fr))}
+.card{position:relative;display:grid;grid-template-columns:1fr auto;gap:1.25rem;align-items:start;background:var(--papel);border:1px solid var(--borde);border-top:8px solid var(--c,var(--celeste));border-radius:var(--radio);padding:1.5rem}
+.card:hover{border-color:var(--tinta);box-shadow:0 6px 0 var(--tinta)}
+.card h3{margin:0 0 .5rem;font:800 1.35rem/1.15 var(--f-titulo)}
+.card h3 a{text-decoration:none}
+.card h3 a::after{content:"";position:absolute;inset:0;border-radius:var(--radio)}
+.card p{margin:0;color:var(--suave)}
+.qr{position:relative;z-index:2;display:block;padding:8px;background:#fff;border:1px solid var(--borde);border-radius:8px;line-height:0}
+.qr img,.qr canvas{width:112px;height:112px}
+.qr-txt{position:relative;z-index:2;margin:.4rem 0 0;font-size:.8rem;color:var(--suave);text-align:center}
+/* Movilidad en botones y cards */
+@keyframes sutilFlotar{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+nav a,.enlace,.card,.qr{transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease,border-color .2s ease}
+@media (hover:hover){
+  nav a:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);box-shadow:0 4px 0 var(--celeste)}
+  .enlace:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);background:var(--celeste);color:var(--tinta);box-shadow:0 4px 0 var(--tinta)}
+  .card:hover{transform:translateY(-6px)}
+  .card:hover .qr{transform:scale(1.08)}
+}
+nav a:focus-visible,.enlace:focus-visible{animation-play-state:paused;transform:translateY(-4px)}
+.card:focus-within{transform:translateY(-6px);border-color:var(--tinta);box-shadow:0 6px 0 var(--tinta)}
+nav a:active,.enlace:active{animation-play-state:paused;transform:translateY(1px) scale(.96);box-shadow:none}
+.card:active{transform:scale(.97)}
+.qr:active{transform:scale(.94)}
+
+/* Celulares: sin scroll horizontal, tablas apiladas */
+@media(max-width:640px){
+  body{font-size:1rem}
+  main section{padding:2rem 0}
+  .aviso{padding:1rem 1.1rem}
+  .cards{grid-template-columns:1fr}
+  .card{grid-template-columns:1fr;justify-items:center;text-align:center;padding:1.25rem}
+  .qr-col{display:grid;justify-items:center}
+  .tabla-wrap{overflow:visible;border:0}
+  table,tbody,tr,td,caption{display:block;width:100%;min-width:0}
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  caption{text-align:center;border-radius:8px}
+  tr{margin:.6rem 0;overflow:hidden;background:var(--papel);border:1px solid var(--borde);border-radius:8px}
+  tbody tr:nth-child(even){background:var(--papel)}
+  td{display:grid;grid-template-columns:minmax(0,6.5rem) minmax(0,1fr);gap:.6rem;padding:.5rem .8rem;border-top:1px solid var(--borde)}
+  td::before{content:attr(data-label);font-weight:700;color:var(--suave)}
+  td:first-child{grid-template-columns:1fr;border-top:0;background:var(--celeste-suave);font-weight:700}
+  td:first-child::before{content:none}
+}
+
+footer{background:var(--tinta);color:#dbe6f3;padding:2rem 0 max(2rem,calc(env(safe-area-inset-bottom) + 1rem));font-size:.98rem;text-align:center}
+footer a{color:#fff}
+footer p{margin:.2rem 0}
+.error{background:#fff3f2;border:2px solid var(--alerta);border-radius:var(--radio);padding:1rem 1.25rem}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+  nav a,.enlace,.card,.qr{transform:none!important}
+}
+</style>
+</head>
+<body>
+<a class="saltar" href="#novedades">Saltar al contenido</a>
+
+<header>
+  <div class="wrap hero">
+    <p class="tipo" id="h-tipo"></p>
+    <h1 id="h-nombre">ISET N° 57</h1>
+    <p class="lema" id="h-lema"></p>
+    <nav aria-label="Secciones"><a href="#novedades">Novedades</a><a href="#oferta">Oferta académica</a><a href="#contacto">Contacto</a></nav>
+  </div>
+</header>
+
+<main>
+  <section id="novedades" aria-labelledby="t-nov">
+    <div class="wrap">
+      <h2 id="t-nov">Novedades</h2>
+      <p class="intro" id="i-nov"></p>
+      <div class="avisos" id="avisos" aria-live="polite"><p>Cargando información…</p></div>
+    </div>
+  </section>
+
+  <section id="oferta" class="oferta" aria-labelledby="t-of">
+    <div class="wrap">
+      <h2 id="t-of">Oferta académica</h2>
+      <p class="intro" id="i-of"></p>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+</main>
+
+<footer id="contacto">
+  <div class="wrap" id="pie"></div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  // Crea elementos de forma segura (todo texto entra como textContent, nunca como HTML)
+  const h = (tag, attrs = {}, ...hijos) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v; else n.setAttribute(k, v);
+    }
+    hijos.flat().forEach(c => { if (c != null) n.append(c.nodeType ? c : document.createTextNode(c)); });
+    return n;
+  };
+  const $ = id => document.getElementById(id);
+  const urlAbsoluta = ruta => new URL(ruta, document.baseURI).href;
+
+  // Tabla: {titulo?, columnas:[...], filas:[[...],[...]]}
+  function tabla(t) {
+    return h("div", { class: "tabla-wrap", role: "region", "aria-label": t.titulo || "Tabla", tabindex: "0" },
+      h("table", {},
+        t.titulo ? h("caption", {}, t.titulo) : null,
+        h("thead", {}, h("tr", {}, (t.columnas || []).map(c => h("th", { scope: "col" }, c)))),
+        h("tbody", {}, (t.filas || []).map(f => h("tr", {}, f.map((c, i) => h("td", { "data-label": (t.columnas || [])[i] }, c)))))
+      ));
+  }
+
+  // "contenido" puede ser: string | array de strings (lista) | objeto tabla | array mixto
+  function contenido(c) {
+    if (typeof c === "string") return [h("p", {}, c)];
+    if (Array.isArray(c)) {
+      if (c.every(x => typeof x === "string")) return [h("ul", {}, c.map(x => h("li", {}, x)))];
+      return c.flatMap(contenido);
+    }
+    if (c && c.columnas) return [tabla(c)];
+    return [];
+  }
+
+  function resolverAviso(a, d) {
+    const ig = d.inscripcionGeneral || {};
+    if (a.tipo === "auto_inscripcion") {
+      const p = (ig.periodos && ig.periodos[0]) || {};
+      const reqList = (ig.requisitosComunes || []).map(r => typeof r === "string" ? r : r.item);
+      const reqTxt = reqList.slice(0, 4).join(", ") + (reqList.length > 4 ? " y más." : ".");
+      return {
+        tipo: "fecha",
+        espacioId: a.espacioId || "general",
+        titulo: "Inscripciones ciclo lectivo " + (ig.ciclo || "2027"),
+        contenido: (p.fechas ? p.fechas + ", " : "") + (p.horario ? p.horario + ", " : "") + "en Secretaría del Instituto. Presentar " + reqTxt,
+        nota: a.nota || "Consultá el cronograma completo, etapas de febrero y requisitos detallados en la página de inscripción.",
+        enlace: a.enlace || { texto: "Ver requisitos y fechas de inscripción", url: "inscripcion.html" }
+      };
+    }
+    if (a.tipo === "auto_propedeutico") {
+      const prop = ig.propedeutico || {};
+      return {
+        tipo: "info",
+        espacioId: a.espacioId || "general",
+        titulo: "Curso propedéutico",
+        contenido: [
+          prop.inicio ? "Inicio: " + prop.inicio : null,
+          prop.modalidad ? "Modalidad: " + prop.modalidad : null,
+          prop.duracion ? "Duración: " + prop.duracion : null,
+          prop.nota || "Obligatorio para todas las tecnicaturas"
+        ].filter(Boolean),
+        nota: a.nota || null,
+        enlace: a.enlace || null
+      };
+    }
+    return a;
+  }
+
+  function aviso(rawAviso, d) {
+    const a = resolverAviso(rawAviso, d);
+    let badge = null;
+    if (a.espacioId && a.espacioId !== "general" && d.ofertaAcademica && d.ofertaAcademica.espacios) {
+      const espacio = d.ofertaAcademica.espacios.find(e => e.id === a.espacioId);
+      if (espacio) {
+        badge = h("span", {
+          class: "badge-espacio",
+          style: espacio.color ? "background-color:" + espacio.color : null
+        }, espacio.titulo.replace(/^Tecnicatura en\s+/i, ""));
+      }
+    }
+
+    return h("article", { class: "aviso " + (a.tipo || "info") },
+      h("div", { class: "aviso-header" },
+        badge,
+        h("h3", {}, a.titulo)
+      ),
+      contenido(a.contenido),
+      a.nota ? h("p", { class: "nota" }, a.nota) : null,
+      a.enlace ? h("a", { class: "enlace", href: a.enlace.url }, a.enlace.texto) : null
+    );
+  }
+
+  function card(c) {
+    const destino = c.enlace;
+    const qrBox = h("a", { class: "qr", href: destino, "aria-label": "Código QR: abrir " + c.titulo });
+    const art = h("article", { class: "card", style: c.color ? "--c:" + c.color : null },
+      h("div", {},
+        h("h3", {}, h("a", { href: destino }, c.titulo)),
+        h("p", {}, c.descripcion)),
+      h("div", { class: "qr-col" }, qrBox, h("p", { class: "qr-txt" }, "Escaneá el QR"))
+    );
+    // QR generado en el navegador; codifica la URL absoluta del espacio
+    const dibujar = () => new QRCode(qrBox, {
+      text: urlAbsoluta(destino), width: 224, height: 224,
+      colorDark: "#14213d", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M
+    });
+    if (window.QRCode) dibujar(); else window.addEventListener("load", dibujar);
+    return art;
+  }
+
+  function render(d) {
+    const i = d.institucion, g = d.informacionGeneral, o = d.ofertaAcademica;
+    document.title = i.nombre + (i.nombreLargo ? " – " + i.nombreLargo : "");
+    $("h-nombre").textContent = i.nombre;
+    $("h-tipo").textContent = i.nombreLargo || "";
+    $("h-lema").textContent = i.lema || "";
+    $("t-nov").textContent = g.titulo || "Novedades";
+    $("i-nov").textContent = g.introduccion || "";
+    $("avisos").replaceChildren(...g.avisos.map(a => aviso(a, d)));
+    $("t-of").textContent = o.titulo || "Oferta académica";
+    $("i-of").textContent = o.introduccion || "";
+    $("cards").replaceChildren(...o.espacios.map(card));
+    const c = i.contacto || {};
+    $("pie").replaceChildren(
+      h("p", {}, h("strong", {}, i.nombre + " · " + (i.gestion || ""))),
+      c.direccion ? h("p", {}, c.direccion) : null,
+      c.telefono ? h("p", {}, "Tel.: " + c.telefono) : null,
+      c.email ? h("p", {}, "Correo: ", h("a", { href: "mailto:" + c.email }, c.email)) : null,
+      c.horario ? h("p", {}, "Atención: " + c.horario) : null
+    );
+  }
+
+  fetch("data.json", { cache: "no-cache" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(render)
+    .catch(err => {
+      console.error(err);
+      $("avisos").replaceChildren(h("div", { class: "error", role: "alert" },
+        "No pudimos cargar la información. Probá recargar la página en unos minutos."));
+    });
+})();
+</script>
+</body>
+</html>

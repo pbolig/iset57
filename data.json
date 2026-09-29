@@ -1,0 +1,195 @@
+{
+  "institucion": {
+    "nombre": "ISET N° 57",
+    "nombreLargo": "Instituto Superior de Educación Técnica N° 57",
+    "gestion": "Institución pública de formación terciaria",
+    "lema": "Formación técnica pública, gratuita y de calidad.",
+    "contacto": {
+      "direccion": "Calle Ejemplo 1234, Rosario, Santa Fe",
+      "telefono": "(0341) 000-0000",
+      "email": "contacto@iset57.edu.ar",
+      "horario": "Lunes a viernes de 8 a 21 h"
+    }
+  },
+
+  "inscripcionGeneral": {
+    "ciclo": "2027",
+    "titulo": "Inscripción a Tecnicaturas",
+    "subtitulo": "Ciclo Lectivo 2027",
+    "introduccion": "Toda la información y requisitos necesarios para iniciar tu carrera terciaria en el ISET N° 57. La educación es pública, gratuita y de calidad.",
+    "periodos": [
+      {
+        "etapa": "Inscripción general",
+        "fechas": "2 de noviembre al 18 de diciembre de 2026",
+        "horario": "Lunes a viernes de 9:00 a 20:00 h",
+        "lugar": "Secretaría del Instituto (Calle Ejemplo 1234, Rosario)"
+      },
+      {
+        "etapa": "Recepción de documentación complementaria",
+        "fechas": "1 al 15 de febrero de 2027",
+        "horario": "Lunes a viernes de 9:00 a 19:00 h",
+        "lugar": "Secretaría del Instituto (Calle Ejemplo 1234, Rosario)"
+      }
+    ],
+    "propedeutico": {
+      "inicio": "1 de febrero de 2027",
+      "modalidad": "Presencial, de lunes a viernes",
+      "duracion": "4 semanas",
+      "nota": "Obligatorio para todas las tecnicaturas del instituto"
+    },
+    "pasos": [
+      {
+        "numero": "1",
+        "titulo": "Reunir la documentación",
+        "descripcion": "Juntá todos los documentos solicitados en original y fotocopia legible dentro de una carpeta colgante oficio."
+      },
+      {
+        "numero": "2",
+        "titulo": "Presentarse en Secretaría",
+        "descripcion": "Acercate a la sede institucional dentro de los períodos de inscripción en los horarios estipulados."
+      },
+      {
+        "numero": "3",
+        "titulo": "Apertura de Legajo",
+        "descripcion": "Entrega de la carpeta con la documentación para la validación y confirmación de vacante."
+      },
+      {
+        "numero": "4",
+        "titulo": "Curso Propedéutico Obligatorio",
+        "descripcion": "Participación en el trayecto formativo de inicio (a partir del 1 de febrero de 2027)."
+      }
+    ],
+    "requisitosComunes": [
+      {
+        "item": "Documento Nacional de Identidad (DNI)",
+        "detalle": "Original y fotocopia de ambas caras (o pasaporte para estudiantes extranjeros)."
+      },
+      {
+        "item": "Título Secundario",
+        "detalle": "Original y fotocopia autenticada del certificado analítico secundario, o constancia de título en trámite sin adeudar materias."
+      },
+      {
+        "item": "Partida de Nacimiento",
+        "detalle": "Fotocopia legalizada de la partida de nacimiento."
+      },
+      {
+        "item": "Fotos carnet",
+        "detalle": "2 fotografías 4x4 cm actualizadas (fondo claro)."
+      },
+      {
+        "item": "Certificado de Aptitud Psicofísica",
+        "detalle": "Certificado de salud extendido por entidad pública o médico matriculado."
+      },
+      {
+        "item": "Carpeta colgante",
+        "detalle": "1 carpeta colgante tamaño oficio para la conformación del legajo estudiantil en Secretaría."
+      }
+    ],
+    "preguntasFrecuentes": [
+      {
+        "pregunta": "¿La inscripción o el cursado tienen algún costo?",
+        "respuesta": "No. Al ser una institución pública provincial, el cursado y los exámenes son 100% gratuitos. Solo se sugiere un bono contribución voluntario de cooperadora."
+      },
+      {
+        "pregunta": "¿Puedo anotarme si adeudo materias del secundario?",
+        "respuesta": "Podés inscribirte de manera condicional presentando la constancia correspondiente, con plazo de regularización según lo establecido por el calendario del Ministerio de Educación."
+      },
+      {
+        "pregunta": "¿El curso propedéutico es obligatorio?",
+        "respuesta": "Sí, inicia el 1 de febrero de 2027, dura 4 semanas y es de asistencia obligatoria para la nivelación e inserción a la vida académica terciaria."
+      },
+      {
+        "pregunta": "¿En qué turno se cursan las carreras?",
+        "respuesta": "La mayoría de las tecnicaturas se cursan en el turno tarde/vespertino (a partir de las 17:30 / 18:00 h), facilitando la compatibilidad con el trabajo."
+      }
+    ],
+    "contactoSecretaria": {
+      "atencion": "Atención presencial en Secretaría",
+      "direccion": "Calle Ejemplo 1234, Rosario, Santa Fe",
+      "horario": "Lunes a viernes de 9:00 a 20:00 h",
+      "email": "contacto@iset57.edu.ar",
+      "telefono": "(0341) 000-0000"
+    }
+  },
+
+  "ofertaAcademica": {
+    "titulo": "Oferta académica",
+    "introduccion": "Elegí un espacio para conocer más. También podés escanear el código QR desde tu celular.",
+    "espacios": [
+      {
+        "id": "digitales",
+        "titulo": "Tecnicatura en Tecnologías Digitales",
+        "descripcion": "Desarrollo de software, redes, bases de datos y ciberseguridad, con prácticas en laboratorio.",
+        "enlace": "digitales.html",
+        "color": "#74acdf"
+      },
+      {
+        "id": "higiene",
+        "titulo": "Tecnicatura en Higiene y Seguridad",
+        "descripcion": "Prevención de riesgos laborales, normativa y gestión ambiental en el ámbito industrial y de servicios.",
+        "enlace": "higiene.html",
+        "color": "#f6b40e"
+      },
+      {
+        "id": "enfermeria",
+        "titulo": "Tecnicatura en Enfermería",
+        "descripcion": "Formación en cuidado integral de la salud, con prácticas profesionales en instituciones sanitarias.",
+        "enlace": "enfermeria.html",
+        "color": "#e07a8e",
+        "requisitosParticulares": [
+          {
+            "item": "Esquema de Vacunación Completo",
+            "detalle": "Doble Adultos / Antitetánica y esquema completo contra Hepatitis B (requisito indispensable para prácticas en efectores de salud)."
+          }
+        ]
+      },
+      {
+        "id": "simulacion",
+        "titulo": "Centro Regional de Simulación Clínica",
+        "descripcion": "Espacio de entrenamiento con simuladores de alta fidelidad para estudiantes y equipos de salud de la región.",
+        "enlace": "simulacion.html",
+        "color": "#5aa88a",
+        "inscripcionExcluida": true,
+        "notaInscripcion": "Espacio formativo y de prácticas avanzadas para alumnos de Enfermería y profesionales de la región (no requiere inscripción inicial independiente)."
+      }
+    ]
+  },
+
+  "informacionGeneral": {
+    "titulo": "Novedades",
+    "introduccion": "Información para estudiantes, aspirantes y visitantes. Se actualiza desde este mismo archivo.",
+    "avisos": [
+      {
+        "tipo": "auto_inscripcion",
+        "nota": "Consultá el cronograma completo, etapas de febrero y requisitos detallados en la sección de inscripción."
+      },
+      {
+        "tipo": "auto_propedeutico"
+      },
+      {
+        "espacioId": "general",
+        "tipo": "importante",
+        "titulo": "Mesas de examen – turno diciembre 2026",
+        "contenido": {
+          "titulo": "Cronograma de exámenes finales",
+          "columnas": ["Materia", "Carrera", "Fecha", "Hora", "Aula"],
+          "filas": [
+            ["Programación I", "Tecnologías Digitales", "Lun 7/12/2026", "18:00", "Aula 3"],
+            ["Redes y Comunicaciones", "Tecnologías Digitales", "Mié 9/12/2026", "19:00", "Lab. 1"],
+            ["Higiene Industrial", "Higiene y Seguridad", "Jue 10/12/2026", "18:30", "Aula 5"],
+            ["Anatomía y Fisiología", "Enfermería", "Vie 11/12/2026", "17:00", "Aula 2"],
+            ["Enfermería del Adulto", "Enfermería", "Lun 14/12/2026", "17:30", "Aula 2"]
+          ]
+        },
+        "nota": "Inscripción a mesas: hasta 48 h antes, por el sistema de gestión estudiantil."
+      },
+      {
+        "espacioId": "enfermeria",
+        "tipo": "info",
+        "titulo": "Prácticas Hospitalarias – Enfermería",
+        "contenido": "Recordamos a los estudiantes de 2° y 3° año que deben presentar su carnet de vacunas y apto médico al día antes del inicio de rotaciones clínicas.",
+        "nota": "Consultas en Coordinación de Enfermería."
+      }
+    ]
+  }
+}

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscripción – ISET N° 57</title>
+<meta name="description" content="Requisitos, fechas y procedimiento de inscripción para las carreras terciarias del ISET N° 57.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#14213d; --celeste:#74acdf; --celeste-suave:#e6f0fa; --sol:#f6b40e;
+  --fondo:#f5f8fb; --papel:#ffffff; --texto:#1f2a3d; --suave:#56647a; --borde:#d3dde9;
+  --alerta:#b3261e; --verde:#2a7a59; --radio:10px;
+  --f-titulo:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --f-texto:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font:400 1.0625rem/1.6 var(--f-texto);
+  overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom;overflow-wrap:anywhere}
+img,canvas,svg{max-width:100%}
+a{color:var(--tinta)}
+:focus-visible{outline:3px solid var(--sol);outline-offset:3px;border-radius:4px}
+.saltar{position:absolute;left:-999px;top:0;background:var(--sol);color:var(--tinta);padding:.6rem 1rem;z-index:10;font-weight:700}
+.saltar:focus{left:0}
+.wrap{width:min(1100px,100%);margin-inline:auto;
+  padding-inline:max(1.25rem,env(safe-area-inset-left)) max(1.25rem,env(safe-area-inset-right))}
+
+/* Header / Hero */
+header{background:var(--tinta);color:#fff;border-bottom:8px solid var(--celeste)}
+.hero{text-align:center;padding-top:max(clamp(2.5rem,6vw,4rem),calc(env(safe-area-inset-top) + 1.5rem));padding-bottom:clamp(2rem,4vw,3rem)}
+.hero .tipo{margin:0 0 .4rem;color:var(--celeste);font-weight:700}
+.hero h1{margin:0;font:800 clamp(2.1rem,6.5vw,3.8rem)/1.05 var(--f-titulo);letter-spacing:-.02em}
+.hero .lema{max-width:46ch;margin:1rem auto 0;font-size:clamp(1.05rem,2.2vw,1.25rem);color:#dbe6f3}
+nav{margin-top:1.8rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
+nav a{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;color:#fff;text-decoration:none;padding:.5rem 1.1rem;border:2px solid rgba(255,255,255,.4);border-radius:999px;font-weight:700;animation:sutilFlotar 4s ease-in-out infinite}
+nav a:nth-child(2){animation-delay:.6s}
+nav a:nth-child(3){animation-delay:1.2s}
+nav a:hover{background:#fff;color:var(--tinta)}
+
+/* Contenido Principal */
+main section{padding:clamp(2rem,5vw,3.5rem) 0}
+h2{margin:0 0 .5rem;text-align:center;font:800 clamp(1.6rem,5vw,2.2rem)/1.15 var(--f-titulo);color:var(--tinta)}
+.intro{margin:0 auto 2rem;text-align:center;color:var(--suave);max-width:60ch}
+
+/* Grid de Pasos */
+.pasos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:1.25rem;margin-bottom:2rem}
+.paso-card{background:var(--papel);border:1px solid var(--borde);border-top:6px solid var(--celeste);border-radius:var(--radio);padding:1.4rem;position:relative;display:flex;flex-direction:column}
+.paso-num{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--celeste-suave);color:var(--tinta);border-radius:50%;font:800 1.2rem var(--f-titulo);margin-bottom:.8rem}
+.paso-card h3{margin:0 0 .4rem;font:800 1.2rem/1.2 var(--f-titulo);color:var(--tinta)}
+.paso-card p{margin:0;color:var(--suave);font-size:.98rem}
+
+/* Sección Requisitos (Checklist) */
+.requisitos-box{background:var(--papel);border:1px solid var(--borde);border-radius:var(--radio);padding:1.5rem;box-shadow:0 2px 8px rgba(20,33,61,.04)}
+.requisitos-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:1.25rem;list-style:none;padding:0;margin:0}
+.requisito-item{display:flex;align-items:flex-start;gap:.9rem;background:var(--fondo);border:1px solid var(--borde);border-radius:8px;padding:1rem}
+.requisito-icon{flex-shrink:0;width:26px;height:26px;background:var(--celeste);color:var(--tinta);border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.9rem;margin-top:2px}
+.requisito-item h4{margin:0 0 .2rem;font:800 1.05rem var(--f-titulo);color:var(--tinta)}
+.requisito-item p{margin:0;color:var(--suave);font-size:.94rem}
+
+/* Requisitos particulares por espacio */
+.req-particulares-wrap{margin-top:1.5rem}
+.req-particulares-titulo{font:800 1.15rem var(--f-titulo);color:var(--tinta);margin:1.5rem 0 .8rem}
+.espacio-req-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:1rem}
+.espacio-req-card{background:var(--papel);border:1px solid var(--borde);border-left:6px solid var(--c,var(--celeste));border-radius:var(--radio);padding:1.1rem 1.25rem}
+.espacio-req-card h4{margin:0 0 .3rem;font:800 1.05rem var(--f-titulo);color:var(--tinta)}
+.espacio-req-card p{margin:0;color:var(--suave);font-size:.94rem}
+.espacio-req-card ul{margin:.4rem 0 0;padding-left:1.2rem;color:var(--texto);font-size:.94rem}
+
+/* Tabla de Períodos */
+.tabla-wrap{overflow-x:auto;margin:1rem 0;border:1px solid var(--borde);border-radius:8px}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:.98rem}
+caption{text-align:left;padding:.6rem .9rem;font-weight:700;background:var(--celeste-suave)}
+th,td{text-align:left;padding:.75rem .9rem;border-top:1px solid var(--borde)}
+thead th{background:var(--tinta);color:#fff;border-top:0}
+tbody tr:nth-child(even){background:var(--fondo)}
+
+/* Acordeón / FAQ */
+.faq-grid{display:grid;gap:1rem;max-width:840px;margin:0 auto}
+details{background:var(--papel);border:1px solid var(--borde);border-radius:var(--radio);padding:1rem 1.25rem;transition:border-color .2s ease}
+details[open]{border-color:var(--celeste);border-left:6px solid var(--celeste)}
+summary{font:700 1.05rem var(--f-titulo);color:var(--tinta);cursor:pointer;list-style:none;position:relative;padding-right:1.5rem}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:1.4rem;color:var(--celeste);line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:.8rem 0 0;color:var(--suave);font-size:.98rem;border-top:1px dashed var(--borde);padding-top:.7rem}
+
+/* Caja de Ayuda / CTA */
+.cta-box{background:var(--celeste-suave);border:2px solid var(--celeste);border-radius:var(--radio);padding:1.8rem;text-align:center;margin-top:2rem}
+.cta-box h3{margin:0 0 .5rem;font:800 1.35rem var(--f-titulo);color:var(--tinta)}
+.cta-box p{margin:0 auto .8rem;max-width:55ch;color:var(--suave)}
+.enlace{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.5rem 1.5rem;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;animation:sutilFlotar 3.5s ease-in-out infinite;animation-delay:.3s}
+
+/* Animaciones y Hover */
+@keyframes sutilFlotar{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+nav a,.enlace,.paso-card{transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease,border-color .2s ease}
+@media (hover:hover){
+  nav a:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);box-shadow:0 4px 0 var(--celeste)}
+  .enlace:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);background:var(--celeste);color:var(--tinta);box-shadow:0 4px 0 var(--tinta)}
+  .paso-card:hover{transform:translateY(-4px);border-color:var(--tinta);box-shadow:0 6px 0 var(--tinta)}
+}
+nav a:focus-visible,.enlace:focus-visible{animation-play-state:paused;transform:translateY(-4px)}
+nav a:active,.enlace:active{animation-play-state:paused;transform:translateY(1px) scale(.96);box-shadow:none}
+
+/* Celulares */
+@media(max-width:640px){
+  body{font-size:1rem}
+  main section{padding:2rem 0}
+  .requisitos-list{grid-template-columns:1fr}
+  .tabla-wrap{overflow:visible;border:0}
+  table,tbody,tr,td,caption{display:block;width:100%;min-width:0}
+  thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  caption{text-align:center;border-radius:8px}
+  tr{margin:.6rem 0;overflow:hidden;background:var(--papel);border:1px solid var(--borde);border-radius:8px}
+  tbody tr:nth-child(even){background:var(--papel)}
+  td{display:grid;grid-template-columns:minmax(0,6.5rem) minmax(0,1fr);gap:.6rem;padding:.5rem .8rem;border-top:1px solid var(--borde)}
+  td::before{content:attr(data-label);font-weight:700;color:var(--suave)}
+  td:first-child{grid-template-columns:1fr;border-top:0;background:var(--celeste-suave);font-weight:700}
+  td:first-child::before{content:none}
+}
+
+footer{background:var(--tinta);color:#dbe6f3;padding:2rem 0 max(2rem,calc(env(safe-area-inset-bottom) + 1rem));font-size:.98rem;text-align:center}
+footer a{color:#fff}
+footer p{margin:.2rem 0}
+.error{background:#fff3f2;border:2px solid var(--alerta);border-radius:var(--radio);padding:1rem 1.25rem}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+  nav a,.enlace,.paso-card{transform:none!important}
+}
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header>
+  <div class="wrap hero">
+    <p class="tipo" id="h-tipo"></p>
+    <h1 id="h-titulo">Inscripción</h1>
+    <p class="lema" id="h-lema"></p>
+    <nav aria-label="Navegación">
+      <a href="index.html">← Volver al inicio</a>
+      <a href="index.html#novedades">Novedades</a>
+      <a href="index.html#oferta">Oferta académica</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenido">
+  <!-- Pasos -->
+  <section id="pasos-sec" aria-labelledby="t-pasos">
+    <div class="wrap">
+      <h2 id="t-pasos">Cómo inscribirse paso a paso</h2>
+      <p class="intro">Seguí estos simples pasos para completar tu ingreso a la institución.</p>
+      <div class="pasos-grid" id="pasos-container">
+        <p>Cargando pasos…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Requisitos -->
+  <section id="requisitos-sec" style="background:var(--celeste-suave)" aria-labelledby="t-req">
+    <div class="wrap">
+      <h2 id="t-req">Documentación y Requisitos Comunes</h2>
+      <p class="intro">Documentación general requerida para todas las carreras. Presentar en original y fotocopia en Secretaría.</p>
+      <div class="requisitos-box">
+        <ul class="requisitos-list" id="req-list">
+          <li>Cargando requisitos…</li>
+        </ul>
+      </div>
+
+      <div class="req-particulares-wrap" id="req-particulares-wrap" style="display:none">
+        <h3 class="req-particulares-titulo">Condiciones y Requisitos Particulares por Espacio</h3>
+        <div class="espacio-req-grid" id="req-particulares-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fechas y Períodos -->
+  <section id="fechas-sec" aria-labelledby="t-fechas">
+    <div class="wrap">
+      <h2 id="t-fechas">Fechas y Horarios de Inscripción</h2>
+      <p class="intro">Consultá los plazos vigentes para la entrega de legajos y documentación.</p>
+      <div id="periodos-container"></div>
+    </div>
+  </section>
+
+  <!-- Preguntas Frecuentes -->
+  <section id="faq-sec" style="background:var(--papel);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)" aria-labelledby="t-faq">
+    <div class="wrap">
+      <h2 id="t-faq">Preguntas Frecuentes</h2>
+      <p class="intro">Respuestas a las dudas habituales sobre el ingreso y cursado.</p>
+      <div class="faq-grid" id="faq-container"></div>
+      
+      <div class="cta-box" id="cta-box">
+        <h3>¿Tenés dudas adicionales?</h3>
+        <p id="cta-desc">Acercate a Secretaría en el horario de atención o envianos tu consulta por correo.</p>
+        <a class="enlace" id="cta-btn" href="mailto:contacto@iset57.edu.ar">Escribir a Secretaría</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contacto">
+  <div class="wrap" id="pie"></div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const h = (tag, attrs = {}, ...hijos) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v; else n.setAttribute(k, v);
+    }
+    hijos.flat().forEach(c => { if (c != null) n.append(c.nodeType ? c : document.createTextNode(c)); });
+    return n;
+  };
+  const $ = id => document.getElementById(id);
+
+  function tablaPeriodos(periodos) {
+    const columnas = ["Etapa", "Fechas", "Horario", "Lugar"];
+    return h("div", { class: "tabla-wrap", role: "region", "aria-label": "Períodos de inscripción", tabindex: "0" },
+      h("table", {},
+        h("caption", {}, "Cronograma de fechas de inscripción"),
+        h("thead", {}, h("tr", {}, columnas.map(c => h("th", { scope: "col" }, c)))),
+        h("tbody", {}, periodos.map(p => h("tr", {},
+          h("td", { "data-label": "Etapa" }, p.etapa || ""),
+          h("td", { "data-label": "Fechas" }, p.fechas || ""),
+          h("td", { "data-label": "Horario" }, p.horario || ""),
+          h("td", { "data-label": "Lugar" }, p.lugar || "")
+        )))
+      )
+    );
+  }
+
+  function render(d) {
+    const i = d.institucion || {}, ins = d.inscripcionGeneral || d.inscripcion || {};
+
+    document.title = (ins.titulo || "Inscripción") + " – " + (i.nombre || "ISET N° 57");
+    $("h-tipo").textContent = (i.nombre || "ISET N° 57") + (ins.subtitulo ? " · " + ins.subtitulo : "");
+    $("h-titulo").textContent = ins.titulo || "Inscripción a Tecnicaturas";
+    $("h-lema").textContent = ins.introduccion || i.lema || "";
+
+    // Pasos
+    if (ins.pasos && ins.pasos.length) {
+      $("pasos-container").replaceChildren(...ins.pasos.map(p => 
+        h("article", { class: "paso-card" },
+          h("div", { class: "paso-num" }, p.numero || ""),
+          h("h3", {}, p.titulo || ""),
+          h("p", {}, p.descripcion || "")
+        )
+      ));
+    }
+
+    // Requisitos Comunes
+    const reqList = ins.requisitosComunes || ins.requisitos || [];
+    if (reqList.length) {
+      $("req-list").replaceChildren(...reqList.map(r =>
+        h("li", { class: "requisito-item" },
+          h("div", { class: "requisito-icon", "aria-hidden": "true" }, "✓"),
+          h("div", {},
+            h("h4", {}, typeof r === "string" ? r : (r.item || "")),
+            r.detalle ? h("p", {}, r.detalle) : null
+          )
+        )
+      ));
+    }
+
+    // Requisitos particulares por espacio / excepciones
+    const espacios = (d.ofertaAcademica && d.ofertaAcademica.espacios) || [];
+    const espaciosConParticularidades = espacios.filter(e => (e.requisitosParticulares && e.requisitosParticulares.length) || e.inscripcionExcluida || e.notaInscripcion);
+
+    if (espaciosConParticularidades.length) {
+      $("req-particulares-wrap").style.display = "block";
+      $("req-particulares-grid").replaceChildren(...espaciosConParticularidades.map(e => {
+        const hijos = [
+          h("h4", {}, e.titulo),
+          e.notaInscripcion ? h("p", {}, e.notaInscripcion) : null
+        ];
+        if (e.requisitosParticulares && e.requisitosParticulares.length) {
+          hijos.push(h("ul", {}, e.requisitosParticulares.map(rp => 
+            h("li", {}, h("strong", {}, typeof rp === "string" ? rp : rp.item + ": "), typeof rp === "string" ? "" : (rp.detalle || ""))
+          )));
+        }
+        return h("article", { class: "espacio-req-card", style: e.color ? "--c:" + e.color : null }, ...hijos);
+      }));
+    }
+
+    // Fechas y Períodos
+    if (ins.periodos && ins.periodos.length) {
+      $("periodos-container").replaceChildren(tablaPeriodos(ins.periodos));
+    }
+
+    // Preguntas frecuentes
+    if (ins.preguntasFrecuentes && ins.preguntasFrecuentes.length) {
+      $("faq-container").replaceChildren(...ins.preguntasFrecuentes.map(faq =>
+        h("details", {},
+          h("summary", {}, faq.pregunta || ""),
+          h("p", {}, faq.respuesta || "")
+        )
+      ));
+    }
+
+    // Contacto Secretaría
+    if (ins.contactoSecretaria) {
+      const cs = ins.contactoSecretaria;
+      if (cs.email) {
+        $("cta-btn").href = "mailto:" + cs.email;
+        $("cta-btn").textContent = "Consultar por correo (" + cs.email + ")";
+      }
+      if (cs.horario) {
+        $("cta-desc").textContent = (cs.atencion || "Atención en Secretaría") + ": " + cs.horario + (cs.direccion ? " · " + cs.direccion : "") + ".";
+      }
+    }
+
+    // Pie
+    const c = i.contacto || {};
+    $("pie").replaceChildren(
+      h("p", {}, h("strong", {}, i.nombre + " · " + (i.gestion || ""))),
+      c.direccion ? h("p", {}, c.direccion) : null,
+      c.telefono ? h("p", {}, "Tel.: " + c.telefono) : null,
+      c.email ? h("p", {}, "Correo: ", h("a", { href: "mailto:" + c.email }, c.email)) : null,
+      c.horario ? h("p", {}, "Atención: " + c.horario) : null
+    );
+  }
+
+  fetch("data.json", { cache: "no-cache" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(render)
+    .catch(err => {
+      console.error(err);
+      $("pasos-container").replaceChildren(h("div", { class: "error", role: "alert" },
+        "No pudimos cargar la información de inscripción. Probá recargar la página en unos minutos."));
+    });
+})();
+</script>
+</body>
+</html>
