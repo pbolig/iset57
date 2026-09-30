@@ -361,8 +361,8 @@ footer p{margin:.25rem 0}
     renderArticulos();
   });
 
-  // Carga de datos
-  fetch("data.json", { cache: "no-cache" })
+  // Carga de datos sin caché
+  fetch("data.json?_t=" + Date.now(), { cache: "no-cache" })
     .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
     .then(d => {
       const com = d.comunidad || {};
@@ -370,7 +370,12 @@ footer p{margin:.25rem 0}
       if (com.bajada) $("h-lema").textContent = com.bajada;
       if (com.carruselHero) setupHeroCarousel(com.carruselHero);
 
-      articulos = com.articulos || [];
+      // Filtra solo los visibles y ordena de más reciente a más antiguo por fecha
+      const todos = com.articulos || [];
+      articulos = todos
+        .filter(a => a.visible !== false && a.oculto !== true)
+        .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
+
       renderArticulos();
 
       const inst = d.institucion || {};

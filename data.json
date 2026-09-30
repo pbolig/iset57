@@ -1807,7 +1807,8 @@
           "Proyectos",
           "Software",
           "Innovación"
-        ]
+        ],
+        "visible": true
       },
       {
         "id": "simulacion-interdisciplinaria",
@@ -1827,7 +1828,8 @@
           "Simulación",
           "Salud",
           "Práctica Clínica"
-        ]
+        ],
+        "visible": true
       },
       {
         "id": "auditoria-seguridad-fabrica",
@@ -1847,7 +1849,8 @@
           "Seguridad",
           "Industria",
           "Prácticas"
-        ]
+        ],
+        "visible": true
       },
       {
         "id": "jornada-vacunacion-comunitaria",
@@ -1867,7 +1870,8 @@
           "Comunidad",
           "Salud",
           "Prevención"
-        ]
+        ],
+        "visible": true
       }
     ]
   }
