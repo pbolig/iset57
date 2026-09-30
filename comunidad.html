@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comunidad &amp; Blog – ISET N° 57</title>
+<meta name="description" content="Noticias, proyectos estudiantiles, jornadas y actividades de la comunidad académica del ISET N° 57.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#14213d; --celeste:#74acdf; --celeste-suave:#e6f0fa; --sol:#f6b40e;
+  --fondo:#f5f8fb; --papel:#ffffff; --texto:#1f2a3d; --suave:#56647a; --borde:#d3dde9;
+  --alerta:#b3261e; --radio:10px;
+  --f-titulo:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --f-texto:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font:400 1.0625rem/1.6 var(--f-texto);
+  overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom;overflow-wrap:anywhere}
+img,svg{max-width:100%}
+a{color:var(--tinta)}
+:focus-visible{outline:3px solid var(--sol);outline-offset:3px;border-radius:4px}
+.saltar{position:absolute;left:-999px;top:0;background:var(--sol);color:var(--tinta);padding:.6rem 1rem;z-index:10;font-weight:700}
+.saltar:focus{left:0}
+.wrap{width:min(1120px,100%);margin-inline:auto;
+  padding-inline:max(1.25rem,env(safe-area-inset-left)) max(1.25rem,env(safe-area-inset-right))}
+
+/* Header */
+header{background:var(--tinta);color:#fff;border-bottom:8px solid var(--sol)}
+.hero{padding-top:max(clamp(2rem,5vw,3.5rem),calc(env(safe-area-inset-top) + 1.2rem));padding-bottom:clamp(2rem,4vw,3rem);text-align:center}
+.hero-volver{display:inline-flex;align-items:center;gap:.4rem;color:var(--celeste);text-decoration:none;font-weight:700;font-size:.92rem;margin-bottom:.8rem}
+.hero-volver:hover{color:#fff;text-decoration:underline}
+.hero .tipo{margin:0 0 .4rem;color:var(--sol);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:.9rem}
+.hero h1{margin:0;font:800 clamp(2rem,6vw,3.8rem)/1.08 var(--f-titulo);letter-spacing:-.02em}
+.hero .lema{max-width:44ch;margin:1rem auto 0;font-size:clamp(1.05rem,2.2vw,1.25rem);color:#dbe6f3}
+
+/* Nav */
+nav{margin-top:1.75rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
+nav a{display:inline-flex;align-items:center;min-height:42px;color:#fff;text-decoration:none;padding:.45rem 1.1rem;border:2px solid rgba(255,255,255,.35);border-radius:999px;font-weight:700;transition:all .2s ease}
+nav a:hover{background:#fff;color:var(--tinta)}
+nav a.activo{background:var(--sol);color:var(--tinta);border-color:var(--sol)}
+
+/* Hero Carousel */
+.hero-carrusel-section{padding:2rem 0 1rem}
+.hero-carrusel-box{position:relative;border-radius:14px;overflow:hidden;background:var(--tinta);box-shadow:0 8px 24px rgba(20,33,61,.18);aspect-ratio:16/7;min-height:220px}
+.hero-track{position:relative;width:100%;height:100%}
+.hero-slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .6s ease,transform .6s ease;transform:scale(1.02)}
+.hero-slide.active{opacity:1;visibility:visible;transform:scale(1)}
+.hero-slide img,.hero-slide svg{width:100%;height:100%;object-fit:cover;display:block}
+.hero-slide-caption{position:absolute;bottom:0;left:0;right:0;padding:2.5rem 1.5rem 1rem;background:linear-gradient(to top, rgba(20,33,61,.9) 0%, rgba(20,33,61,.4) 60%, transparent 100%);color:#fff}
+.hero-slide-caption h3{margin:0 0 .2rem;font:800 1.35rem var(--f-titulo);color:#fff}
+.hero-slide-caption p{margin:0;font-size:.92rem;color:#dbe6f3}
+
+.c-nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 .8rem;pointer-events:none;z-index:4}
+.c-btn{pointer-events:auto;background:rgba(20,33,61,.75);backdrop-filter:blur(4px);color:#fff;border:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:1.1rem;cursor:pointer;transition:all .2s ease}
+.c-btn:hover{background:var(--sol);color:var(--tinta);transform:scale(1.1)}
+.c-dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:5;pointer-events:none}
+.c-dot{pointer-events:auto;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;padding:0;cursor:pointer;transition:all .25s ease}
+.c-dot.active{background:var(--sol);width:22px;border-radius:999px}
+
+/* Contenido Principal */
+main{padding:2.5rem 0 4.5rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;margin-bottom:2rem;background:var(--papel);padding:1rem 1.25rem;border:1px solid var(--borde);border-radius:var(--radio);box-shadow:0 2px 8px rgba(20,33,61,.05)}
+.filtro-carreras{display:flex;gap:.4rem;flex-wrap:wrap}
+.tag-btn{padding:.4rem .9rem;border-radius:999px;border:1.5px solid var(--borde);background:var(--fondo);color:var(--tinta);font:700 .85rem var(--f-texto);cursor:pointer;transition:all .2s ease}
+.tag-btn:hover{border-color:var(--tinta)}
+.tag-btn.active{background:var(--c-tag,var(--tinta));color:#fff;border-color:var(--c-tag,var(--tinta))}
+
+.search-box{display:flex;align-items:center;gap:.5rem;min-width:240px;flex:1;max-width:340px}
+.search-input{width:100%;padding:.45rem 1rem;border:1.5px solid var(--borde);border-radius:999px;font:400 .92rem var(--f-texto);outline:none;transition:border-color .2s ease}
+.search-input:focus{border-color:var(--tinta);box-shadow:0 0 0 2px var(--celeste)}
+
+/* Grid de Artículos */
+.articulos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:1.75rem}
+.art-card{background:var(--papel);border:1px solid var(--borde);border-radius:var(--radio);overflow:hidden;display:flex;flex-direction:column;transition:transform .28s ease,box-shadow .28s ease}
+.art-card:hover{transform:translateY(-5px);box-shadow:0 10px 22px rgba(20,33,61,.1);border-color:var(--tinta)}
+
+.art-media{position:relative;width:100%;aspect-ratio:16/10;background:var(--tinta);overflow:hidden}
+.art-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.art-card:hover .art-media img{transform:scale(1.04)}
+.art-badge{position:absolute;top:10px;left:10px;padding:.22rem .75rem;border-radius:999px;font:700 .78rem var(--f-texto);color:#fff;background:var(--c-art,#14213d);box-shadow:0 2px 6px rgba(0,0,0,.25)}
+
+.art-body{padding:1.25rem 1.4rem;display:flex;flex-direction:column;flex:1;gap:.6rem}
+.art-meta{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--suave);flex-wrap:wrap}
+.art-titulo{margin:0;font:800 1.25rem/1.25 var(--f-titulo);color:var(--tinta)}
+.art-resumen{margin:0;color:var(--suave);font-size:.95rem;line-height:1.5;flex:1}
+.art-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.4rem}
+.art-tag{font-size:.78rem;padding:.15rem .5rem;background:var(--celeste-suave);color:var(--tinta);border-radius:4px;font-weight:700}
+
+.art-footer{margin-top:.6rem;padding-top:.75rem;border-top:1px solid var(--borde);display:flex;justify-content:space-between;align-items:center}
+.btn-leer{background:none;border:none;color:var(--tinta);font:700 .9rem var(--f-texto);cursor:pointer;padding:0;text-decoration:underline;display:inline-flex;align-items:center;gap:.3rem}
+.btn-leer:hover{color:var(--celeste)}
+
+/* Modal de Lectura */
+.modal-dialog{border:none;border-radius:12px;padding:0;max-width:760px;width:min(95vw,760px);background:var(--papel);box-shadow:0 20px 45px rgba(20,33,61,.35);color:var(--texto)}
+.modal-dialog::backdrop{background:rgba(20,33,61,.65);backdrop-filter:blur(3px)}
+.modal-content{display:flex;flex-direction:column;max-height:90vh}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;padding:1.25rem 1.5rem;background:var(--tinta);color:#fff;border-bottom:4px solid var(--sol)}
+.modal-header h3{margin:0;font:800 1.4rem var(--f-titulo);color:#fff}
+.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:grid;place-items:center}
+.modal-close:hover{background:var(--sol);color:var(--tinta)}
+.modal-body{padding:1.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem}
+.modal-body p{margin:0;font-size:1.05rem;line-height:1.65}
+.modal-galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin:1rem 0}
+.modal-galeria img{border-radius:6px;aspect-ratio:16/10;object-fit:cover;width:100%}
+
+/* Footer */
+footer{background:var(--tinta);color:#dbe6f3;padding:2.5rem 0 max(2rem,calc(env(safe-area-inset-bottom) + 1rem));font-size:.98rem;text-align:center}
+footer a{color:#fff}
+footer p{margin:.25rem 0}
+
+@media(max-width:640px){
+  .toolbar{flex-direction:column;align-items:stretch}
+  .search-box{max-width:none}
+  .hero-carrusel-box{aspect-ratio:16/10;min-height:200px}
+}
+</style>
+</head>
+<body>
+<a class="saltar" href="#noticias">Saltar al contenido</a>
+
+<header>
+  <div class="wrap hero">
+    <a href="index.html" class="hero-volver">← Volver al Portal Principal</a>
+    <p class="tipo" id="h-tipo">ISET N° 57 · Rosario</p>
+    <h1 id="h-nombre">Comunidad &amp; Blog</h1>
+    <p class="lema" id="h-lema">Noticias, proyectos de estudiantes, jornadas técnicas y novedades de todas nuestras carreras.</p>
+    <nav aria-label="Secciones">
+      <a href="index.html">Inicio</a>
+      <a href="index.html#oferta">Oferta académica</a>
+      <a href="inscripcion.html">Inscripciones</a>
+      <a href="comunidad.html" class="activo">Comunidad</a>
+    </nav>
+  </div>
+</header>
+
+<main id="noticias">
+  <div class="wrap">
+    <!-- Carrusel Destacado -->
+    <section class="hero-carrusel-section" aria-label="Imágenes destacadas de la comunidad">
+      <div class="hero-carrusel-box" id="hero-carousel"></div>
+    </section>
+
+    <!-- Barra de Filtros y Búsqueda -->
+    <div class="toolbar">
+      <div class="filtro-carreras" id="filtros-container">
+        <button type="button" class="tag-btn active" data-carrera="todas">Todas las notas</button>
+        <button type="button" class="tag-btn" data-carrera="digitales">💻 Tec. Digitales</button>
+        <button type="button" class="tag-btn" data-carrera="higiene">🦺 Higiene &amp; Seg.</button>
+        <button type="button" class="tag-btn" data-carrera="enfermeria">🩺 Enfermería</button>
+        <button type="button" class="tag-btn" data-carrera="simulacion">🔬 Simulación</button>
+      </div>
+      <div class="search-box">
+        <input type="search" id="input-buscar" class="search-input" placeholder="Buscar novedades o temas...">
+      </div>
+    </div>
+
+    <!-- Lista de Artículos -->
+    <div class="articulos-grid" id="articulos-container" aria-live="polite">
+      <p>Cargando notas de la comunidad…</p>
+    </div>
+  </div>
+</main>
+
+<!-- Modal para leer artículo completo -->
+<dialog id="modal-articulo" class="modal-dialog" aria-labelledby="art-modal-title">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div>
+        <span id="art-modal-badge" class="art-tag" style="background:var(--sol);color:var(--tinta);font-weight:700"></span>
+        <h3 id="art-modal-title" style="margin-top:.4rem"></h3>
+      </div>
+      <button type="button" class="modal-close" id="btn-cerrar-art" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body" id="art-modal-body"></div>
+  </div>
+</dialog>
+
+<footer id="contacto">
+  <div class="wrap" id="pie">
+    <p><strong>ISET N° 57 · Instituto Superior de Educación Técnica N° 57</strong></p>
+    <p>Educación Superior Pública y Gratuita · Rosario, Santa Fe</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const h = (tag, attrs = {}, ...hijos) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v; else n.setAttribute(k, v);
+    }
+    hijos.flat().forEach(c => { if (c != null) n.append(c.nodeType ? c : document.createTextNode(c)); });
+    return n;
+  };
+  const $ = id => document.getElementById(id);
+
+  const COLORES_CARRERAS = {
+    digitales: "#74acdf",
+    higiene: "#b08968",
+    enfermeria: "#1e88e5",
+    simulacion: "#8e24aa",
+    institucional: "#14213d"
+  };
+
+  let articulos = [];
+  let carreraFiltro = "todas";
+  let busquedaTexto = "";
+
+  function setupHeroCarousel(slidesData = []) {
+    const box = $("hero-carousel");
+    if (!slidesData.length) return;
+
+    const track = h("div", { class: "hero-track" });
+    const slides = slidesData.map((s, idx) => {
+      return h("div", { class: "hero-slide" + (idx === 0 ? " active" : "") },
+        h("img", { src: s.src, alt: s.alt || "ISET 57", loading: "lazy" }),
+        h("div", { class: "hero-slide-caption" },
+          h("h3", {}, s.alt || "Vida Comunitaria"),
+          h("p", {}, "Instituto Superior de Educación Técnica N° 57")
+        )
+      );
+    });
+    track.append(...slides);
+    box.replaceChildren(track);
+
+    let current = 0;
+    let timer = null;
+
+    const irA = (n) => {
+      current = (n + slidesData.length) % slidesData.length;
+      slides.forEach((s, i) => s.classList.toggle("active", i === current));
+      dots.forEach((d, i) => d.classList.toggle("active", i === current));
+    };
+
+    const siguiente = () => irA(current + 1);
+    const anterior = () => irA(current - 1);
+
+    const btnPrev = h("button", { type: "button", class: "c-btn", "aria-label": "Anterior", onclick: anterior }, "❮");
+    const btnNext = h("button", { type: "button", class: "c-btn", "aria-label": "Siguiente", onclick: siguiente }, "❯");
+    const nav = h("div", { class: "c-nav" }, btnPrev, btnNext);
+
+    const dotsWrap = h("div", { class: "c-dots" });
+    const dots = slidesData.map((_, idx) => h("button", {
+      type: "button",
+      class: "c-dot" + (idx === 0 ? " active" : ""),
+      "aria-label": "Slide " + (idx + 1),
+      onclick: () => irA(idx)
+    }));
+    dotsWrap.append(...dots);
+
+    box.append(nav, dotsWrap);
+
+    const start = () => { if (!timer) timer = setInterval(siguiente, 5000); };
+    const stop = () => { clearInterval(timer); timer = null; };
+
+    box.addEventListener("mouseenter", stop);
+    box.addEventListener("mouseleave", start);
+    start();
+  }
+
+  function abrirArticuloModal(art) {
+    const dialog = $("modal-articulo");
+    $("art-modal-badge").textContent = (art.carreraNombre || "Institucional") + " · " + (art.fecha || "");
+    $("art-modal-title").textContent = art.titulo || "";
+
+    const galeria = (art.imagenes && art.imagenes.length)
+      ? h("div", { class: "modal-galeria" }, ...art.imagenes.map(imgSrc => h("img", { src: imgSrc, alt: art.titulo, loading: "lazy" })))
+      : null;
+
+    $("art-modal-body").replaceChildren(
+      h("p", { style: "font-weight:700;color:var(--tinta)" }, art.resumen || ""),
+      h("p", {}, art.contenido || ""),
+      galeria,
+      h("div", { class: "art-tags" }, ...(art.etiquetas || []).map(t => h("span", { class: "art-tag" }, "#" + t)))
+    );
+
+    dialog.showModal();
+  }
+
+  function renderArticulos() {
+    const cont = $("articulos-container");
+    const filtrados = articulos.filter(a => {
+      const matchCarrera = (carreraFiltro === "todas" || a.carreraId === carreraFiltro);
+      const q = busquedaTexto.toLowerCase();
+      const matchTexto = !q || (
+        (a.titulo && a.titulo.toLowerCase().includes(q)) ||
+        (a.resumen && a.resumen.toLowerCase().includes(q)) ||
+        (a.carreraNombre && a.carreraNombre.toLowerCase().includes(q)) ||
+        (a.etiquetas && a.etiquetas.some(t => t.toLowerCase().includes(q)))
+      );
+      return matchCarrera && matchTexto;
+    });
+
+    if (!filtrados.length) {
+      cont.replaceChildren(h("div", { class: "tabla-vacia", style: "grid-column:1/-1;text-align:center;padding:3rem" },
+        "No se encontraron notas o publicaciones con los filtros seleccionados."));
+      return;
+    }
+
+    cont.replaceChildren(...filtrados.map(a => {
+      const color = COLORES_CARRERAS[a.carreraId] || "#14213d";
+      const portada = (a.imagenes && a.imagenes.length) ? a.imagenes[0] : "img/carrera/td/comunidad/1.svg";
+
+      return h("article", { class: "art-card", style: "--c-art:" + color },
+        h("div", { class: "art-media" },
+          h("img", { src: portada, alt: a.titulo, loading: "lazy" }),
+          h("span", { class: "art-badge" }, a.carreraNombre || "Institucional")
+        ),
+        h("div", { class: "art-body" },
+          h("div", { class: "art-meta" },
+            h("span", {}, "📅 " + (a.fecha || "")),
+            a.autor ? h("span", {}, "✍️ " + a.autor) : null
+          ),
+          h("h3", { class: "art-titulo" }, a.titulo),
+          h("p", { class: "art-resumen" }, a.resumen),
+          h("div", { class: "art-tags" },
+            ...(a.etiquetas || []).map(t => h("span", { class: "art-tag" }, "#" + t))
+          ),
+          h("div", { class: "art-footer" },
+            h("button", {
+              type: "button",
+              class: "btn-leer",
+              onclick: () => abrirArticuloModal(a)
+            }, "Leer nota completa →")
+          )
+        )
+      );
+    }));
+  }
+
+  // Event Listeners
+  $("btn-cerrar-art").addEventListener("click", () => $("modal-articulo").close());
+  $("modal-articulo").addEventListener("click", (e) => {
+    if (e.target === $("modal-articulo")) $("modal-articulo").close();
+  });
+
+  $("filtros-container").addEventListener("click", (e) => {
+    const btn = e.target.closest(".tag-btn");
+    if (!btn) return;
+    $("filtros-container").querySelectorAll(".tag-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    carreraFiltro = btn.dataset.carrera || "todas";
+    renderArticulos();
+  });
+
+  $("input-buscar").addEventListener("input", (e) => {
+    busquedaTexto = e.target.value.trim();
+    renderArticulos();
+  });
+
+  // Carga de datos
+  fetch("data.json", { cache: "no-cache" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(d => {
+      const com = d.comunidad || {};
+      if (com.titulo) $("h-nombre").textContent = com.titulo;
+      if (com.bajada) $("h-lema").textContent = com.bajada;
+      if (com.carruselHero) setupHeroCarousel(com.carruselHero);
+
+      articulos = com.articulos || [];
+      renderArticulos();
+
+      const inst = d.institucion || {};
+      const c = inst.contacto || {};
+      $("pie").replaceChildren(
+        h("p", {}, h("strong", {}, (inst.nombre || "ISET N° 57") + " · " + (inst.gestion || ""))),
+        c.direccion ? h("p", {}, c.direccion) : null,
+        c.telefono ? h("p", {}, "Tel.: " + c.telefono) : null,
+        c.email ? h("p", {}, "Correo: ", h("a", { href: "mailto:" + c.email }, c.email)) : null
+      );
+    })
+    .catch(err => {
+      console.error(err);
+      $("articulos-container").replaceChildren(h("div", { class: "error", role: "alert" },
+        "No pudimos cargar las novedades de la comunidad. Probá recargar la página en unos minutos."));
+    });
+})();
+</script>
+</body>
+</html>

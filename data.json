@@ -112,7 +112,7 @@
   },
   "ofertaAcademica": {
     "titulo": "Oferta académica",
-    "introduccion": "Elegí un espacio para conocer más. También podés escanear el código QR desde tu celular.",
+    "introduccion": "Explorá nuestras carreras técnicas superiores y espacios de formación profesional práctica en el ISET N° 57.",
     "espacios": [
       {
         "id": "digitales",
@@ -143,34 +143,39 @@
           {
             "año": "1° Año",
             "materias": [
-              "Programación I",
-              "Arquitectura de Computadoras",
-              "Sistemas Operativos",
-              "Matemática y Lógica Computacional",
-              "Inglés Técnico I",
-              "Práctica Profesionalizante I"
+              "INTRODUCCIÓN A LA COMPUTACIÓN",
+              "SISTEMA DE PROGRAMACIÓN",
+              "ELECTROTECNIA GENERAL",
+              "ELECTRÓNICA I",
+              "TÉCNICAS DIGITALES I",
+              "LABORATORIO DE MEDICIONES I",
+              "INGLÉS I",
+              "INTRODUCCIÓN A LA FILOSOFÍA"
             ]
           },
           {
             "año": "2° Año",
             "materias": [
-              "Programación II",
-              "Bases de Datos",
-              "Redes y Comunicaciones",
-              "Ingeniería de Software",
-              "Inglés Técnico II",
-              "Práctica Profesionalizante II"
+              "DISP. ENTRADA/SALIDA",
+              "MICROPROCESADORES I",
+              "ELECTRÓNICA II",
+              "TÉCNICAS DIGITALES II",
+              "LABORATORIO DE MEDICIONES II",
+              "ELECTRÓNICA ANALÓGICA",
+              "INGLÉS II",
+              "ANAL. REALIDAD SOCIAL"
             ]
           },
           {
             "año": "3° Año",
             "materias": [
-              "Desarrollo Web y Móvil",
-              "Seguridad Informática y Criptografía",
-              "Gestión de Proyectos Tecnológicos",
-              "Cloud Computing y DevOps",
-              "Ética y Deontología Profesional",
-              "Práctica Profesionalizante III"
+              "TECNOL. COMPONENTES APLIC. A COMPUTACIÓN",
+              "MICROPROCESADORES II",
+              "ANAL. Y DETECCIÓN DE FALLAS EN COMPUTAD.",
+              "LABORATORIO DE MEDICIONES III",
+              "SISTEMAS DE COMUNICACIÓN",
+              "ELECTRÓNICA III",
+              "ÉTICA Y MORAL PROFESIONAL"
             ]
           }
         ],
@@ -191,8 +196,7 @@
             ],
             "docentes": {
               "A": "Bolig, Pedro",
-              "B": "Bolig, Pedro",
-              "C": ""
+              "B": "Bolig, Pedro"
             },
             "correlativas": [
               "Curso Propedéutico - Nivelación"
@@ -209,8 +213,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -225,8 +228,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -241,8 +243,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -257,8 +258,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -273,8 +273,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -289,8 +288,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -305,8 +303,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -321,8 +318,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Introducción A La Computación"
@@ -339,8 +335,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrotecnia General",
@@ -360,8 +355,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrónica I",
@@ -380,8 +374,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrotecnia General",
@@ -399,8 +392,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrónica I",
@@ -418,8 +410,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrotecnia General",
@@ -437,8 +428,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Inglés I"
@@ -455,8 +445,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -466,12 +455,12 @@
             "anio": "3",
             "cargaHoraria": "4",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Disp. Entrada/Salida"
@@ -483,12 +472,12 @@
             "anio": "3",
             "cargaHoraria": "5",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Microprocesadores I"
@@ -500,12 +489,12 @@
             "anio": "3",
             "cargaHoraria": "4",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrónica Analógica",
@@ -521,12 +510,12 @@
             "anio": "3",
             "cargaHoraria": "4",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrónica Ii",
@@ -540,12 +529,12 @@
             "anio": "3",
             "cargaHoraria": "4",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -555,12 +544,12 @@
             "anio": "3",
             "cargaHoraria": "4",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Electrónica Ii",
@@ -573,14 +562,28 @@
             "anio": "3",
             "cargaHoraria": "3",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
+          }
+        ],
+        "carrusel": [
+          {
+            "src": "img/carrera/td/carrusel/1.svg",
+            "alt": "Laboratorio de Desarrollo & Algoritmos"
+          },
+          {
+            "src": "img/carrera/td/carrusel/2.svg",
+            "alt": "Infraestructura de Redes y Servidores"
+          },
+          {
+            "src": "img/carrera/td/carrusel/3.svg",
+            "alt": "Sistemas Digitales y Microprocesadores"
           }
         ]
       },
@@ -612,33 +615,47 @@
           {
             "año": "1° Año",
             "materias": [
-              "Física Aplicada",
-              "Química General e Industrial",
-              "Seguridad I",
-              "Medicina del Trabajo",
-              "Legislación Laboral I",
-              "Práctica Profesionalizante I"
+              "FÍSICA I",
+              "QUÍMICA I",
+              "DIBUJO TÉCNICO",
+              "ÁLGEBRA",
+              "ORGANIZACIÓN LABORAL",
+              "SEGURIDAD I",
+              "INCENDIO I",
+              "HIGIENE I",
+              "ANTROPOLOGÍA FILOSÓFICA",
+              "COMPUTACIÓN I",
+              "INGLÉS I"
             ]
           },
           {
             "año": "2° Año",
             "materias": [
-              "Higiene Laboral I",
-              "Seguridad II (Incendios y Explosiones)",
-              "Ergonomía",
-              "Psicología Laboral",
-              "Estadística Aplicada",
-              "Práctica Profesionalizante II"
+              "FÍSICA II",
+              "QUÍMICA II",
+              "ANÁLISIS MATEMÁTICO",
+              "SEGURIDAD II",
+              "HIGIENE II",
+              "TECNOLOGÍA DE LOS MATERIALES",
+              "INCENDIO II",
+              "FORMACIÓN NACIONAL",
+              "COMPUTACIÓN II",
+              "INGLÉS II"
             ]
           },
           {
             "año": "3° Año",
             "materias": [
-              "Higiene Laboral II (Toxicología y Radiaciones)",
-              "Gestión Ambiental y Sustentabilidad",
-              "Auditorías y Control de Gestión",
-              "Ética y Deontología Profesional",
-              "Práctica Profesionalizante III"
+              "SELECCIÓN Y CAPACITACIÓN DE PERSONAL",
+              "LEGISLACIÓN LABORAL",
+              "SANEAMIENTO AMBIENTAL",
+              "PSICOLOGÍA LABORAL",
+              "SEGURIDAD III",
+              "HIGIENE III",
+              "ÉTICA PROFESIONAL",
+              "COMPUTACIÓN APLICADA",
+              "INGLÉS III",
+              "PRÁCTICA PROFESIONAL"
             ]
           }
         ],
@@ -657,9 +674,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -672,9 +687,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -687,9 +700,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -702,9 +713,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -717,9 +726,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -732,9 +739,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -747,9 +752,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -762,9 +765,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -777,9 +778,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -792,9 +791,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -807,9 +804,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -822,9 +817,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Álgebra",
@@ -840,9 +833,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Química I"
@@ -857,9 +848,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Álgebra"
@@ -874,9 +863,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Seguridad I"
@@ -891,9 +878,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Higiene I"
@@ -908,9 +893,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Física I",
@@ -926,9 +909,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Incendio I"
@@ -943,9 +924,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -958,9 +937,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Computación I"
@@ -975,9 +952,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Inglés I"
@@ -992,9 +967,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -1007,9 +980,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -1022,9 +993,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Química Ii"
@@ -1039,9 +1008,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -1054,9 +1021,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Seguridad Ii"
@@ -1071,9 +1036,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Higiene Ii"
@@ -1088,9 +1051,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": []
           },
@@ -1103,9 +1064,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Computación Ii"
@@ -1120,9 +1079,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Inglés Ii"
@@ -1137,9 +1094,7 @@
               "A"
             ],
             "docentes": {
-              "A": "",
-              "B": "",
-              "C": ""
+              "A": ""
             },
             "correlativas": [
               "Computación Aplicada",
@@ -1150,6 +1105,20 @@
               "Psicología Laboral",
               "Saneamiento Ambiental"
             ]
+          }
+        ],
+        "carrusel": [
+          {
+            "src": "img/carrera/hys/carrusel/1.svg",
+            "alt": "Prevención y Ergonomía Laboral"
+          },
+          {
+            "src": "img/carrera/hys/carrusel/2.svg",
+            "alt": "Medio Ambiente y Normativas de Seguridad"
+          },
+          {
+            "src": "img/carrera/hys/carrusel/3.svg",
+            "alt": "Protección Industrial y Lucha contra Incendios"
           }
         ]
       },
@@ -1187,32 +1156,41 @@
           {
             "año": "1° Año",
             "materias": [
-              "Anatomía y Fisiología",
-              "Fundamentos de Enfermería",
-              "Salud Pública y Comunitaria",
-              "Microbiología y Parasitología",
-              "Psicología Evolutiva",
-              "Práctica Profesionalizante I"
+              "COMUNICACIÓN",
+              "UNIDAD DE DEFINICIÓN INSTITUCIONAL I",
+              "SALUD PÚBLICA",
+              "BIOLOGÍA HUMANA",
+              "SUJETO, CULTURA Y SOCIEDAD I",
+              "FUNDAMENTOS DEL CUIDADO EN ENFERMERÍA",
+              "CUIDADOS DE ENFERMERÍA EN LA COMUNIDAD Y EN LA FAMILIA",
+              "PRÁCTICA PROFESIONALIZANTE I"
             ]
           },
           {
             "año": "2° Año",
             "materias": [
-              "Enfermería del Adulto y Anciano I",
-              "Farmacología en Enfermería",
-              "Nutrición y Dietoterapia",
-              "Bioética y Aspectos Legales",
-              "Práctica Profesionalizante II"
+              "PROBLEMÁTICAS SOCIO CONTEMPORÁNEAS",
+              "UNIDAD DE DEFINICIÓN INSTITUCIONAL II",
+              "INFORMÁTICA EN SALUD",
+              "SUJETO, CULTURA Y SOCIEDAD II",
+              "BIOLOGÍA HUMANA II",
+              "BIOSEGURIDAD Y MEDIO AMBIENTE EN EL TRABAJO",
+              "FARMACOLOGÍA EN ENFERMERÍA",
+              "CUIDADOS DE ENFERMERÍA A LOS ADULTOS Y A LOS ADULTOS MAYORES",
+              "PRÁCTICA PROFESIONALIZANTE II"
             ]
           },
           {
             "año": "3° Año",
             "materias": [
-              "Enfermería Materno Infantil y del Adolescente",
-              "Enfermería en Salud Mental",
-              "Gestión y Administración en Enfermería",
-              "Enfermería en Cuidados Críticos",
-              "Práctica Profesionalizante III (Rotación Hospitalaria)"
+              "ÉTICA Y RESPONSABILIDAD SOCIAL",
+              "DERECHO Y LEGISLACIÓN LABORAL",
+              "INGLÉS TÉCNICO",
+              "ORGANIZACIÓN Y GESTIÓN EN INSTITUCIONES DE SALUD",
+              "INVESTIGACIÓN EN ENFERMERÍA",
+              "CUIDADOS DE ENFERMERÍA EN SALUD MENTAL",
+              "CUIDADOS DE ENFERMERÍA AL NIÑO Y AL ADOLESCENTE",
+              "PRÁCTICA PROFESIONALIZANTE III"
             ]
           }
         ],
@@ -1369,8 +1347,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1385,8 +1362,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1401,8 +1377,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1417,8 +1392,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Sujeto, Cultura Y Sociedad I"
@@ -1435,8 +1409,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Biología Humana"
@@ -1453,8 +1426,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1469,8 +1441,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1485,8 +1456,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Cuidados De Enfermería En La Comunidad Y En La Familia",
@@ -1504,8 +1474,7 @@
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Práctica Profesionalizante I"
@@ -1517,12 +1486,12 @@
             "anio": "3",
             "cargaHoraria": "3",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1532,12 +1501,12 @@
             "anio": "3",
             "cargaHoraria": "3",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1547,12 +1516,12 @@
             "anio": "3",
             "cargaHoraria": "4",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1562,12 +1531,12 @@
             "anio": "3",
             "cargaHoraria": "3",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1577,12 +1546,12 @@
             "anio": "3",
             "cargaHoraria": "3",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1592,12 +1561,12 @@
             "anio": "3",
             "cargaHoraria": "4",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": []
           },
@@ -1607,12 +1576,12 @@
             "anio": "3",
             "cargaHoraria": "6",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Cuidados De Enfermería A Los Adultos Y A Los Adultos Mayores"
@@ -1624,16 +1593,30 @@
             "anio": "3",
             "cargaHoraria": "15",
             "comisiones": [
-              "A"
+              "A",
+              "B"
             ],
             "docentes": {
               "A": "",
-              "B": "",
-              "C": ""
+              "B": ""
             },
             "correlativas": [
               "Práctica Profesionalizante Ii"
             ]
+          }
+        ],
+        "carrusel": [
+          {
+            "src": "img/carrera/enf/carrusel/1.svg",
+            "alt": "Cuidados Integrales y Salud Comunitaria"
+          },
+          {
+            "src": "img/carrera/enf/carrusel/2.svg",
+            "alt": "Prácticas en Centros Hospitalarios"
+          },
+          {
+            "src": "img/carrera/enf/carrusel/3.svg",
+            "alt": "Ética Profesional y Calidad Asistencial"
           }
         ]
       },
@@ -1665,7 +1648,21 @@
           "coordinador": "Dirección del Centro de Simulación",
           "email": "simulacion@iset57.edu.ar",
           "horario": "Lunes a viernes de 9:00 a 18:00 h"
-        }
+        },
+        "carrusel": [
+          {
+            "src": "img/carrera/crsc/carrusel/1.svg",
+            "alt": "Centro Regional de Simulación Clínica"
+          },
+          {
+            "src": "img/carrera/crsc/carrusel/2.svg",
+            "alt": "Simuladores de Alta Fidelidad y Prácticas Clínicas"
+          },
+          {
+            "src": "img/carrera/crsc/carrusel/3.svg",
+            "alt": "Entrenamiento de Equipos de Salud y Debriefing"
+          }
+        ]
       }
     ]
   },
@@ -1767,6 +1764,110 @@
         "titulo": "Prácticas Hospitalarias – Enfermería",
         "contenido": "Recordamos a los estudiantes de 2° y 3° año que deben presentar su carnet de vacunas y apto médico al día antes del inicio de rotaciones clínicas.",
         "nota": "Consultas en Coordinación de Enfermería."
+      }
+    ]
+  },
+  "comunidad": {
+    "titulo": "Comunidad ISET N° 57",
+    "bajada": "Noticias, jornadas, proyectos estudiantiles y actividades de todas las carreras de nuestra institución.",
+    "carruselHero": [
+      {
+        "src": "img/carrera/td/comunidad/1.svg",
+        "alt": "Proyectos e Innovación en Tecnologías Digitales"
+      },
+      {
+        "src": "img/carrera/crsc/comunidad/1.svg",
+        "alt": "Entrenamientos en el Centro de Simulación Clínica"
+      },
+      {
+        "src": "img/carrera/hys/comunidad/1.svg",
+        "alt": "Prácticas Profesionales de Higiene y Seguridad"
+      },
+      {
+        "src": "img/carrera/enf/comunidad/1.svg",
+        "alt": "Jornadas Comunitarias de Salud y Enfermería"
+      }
+    ],
+    "articulos": [
+      {
+        "id": "jornada-tecnologia-2026",
+        "titulo": "Muestra anual de proyectos de software y sistemas digitales",
+        "carreraId": "digitales",
+        "carreraNombre": "Tecnologías Digitales",
+        "fecha": "2026-11-20",
+        "autor": "Coordinación Tec. Digitales",
+        "resumen": "Estudiantes de 2° y 3° año presentaron prototipos de software libre, plataformas web y automatizaciones con microcontroladores.",
+        "contenido": "Durante la jornada se expusieron proyectos integradores desarrollados en los talleres de programación y electrónica. Se destacaron implementaciones de monitoreo en tiempo real, aplicaciones web progresivas y soluciones aplicadas al ámbito sociocomunitario.",
+        "imagenes": [
+          "img/carrera/td/comunidad/1.svg",
+          "img/carrera/td/comunidad/2.svg",
+          "img/carrera/td/carrusel/1.svg"
+        ],
+        "etiquetas": [
+          "Proyectos",
+          "Software",
+          "Innovación"
+        ]
+      },
+      {
+        "id": "simulacion-interdisciplinaria",
+        "titulo": "Simulacro de emergencias y trabajo en equipo en el CRSC",
+        "carreraId": "simulacion",
+        "carreraNombre": "Simulación Clínica & Enfermería",
+        "fecha": "2026-10-15",
+        "autor": "Equipo Docente CRSC",
+        "resumen": "Práctica integrada de soporte vital avanzado y coordinación en situaciones de crisis con muñecos de alta fidelidad.",
+        "contenido": "El Centro Regional de Simulación Clínica albergó una jornada de entrenamiento donde estudiantes de Enfermería pusieron a prueba protocolos de triaje, toma de decisiones bajo presión y debriefing guiado por docentes instructores.",
+        "imagenes": [
+          "img/carrera/crsc/comunidad/1.svg",
+          "img/carrera/crsc/comunidad/2.svg",
+          "img/carrera/crsc/carrusel/1.svg"
+        ],
+        "etiquetas": [
+          "Simulación",
+          "Salud",
+          "Práctica Clínica"
+        ]
+      },
+      {
+        "id": "auditoria-seguridad-fabrica",
+        "titulo": "Visita técnica y relevamiento de riesgos laborales en planta fabril",
+        "carreraId": "higiene",
+        "carreraNombre": "Higiene y Seguridad",
+        "fecha": "2026-09-28",
+        "autor": "Cátedra Práctica Profesionalizante",
+        "resumen": "Estudiantes de Higiene y Seguridad realizaron mediciones de carga térmica, iluminación y análisis ergonómico en industrias de la región.",
+        "contenido": "En el marco de las prácticas profesionalizantes, los alumnos aplicaron instrumentos de medición homologados (sonómetros, luxómetros y monitores de estrés térmico) elaborando informes técnicos preventivos.",
+        "imagenes": [
+          "img/carrera/hys/comunidad/1.svg",
+          "img/carrera/hys/comunidad/2.svg",
+          "img/carrera/hys/carrusel/1.svg"
+        ],
+        "etiquetas": [
+          "Seguridad",
+          "Industria",
+          "Prácticas"
+        ]
+      },
+      {
+        "id": "jornada-vacunacion-comunitaria",
+        "titulo": "Campaña comunitaria de promoción de la salud y prevención",
+        "carreraId": "enfermeria",
+        "carreraNombre": "Enfermería",
+        "fecha": "2026-08-12",
+        "autor": "Prácticas Comunitarias",
+        "resumen": "Puesto de salud con control de signos vitales, consejería y talleres sobre hábitos saludables abiertos al barrio.",
+        "contenido": "Futuros enfermeros y enfermeras interactuaron directamente con la comunidad barrial, realizando toma de tensión arterial, glucemia capilar y charlas educativas sobre autocuidado y prevención de enfermedades crónicas.",
+        "imagenes": [
+          "img/carrera/enf/comunidad/1.svg",
+          "img/carrera/enf/comunidad/2.svg",
+          "img/carrera/enf/carrusel/1.svg"
+        ],
+        "etiquetas": [
+          "Comunidad",
+          "Salud",
+          "Prevención"
+        ]
       }
     ]
   }

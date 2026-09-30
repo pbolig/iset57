@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 <style>
 :root{
   --tinta:#14213d; --celeste:#74acdf; --celeste-suave:#e6f0fa; --sol:#f6b40e;
@@ -75,33 +74,50 @@ tbody tr:nth-child(even){background:var(--fondo)}
 
 /* Oferta */
 .oferta{background:var(--celeste-suave)}
-.cards{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,470px),1fr))}
-.card{position:relative;display:grid;grid-template-columns:1fr auto;gap:1.25rem;align-items:start;background:var(--papel);border:1px solid var(--borde);border-top:8px solid var(--c,var(--celeste));border-radius:var(--radio);padding:1.5rem}
-.card:hover{border-color:var(--tinta);box-shadow:0 6px 0 var(--tinta)}
-.card h3{margin:0 0 .5rem;font:800 1.35rem/1.15 var(--f-titulo)}
-.card h3 a{text-decoration:none}
-.card h3 a::after{content:"";position:absolute;inset:0;border-radius:var(--radio)}
-.card p{margin:0;color:var(--suave)}
-.qr{position:relative;z-index:2;display:block;padding:8px;background:#fff;border:1px solid var(--borde);border-radius:8px;line-height:0}
-.qr img,.qr canvas{width:112px;height:112px}
-.qr-txt{position:relative;z-index:2;margin:.4rem 0 0;font-size:.8rem;color:var(--suave);text-align:center}
+.cards{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,500px),1fr))}
+.card{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:1.25rem;align-items:stretch;background:var(--papel);border:1px solid var(--borde);border-top:8px solid var(--c,var(--celeste));border-radius:var(--radio);padding:1.4rem}
+.card:hover{border-color:var(--tinta);box-shadow:0 6px 16px rgba(20,33,61,.12)}
+.card-info{display:flex;flex-direction:column;justify-content:space-between;gap:.75rem}
+.card h3{margin:0;font:800 1.3rem/1.18 var(--f-titulo)}
+.card h3 a{text-decoration:none;color:var(--tinta)}
+.card h3 a:hover{color:var(--celeste)}
+.card p{margin:0;color:var(--suave);font-size:.95rem}
+
+/* Carrusel dentro de la card */
+.card-carousel-box{position:relative;width:100%;min-height:170px;border-radius:8px;overflow:hidden;background:var(--tinta);box-shadow:0 3px 10px rgba(20,33,61,.15);display:flex}
+.carousel-track{position:relative;width:100%;height:100%;min-height:170px;overflow:hidden}
+.carousel-slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .45s ease,transform .45s ease;transform:scale(1.03)}
+.carousel-slide.active{opacity:1;visibility:visible;transform:scale(1)}
+.carousel-slide img,.carousel-slide svg{width:100%;height:100%;object-fit:cover;display:block}
+.carousel-nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 .3rem;pointer-events:none;z-index:3}
+.carousel-btn{pointer-events:auto;background:rgba(20,33,61,.7);backdrop-filter:blur(3px);color:#fff;border:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:.75rem;cursor:pointer;transition:all .2s ease;opacity:.85}
+.carousel-btn:hover{background:var(--sol);color:var(--tinta);opacity:1;transform:scale(1.1)}
+.carousel-dots{position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:4;pointer-events:none}
+.carousel-dot{pointer-events:auto;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);border:none;padding:0;cursor:pointer;transition:all .25s ease}
+.carousel-dot.active{background:var(--sol);width:16px;border-radius:999px}
+
+/* Hero actions y botón de comunidad */
+.hero-actions{margin-top:1.6rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.btn-comunidad-hero{display:inline-flex;align-items:center;gap:.45rem;min-height:46px;padding:.55rem 1.4rem;background:var(--sol);color:var(--tinta);font:800 1rem var(--f-titulo);text-decoration:none;border-radius:999px;box-shadow:0 4px 14px rgba(246,180,14,.35);transition:transform .25s ease,box-shadow .25s ease;animation:sutilFlotar 3.8s ease-in-out infinite}
+.btn-comunidad-hero:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 8px 20px rgba(246,180,14,.5);background:#ffc324}
+.btn-inscripcion-hero{display:inline-flex;align-items:center;gap:.45rem;min-height:46px;padding:.55rem 1.3rem;background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.6);font:700 .95rem var(--f-texto);text-decoration:none;border-radius:999px;transition:all .25s ease}
+.btn-inscripcion-hero:hover{background:#fff;color:var(--tinta);border-color:#fff;transform:translateY(-3px)}
+
 /* Movilidad en botones y cards */
 @keyframes sutilFlotar{
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-3px)}
 }
-nav a,.enlace,.card,.qr{transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease,border-color .2s ease}
+nav a,.enlace,.card{transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease,border-color .2s ease}
 @media (hover:hover){
   nav a:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);box-shadow:0 4px 0 var(--celeste)}
   .enlace:hover{animation-play-state:paused;transform:translateY(-4px) scale(1.02);background:var(--celeste);color:var(--tinta);box-shadow:0 4px 0 var(--tinta)}
-  .card:hover{transform:translateY(-6px)}
-  .card:hover .qr{transform:scale(1.08)}
+  .card:hover{transform:translateY(-4px)}
 }
 nav a:focus-visible,.enlace:focus-visible{animation-play-state:paused;transform:translateY(-4px)}
-.card:focus-within{transform:translateY(-6px);border-color:var(--tinta);box-shadow:0 6px 0 var(--tinta)}
+.card:focus-within{transform:translateY(-4px);border-color:var(--tinta);box-shadow:0 6px 16px rgba(20,33,61,.15)}
 nav a:active,.enlace:active{animation-play-state:paused;transform:translateY(1px) scale(.96);box-shadow:none}
-.card:active{transform:scale(.97)}
-.qr:active{transform:scale(.94)}
+.card:active{transform:scale(.98)}
 
 /* Celulares: sin scroll horizontal, tablas apiladas */
 @media(max-width:640px){
@@ -109,8 +125,8 @@ nav a:active,.enlace:active{animation-play-state:paused;transform:translateY(1px
   main section{padding:2rem 0}
   .aviso{padding:1rem 1.1rem}
   .cards{grid-template-columns:1fr}
-  .card{grid-template-columns:1fr;justify-items:center;text-align:center;padding:1.25rem}
-  .qr-col{display:grid;justify-items:center}
+  .card{grid-template-columns:1fr;gap:1rem;padding:1.25rem}
+  .card-carousel-box{min-height:190px}
   .tabla-wrap{overflow:visible;border:0}
   table,tbody,tr,td,caption{display:block;width:100%;min-width:0}
   thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -170,7 +186,16 @@ footer p{margin:.2rem 0}
     <p class="tipo" id="h-tipo"></p>
     <h1 id="h-nombre">ISET N° 57</h1>
     <p class="lema" id="h-lema"></p>
-    <nav aria-label="Secciones"><a href="#novedades">Novedades</a><a href="#oferta">Oferta académica</a><a href="#contacto">Contacto</a></nav>
+    <div class="hero-actions">
+      <a href="comunidad.html" class="btn-comunidad-hero">🌟 Comunidad &amp; Blog de Carreras</a>
+      <a href="inscripcion.html" class="btn-inscripcion-hero">📝 Guía de Inscripción</a>
+    </div>
+    <nav aria-label="Secciones">
+      <a href="#novedades">Novedades</a>
+      <a href="#oferta">Oferta académica</a>
+      <a href="comunidad.html">Comunidad</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
   </div>
 </header>
 
@@ -562,9 +587,100 @@ footer p{margin:.2rem 0}
     };
   }
 
+  function crearCarrusel(imagenes = [], color = "#74acdf", enlace = "#") {
+    const box = h("div", { class: "card-carousel-box", style: "--c-car:" + color });
+    
+    // Si no hay imágenes configuradas, provee una por defecto
+    if (!imagenes.length) {
+      imagenes = [{ src: "img/carrera/td/carrusel/1.svg", alt: "ISET N° 57" }];
+    }
+
+    const track = h("div", { class: "carousel-track" });
+    const slides = imagenes.map((imgObj, idx) => {
+      const src = typeof imgObj === "string" ? imgObj : imgObj.src;
+      const alt = (typeof imgObj === "object" && imgObj.alt) ? imgObj.alt : "Foto institucional";
+      const slide = h("div", { 
+        class: "carousel-slide" + (idx === 0 ? " active" : ""), 
+        "data-index": idx,
+        role: "group",
+        "aria-label": `${idx + 1} de ${imagenes.length}: ${alt}`
+      },
+        h("a", { href: enlace, title: "Ver carrera: " + alt, style: "display:block;width:100%;height:100%" },
+          h("img", { src: src, alt: alt, loading: "lazy" })
+        )
+      );
+      return slide;
+    });
+    track.append(...slides);
+
+    let currentIndex = 0;
+    let timer = null;
+    let dots = [];
+
+    const irA = (n) => {
+      currentIndex = (n + imagenes.length) % imagenes.length;
+      slides.forEach((s, i) => s.classList.toggle("active", i === currentIndex));
+      dots.forEach((d, i) => d.classList.toggle("active", i === currentIndex));
+    };
+
+    const siguiente = () => irA(currentIndex + 1);
+    const anterior = () => irA(currentIndex - 1);
+
+    const iniciarAuto = () => {
+      if (imagenes.length > 1 && !timer) {
+        timer = setInterval(siguiente, 4500);
+      }
+    };
+    const pausarAuto = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    box.addEventListener("mouseenter", pausarAuto);
+    box.addEventListener("mouseleave", iniciarAuto);
+    box.addEventListener("focusin", pausarAuto);
+    box.addEventListener("focusout", iniciarAuto);
+
+    box.append(track);
+
+    if (imagenes.length > 1) {
+      const btnPrev = h("button", {
+        type: "button",
+        class: "carousel-btn",
+        "aria-label": "Foto anterior",
+        onclick: (e) => { e.preventDefault(); e.stopPropagation(); anterior(); }
+      }, "❮");
+
+      const btnNext = h("button", {
+        type: "button",
+        class: "carousel-btn",
+        "aria-label": "Foto siguiente",
+        onclick: (e) => { e.preventDefault(); e.stopPropagation(); siguiente(); }
+      }, "❯");
+
+      const nav = h("div", { class: "carousel-nav" }, btnPrev, btnNext);
+      box.append(nav);
+
+      const dotsWrap = h("div", { class: "carousel-dots" });
+      dots = imagenes.map((_, idx) => h("button", {
+        type: "button",
+        class: "carousel-dot" + (idx === 0 ? " active" : ""),
+        "aria-label": `Ir a foto ${idx + 1}`,
+        onclick: (e) => { e.preventDefault(); e.stopPropagation(); irA(idx); }
+      }));
+      dotsWrap.append(...dots);
+      box.append(dotsWrap);
+
+      iniciarAuto();
+    }
+
+    return box;
+  }
+
   function card(c) {
     const destino = c.enlace;
-    const qrBox = h("a", { class: "qr", href: destino, "aria-label": "Código QR: abrir " + c.titulo });
     const btnPlan = (c.materiasDetalladas && c.materiasDetalladas.length)
       ? h("button", {
           type: "button",
@@ -577,20 +693,22 @@ footer p{margin:.2rem 0}
         }, "📋 Ver correlatividades")
       : null;
 
-    const art = h("article", { class: "card", style: c.color ? "--c:" + c.color : null },
+    const carruselElem = crearCarrusel(c.carrusel || [], c.color, destino);
+
+    const info = h("div", { class: "card-info" },
       h("div", {},
         h("h3", {}, h("a", { href: destino }, c.titulo)),
-        h("p", {}, c.descripcion),
-        btnPlan
+        h("p", {}, c.descripcion)
       ),
-      h("div", { class: "qr-col" }, qrBox, h("p", { class: "qr-txt" }, "Escaneá el QR"))
+      h("div", {},
+        btnPlan
+      )
     );
-    // QR generado en el navegador; codifica la URL absoluta del espacio
-    const dibujar = () => new QRCode(qrBox, {
-      text: urlAbsoluta(destino), width: 224, height: 224,
-      colorDark: "#14213d", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M
-    });
-    if (window.QRCode) dibujar(); else window.addEventListener("load", dibujar);
+
+    const art = h("article", { class: "card", style: c.color ? "--c:" + c.color : null },
+      info,
+      carruselElem
+    );
     return art;
   }
 

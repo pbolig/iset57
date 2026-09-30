@@ -61,10 +61,31 @@ def convertir():
         materia = str(r[10]).strip() if r[10] is not None else ""
         correlativas = str(r[11]).strip() if r[11] is not None else ""
 
-        comisiones = []
-        if com_a: comisiones.append("A")
-        if com_b: comisiones.append("B")
-        if com_c: comisiones.append("C")
+        # Reglas de comisiones por carrera y año establecidas institucionalmente:
+        # Digitales: Año 1, 2 y 3 -> A, B
+        # Higiene: Año 1, 2 y 3 -> A
+        # Enfermería: Año 1 -> A, B, C; Año 2 y 3 -> A, B
+        if matched_id == "digitales":
+            comisiones = ["A", "B"]
+        elif matched_id == "higiene":
+            comisiones = ["A"]
+        elif matched_id == "enfermeria":
+            if anio_str == "1":
+                comisiones = ["A", "B", "C"]
+            else:
+                comisiones = ["A", "B"]
+        else:
+            comisiones = []
+            if com_a: comisiones.append("A")
+            if com_b: comisiones.append("B")
+            if com_c: comisiones.append("C")
+            if not comisiones: comisiones = ["A"]
+
+        docentes_dict = {}
+        for c in comisiones:
+            if c == "A": docentes_dict["A"] = doc_a
+            elif c == "B": docentes_dict["B"] = doc_b
+            elif c == "C": docentes_dict["C"] = doc_c
 
         correlativas_list = []
         if correlativas and correlativas.upper() != "N/A":
@@ -76,11 +97,7 @@ def convertir():
             "anio": anio_str,
             "cargaHoraria": carga_str,
             "comisiones": comisiones,
-            "docentes": {
-                "A": doc_a,
-                "B": doc_b,
-                "C": doc_c
-            },
+            "docentes": docentes_dict,
             "correlativas": correlativas_list
         }
 
@@ -100,8 +117,18 @@ def convertir():
             for esp in data["ofertaAcademica"]["espacios"]:
                 eid = esp.get("id")
                 if eid in result:
-                    esp["materiasDetalladas"] = result[eid]
-                    print(f"- {eid}: {len(result[eid])} materias integradas en {DATA_JSON}.")
+                    items = result[eid]
+                    esp["materiasDetalladas"] = items
+
+                    # Espejo de planEstudios (solo nombres de materias por año, sin comisiones)
+                    plan = []
+                    for a_num, a_label in [("1", "1° Año"), ("2", "2° Año"), ("3", "3° Año")]:
+                        mats_anio = [m["nombre"] for m in items if str(m.get("anio", "1")).strip() == a_num]
+                        if mats_anio:
+                            plan.append({"año": a_label, "materias": mats_anio})
+                    esp["planEstudios"] = plan
+
+                    print(f"- {eid}: {len(items)} materias y planEstudios integrados en {DATA_JSON}.")
 
             with open(DATA_JSON, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
