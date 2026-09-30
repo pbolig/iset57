@@ -127,6 +127,34 @@ footer{background:var(--tinta);color:#dbe6f3;padding:2rem 0 max(2rem,calc(env(sa
 footer a{color:#fff}
 footer p{margin:.2rem 0}
 .error{background:#fff3f2;border:2px solid var(--alerta);border-radius:var(--radio);padding:1rem 1.25rem}
+
+/* Modal y Planes de Estudio */
+.oferta-acciones{margin-top:2.2rem;display:flex;justify-content:center}
+.btn-plan-modal{border:none;cursor:pointer;font-size:1rem;background:var(--tinta);color:#fff;box-shadow:0 4px 14px rgba(20,33,61,.25)}
+.card-btn-plan{display:inline-flex;align-items:center;gap:.3rem;margin-top:.75rem;font-size:.86rem;font-weight:700;color:var(--tinta);text-decoration:underline;cursor:pointer;background:none;border:none;padding:0}
+.card-btn-plan:hover{color:var(--celeste)}
+.modal-dialog{border:none;border-radius:12px;padding:0;max-width:980px;width:min(95vw,980px);background:var(--papel);box-shadow:0 20px 45px rgba(20,33,61,.35);color:var(--texto)}
+.modal-dialog::backdrop{background:rgba(20,33,61,.65);backdrop-filter:blur(3px)}
+.modal-content{display:flex;flex-direction:column;max-height:88vh}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;background:var(--tinta);color:#fff;border-bottom:4px solid var(--c-active,var(--celeste))}
+.modal-sub{margin:0 0 .2rem;font-size:.82rem;color:var(--celeste);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.modal-title{margin:0;font:800 1.35rem var(--f-titulo);color:#fff}
+.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:grid;place-items:center;transition:background .2s ease}
+.modal-close:hover{background:var(--sol);color:var(--tinta)}
+.modal-body{padding:1.25rem 1.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:1.1rem}
+.modal-tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+.tab-btn{padding:.5rem 1.1rem;border-radius:999px;border:2px solid var(--borde);background:var(--fondo);color:var(--tinta);font:700 .9rem var(--f-texto);cursor:pointer;transition:all .2s ease}
+.tab-btn:hover{border-color:var(--tinta)}
+.tab-btn.active{background:var(--c-tab,var(--tinta));color:#fff;border-color:var(--c-tab,var(--tinta))}
+.modal-filters{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;background:var(--celeste-suave);padding:.75rem 1rem;border-radius:8px}
+.filter-group{display:inline-flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:700;color:var(--tinta)}
+.filter-search{flex:1;min-width:220px}
+.input-search{width:100%;padding:.4rem .85rem;border:1px solid var(--borde);border-radius:999px;font:400 .9rem var(--f-texto);background:#fff;outline:none}
+.input-search:focus{border-color:var(--tinta);box-shadow:0 0 0 2px var(--celeste)}
+.modal-table-wrap{border:1px solid var(--borde);border-radius:8px;overflow-x:auto}
+.badge-comision{display:inline-block;padding:.15rem .45rem;border-radius:4px;background:var(--celeste-suave);color:var(--tinta);font-weight:700;font-size:.78rem;margin-right:.2rem}
+.badge-correlativa{display:inline-block;padding:.2rem .55rem;border-radius:6px;background:var(--fondo);border:1px solid var(--borde);font-size:.8rem;margin:.15rem .25rem .15rem 0;color:var(--texto)}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *{transition:none!important;animation:none!important}
@@ -160,9 +188,43 @@ footer p{margin:.2rem 0}
       <h2 id="t-of">Oferta académica</h2>
       <p class="intro" id="i-of"></p>
       <div class="cards" id="cards"></div>
+      <div class="oferta-acciones">
+        <button type="button" class="enlace btn-plan-modal" id="btn-abrir-plan">📋 Ver Planes de Estudio y Correlatividades</button>
+      </div>
     </div>
   </section>
 </main>
+
+<dialog id="modal-plan" class="modal-dialog" aria-labelledby="modal-plan-title">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div>
+        <p class="modal-sub">ISET N° 57 · Planes Oficiales</p>
+        <h3 id="modal-plan-title" class="modal-title">Planes de Estudio y Correlatividades</h3>
+      </div>
+      <button type="button" class="modal-close" id="btn-cerrar-modal" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs" id="plan-tabs"></div>
+      <div class="modal-filters">
+        <div class="filter-group">
+          <label for="filtro-plan-anio">Año:</label>
+          <select id="filtro-plan-anio" class="tabla-select">
+            <option value="todos">Todos los años</option>
+            <option value="1">1° Año</option>
+            <option value="2">2° Año</option>
+            <option value="3">3° Año</option>
+          </select>
+        </div>
+        <div class="filter-group filter-search">
+          <label for="filtro-plan-buscar">Buscar:</label>
+          <input type="search" id="filtro-plan-buscar" class="input-search" placeholder="Materia o código (ej: Programación, 1INCOM)...">
+        </div>
+      </div>
+      <div class="modal-table-wrap" id="modal-table-container"></div>
+    </div>
+  </div>
+</dialog>
 
 <footer id="contacto">
   <div class="wrap" id="pie"></div>
@@ -364,13 +426,163 @@ footer p{margin:.2rem 0}
     );
   }
 
+  function setupModalPlanes(espacios) {
+    const dialog = $("modal-plan");
+    const btnAbrir = $("btn-abrir-plan");
+    const btnCerrar = $("btn-cerrar-modal");
+    const tabsContainer = $("plan-tabs");
+    const selectAnio = $("filtro-plan-anio");
+    const inputBuscar = $("filtro-plan-buscar");
+    const tableContainer = $("modal-table-container");
+
+    const carrerasConMaterias = espacios.filter(e => e.materiasDetalladas && e.materiasDetalladas.length);
+    if (!carrerasConMaterias.length) {
+      if (btnAbrir) btnAbrir.style.display = "none";
+      return;
+    }
+
+    let activeCareerId = carrerasConMaterias[0].id;
+
+    function renderTabs() {
+      tabsContainer.replaceChildren(...carrerasConMaterias.map(c => {
+        const btn = h("button", {
+          type: "button",
+          class: "tab-btn" + (c.id === activeCareerId ? " active" : ""),
+          style: "--c-tab:" + (c.color || "var(--tinta)")
+        }, c.tituloCorto || c.titulo.replace(/^Tecnicatura Superior en\s+/i, ""));
+        btn.addEventListener("click", () => {
+          activeCareerId = c.id;
+          renderTabs();
+          renderTabla();
+        });
+        return btn;
+      }));
+    }
+
+    function renderTabla() {
+      const currentEsp = carrerasConMaterias.find(e => e.id === activeCareerId) || carrerasConMaterias[0];
+      dialog.style.setProperty("--c-active", currentEsp.color || "var(--celeste)");
+
+      const anioFiltro = selectAnio.value;
+      const busqueda = (inputBuscar.value || "").toLowerCase().trim();
+
+      let materias = currentEsp.materiasDetalladas || [];
+
+      if (anioFiltro !== "todos") {
+        materias = materias.filter(m => String(m.anio).trim() === anioFiltro);
+      }
+
+      if (busqueda) {
+        materias = materias.filter(m => 
+          (m.nombre && m.nombre.toLowerCase().includes(busqueda)) ||
+          (m.codigo && m.codigo.toLowerCase().includes(busqueda)) ||
+          (m.correlativas && m.correlativas.some(cr => cr.toLowerCase().includes(busqueda)))
+        );
+      }
+
+      if (!materias.length) {
+        tableContainer.replaceChildren(
+          h("div", { class: "tabla-vacia" }, "No se encontraron materias con los filtros seleccionados.")
+        );
+        return;
+      }
+
+      const thead = h("thead", {},
+        h("tr", {},
+          h("th", { scope: "col" }, "Año"),
+          h("th", { scope: "col" }, "Cód."),
+          h("th", { scope: "col" }, "Materia"),
+          h("th", { scope: "col" }, "Horas"),
+          h("th", { scope: "col" }, "Comisiones"),
+          h("th", { scope: "col" }, "Correlatividades Previas")
+        )
+      );
+
+      const tbody = h("tbody", {},
+        materias.map(m => {
+          const comisionesBadges = (m.comisiones && m.comisiones.length)
+            ? m.comisiones.map(com => {
+                const doc = (m.docentes && m.docentes[com]) ? m.docentes[com] : "";
+                if (doc) {
+                  return h("span", { class: "badge-comision", title: "Docente: " + doc },
+                    h("strong", {}, "Com. " + com + ": "),
+                    doc
+                  );
+                }
+                return h("span", { class: "badge-comision" }, "Com. " + com);
+              })
+            : h("span", { style: "color:var(--suave)" }, "—");
+
+          const correlativasBadges = (m.correlativas && m.correlativas.length)
+            ? m.correlativas.map(corr => h("span", { class: "badge-correlativa" }, corr))
+            : h("span", { style: "color:var(--suave);font-size:.84rem" }, "Sin correlativas");
+
+          return h("tr", {},
+            h("td", { "data-label": "Año", style: "font-weight:700" }, m.anio + "°"),
+            h("td", { "data-label": "Código", style: "font-family:monospace;font-weight:700;color:var(--suave)" }, m.codigo || "—"),
+            h("td", { "data-label": "Materia", style: "font-weight:700;color:var(--tinta)" }, m.nombre),
+            h("td", { "data-label": "Carga Horaria" }, (m.cargaHoraria ? m.cargaHoraria + " mód." : "—")),
+            h("td", { "data-label": "Comisiones" }, comisionesBadges),
+            h("td", { "data-label": "Correlativas" }, correlativasBadges)
+          );
+        })
+      );
+
+      tableContainer.replaceChildren(
+        h("table", {}, thead, tbody)
+      );
+    }
+
+    if (btnAbrir) {
+      btnAbrir.addEventListener("click", () => {
+        renderTabs();
+        renderTabla();
+        dialog.showModal();
+      });
+    }
+
+    if (btnCerrar) {
+      btnCerrar.addEventListener("click", () => dialog.close());
+    }
+
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    selectAnio.addEventListener("change", renderTabla);
+    inputBuscar.addEventListener("input", renderTabla);
+
+    window.abrirModalPlanCarrera = (carreraId) => {
+      if (carrerasConMaterias.some(c => c.id === carreraId)) {
+        activeCareerId = carreraId;
+      }
+      renderTabs();
+      renderTabla();
+      dialog.showModal();
+    };
+  }
+
   function card(c) {
     const destino = c.enlace;
     const qrBox = h("a", { class: "qr", href: destino, "aria-label": "Código QR: abrir " + c.titulo });
+    const btnPlan = (c.materiasDetalladas && c.materiasDetalladas.length)
+      ? h("button", {
+          type: "button",
+          class: "card-btn-plan",
+          onclick: (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.abrirModalPlanCarrera) window.abrirModalPlanCarrera(c.id);
+          }
+        }, "📋 Ver correlatividades")
+      : null;
+
     const art = h("article", { class: "card", style: c.color ? "--c:" + c.color : null },
       h("div", {},
         h("h3", {}, h("a", { href: destino }, c.titulo)),
-        h("p", {}, c.descripcion)),
+        h("p", {}, c.descripcion),
+        btnPlan
+      ),
       h("div", { class: "qr-col" }, qrBox, h("p", { class: "qr-txt" }, "Escaneá el QR"))
     );
     // QR generado en el navegador; codifica la URL absoluta del espacio
@@ -394,6 +606,7 @@ footer p{margin:.2rem 0}
     $("t-of").textContent = o.titulo || "Oferta académica";
     $("i-of").textContent = o.introduccion || "";
     $("cards").replaceChildren(...o.espacios.map(card));
+    setupModalPlanes(o.espacios);
     const c = i.contacto || {};
     $("pie").replaceChildren(
       h("p", {}, h("strong", {}, i.nombre + " · " + (i.gestion || ""))),
@@ -404,9 +617,18 @@ footer p{margin:.2rem 0}
     );
   }
 
-  fetch("data.json", { cache: "no-cache" })
-    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-    .then(render)
+  Promise.all([
+    fetch("data.json", { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
+    fetch("materias.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).catch(() => null)
+  ])
+    .then(([data, materias]) => {
+      if (materias && data && data.ofertaAcademica && data.ofertaAcademica.espacios) {
+        data.ofertaAcademica.espacios.forEach(esp => {
+          if (materias[esp.id]) esp.materiasDetalladas = materias[esp.id];
+        });
+      }
+      render(data);
+    })
     .catch(err => {
       console.error(err);
       $("avisos").replaceChildren(h("div", { class: "error", role: "alert" },

@@ -178,7 +178,411 @@
           "coordinador": "Coordinación de Tecnologías Digitales",
           "email": "digitales@iset57.edu.ar",
           "horario": "Lunes a viernes de 18:00 a 21:00 h"
-        }
+        },
+        "materiasDetalladas": [
+          {
+            "codigo": "1INCOM",
+            "nombre": "INTRODUCCIÓN A LA COMPUTACIÓN",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "Bolig, Pedro",
+              "B": "Bolig, Pedro",
+              "C": ""
+            },
+            "correlativas": [
+              "Curso Propedéutico - Nivelación"
+            ]
+          },
+          {
+            "codigo": "1SISP",
+            "nombre": "SISTEMA DE PROGRAMACIÓN",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1ELECG",
+            "nombre": "ELECTROTECNIA GENERAL",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1ELEC1",
+            "nombre": "ELECTRÓNICA I",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1TECD1",
+            "nombre": "TÉCNICAS DIGITALES I",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1LABM1",
+            "nombre": "LABORATORIO DE MEDICIONES I",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1ING1",
+            "nombre": "INGLÉS I",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1INTFI",
+            "nombre": "INTRODUCCIÓN A LA FILOSOFÍA",
+            "anio": "1",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2DISES",
+            "nombre": "DISP. ENTRADA/SALIDA",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Introducción A La Computación"
+            ]
+          },
+          {
+            "codigo": "2MI1",
+            "nombre": "MICROPROCESADORES I",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrotecnia General",
+              "Laboratorio De Mediciones I",
+              "Sistema De Programación",
+              "Técnicas Digitales I"
+            ]
+          },
+          {
+            "codigo": "2ELE1",
+            "nombre": "ELECTRÓNICA II",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrónica I",
+              "Electrotecnia General",
+              "Laboratorio De Mediciones I"
+            ]
+          },
+          {
+            "codigo": "2TED2",
+            "nombre": "TÉCNICAS DIGITALES II",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrotecnia General",
+              "Técnicas Digitales I"
+            ]
+          },
+          {
+            "codigo": "2LABM2",
+            "nombre": "LABORATORIO DE MEDICIONES II",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrónica I",
+              "Laboratorio De Mediciones I"
+            ]
+          },
+          {
+            "codigo": "2ELEA",
+            "nombre": "ELECTRÓNICA ANALÓGICA",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrotecnia General",
+              "Laboratorio De Mediciones I"
+            ]
+          },
+          {
+            "codigo": "2ING2",
+            "nombre": "INGLÉS II",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Inglés I"
+            ]
+          },
+          {
+            "codigo": "2ARS",
+            "nombre": "ANAL. REALIDAD SOCIAL",
+            "anio": "2",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3TECAC",
+            "nombre": "TECNOL. COMPONENTES APLIC. A COMPUTACIÓN",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Disp. Entrada/Salida"
+            ]
+          },
+          {
+            "codigo": "3MIC2",
+            "nombre": "MICROPROCESADORES II",
+            "anio": "3",
+            "cargaHoraria": "5",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Microprocesadores I"
+            ]
+          },
+          {
+            "codigo": "3ADFC",
+            "nombre": "ANAL. Y DETECCIÓN DE FALLAS EN COMPUTAD.",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrónica Analógica",
+              "Electrónica Ii",
+              "Laboratorio De Mediciones Ii",
+              "Microprocesadores I",
+              "Técnicas Digitales Ii"
+            ]
+          },
+          {
+            "codigo": "3LABM3",
+            "nombre": "LABORATORIO DE MEDICIONES III",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrónica Ii",
+              "Laboratorio De Mediciones Ii",
+              "Técnicas Digitales Ii"
+            ]
+          },
+          {
+            "codigo": "3SCOM",
+            "nombre": "SISTEMAS DE COMUNICACIÓN",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3ELE3",
+            "nombre": "ELECTRÓNICA III",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Electrónica Ii",
+              "Laboratorio De Mediciones Ii"
+            ]
+          },
+          {
+            "codigo": "3EMP",
+            "nombre": "ÉTICA Y MORAL PROFESIONAL",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          }
+        ]
       },
       {
         "id": "higiene",
@@ -242,7 +646,512 @@
           "coordinador": "Coordinación de Higiene y Seguridad",
           "email": "higiene@iset57.edu.ar",
           "horario": "Lunes a viernes de 18:00 a 21:00 h"
-        }
+        },
+        "materiasDetalladas": [
+          {
+            "codigo": "1FI1",
+            "nombre": "FÍSICA I",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1QUI1",
+            "nombre": "QUÍMICA I",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1DITE",
+            "nombre": "DIBUJO TÉCNICO",
+            "anio": "1",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1ALG",
+            "nombre": "ÁLGEBRA",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1ORL",
+            "nombre": "ORGANIZACIÓN LABORAL",
+            "anio": "1",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1SEG1",
+            "nombre": "SEGURIDAD I",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1INC1",
+            "nombre": "INCENDIO I",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1HIG1",
+            "nombre": "HIGIENE I",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1ANTF",
+            "nombre": "ANTROPOLOGÍA FILOSÓFICA",
+            "anio": "1",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1COM1",
+            "nombre": "COMPUTACIÓN I",
+            "anio": "1",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1ING1",
+            "nombre": "INGLÉS I",
+            "anio": "1",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2FIS2",
+            "nombre": "FÍSICA II",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Álgebra",
+              "Física I"
+            ]
+          },
+          {
+            "codigo": "2QUI2",
+            "nombre": "QUÍMICA II",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Química I"
+            ]
+          },
+          {
+            "codigo": "2AMAT",
+            "nombre": "ANÁLISIS MATEMÁTICO",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Álgebra"
+            ]
+          },
+          {
+            "codigo": "2SEG2",
+            "nombre": "SEGURIDAD II",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Seguridad I"
+            ]
+          },
+          {
+            "codigo": "2HIG2",
+            "nombre": "HIGIENE II",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Higiene I"
+            ]
+          },
+          {
+            "codigo": "2TECM",
+            "nombre": "TECNOLOGÍA DE LOS MATERIALES",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Física I",
+              "Química I"
+            ]
+          },
+          {
+            "codigo": "2INC2",
+            "nombre": "INCENDIO II",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Incendio I"
+            ]
+          },
+          {
+            "codigo": "2FORN",
+            "nombre": "FORMACIÓN NACIONAL",
+            "anio": "2",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2COM2",
+            "nombre": "COMPUTACIÓN II",
+            "anio": "2",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Computación I"
+            ]
+          },
+          {
+            "codigo": "2ING2",
+            "nombre": "INGLÉS II",
+            "anio": "2",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Inglés I"
+            ]
+          },
+          {
+            "codigo": "3SCP",
+            "nombre": "SELECCIÓN Y CAPACITACIÓN DE PERSONAL",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3LELA",
+            "nombre": "LEGISLACIÓN LABORAL",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3SAM",
+            "nombre": "SANEAMIENTO AMBIENTAL",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Química Ii"
+            ]
+          },
+          {
+            "codigo": "3PSIL",
+            "nombre": "PSICOLOGÍA LABORAL",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3SEG3",
+            "nombre": "SEGURIDAD III",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Seguridad Ii"
+            ]
+          },
+          {
+            "codigo": "3HIG3",
+            "nombre": "HIGIENE III",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Higiene Ii"
+            ]
+          },
+          {
+            "codigo": "3ETP",
+            "nombre": "ÉTICA PROFESIONAL",
+            "anio": "3",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3COMA",
+            "nombre": "COMPUTACIÓN APLICADA",
+            "anio": "3",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Computación Ii"
+            ]
+          },
+          {
+            "codigo": "3ING3",
+            "nombre": "INGLÉS III",
+            "anio": "3",
+            "cargaHoraria": "2",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Inglés Ii"
+            ]
+          },
+          {
+            "codigo": "3PPR",
+            "nombre": "PRÁCTICA PROFESIONAL",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Computación Aplicada",
+              "Ética Profesional",
+              "Higiene Iii",
+              "Inglés Iii",
+              "Legislación Laboral",
+              "Psicología Laboral",
+              "Saneamiento Ambiental"
+            ]
+          }
+        ]
       },
       {
         "id": "enfermeria",
@@ -311,7 +1220,422 @@
           "coordinador": "Coordinación de Enfermería",
           "email": "enfermeria@iset57.edu.ar",
           "horario": "Lunes a viernes de 17:00 a 20:30 h"
-        }
+        },
+        "materiasDetalladas": [
+          {
+            "codigo": "1COMU",
+            "nombre": "COMUNICACIÓN",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1UDI",
+            "nombre": "UNIDAD DE DEFINICIÓN INSTITUCIONAL I",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1SPU",
+            "nombre": "SALUD PÚBLICA",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1BHUM",
+            "nombre": "BIOLOGÍA HUMANA",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1SCS1",
+            "nombre": "SUJETO, CULTURA Y SOCIEDAD I",
+            "anio": "1",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1FCE",
+            "nombre": "FUNDAMENTOS DEL CUIDADO EN ENFERMERÍA",
+            "anio": "1",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1CECF",
+            "nombre": "CUIDADOS DE ENFERMERÍA EN LA COMUNIDAD Y EN LA FAMILIA",
+            "anio": "1",
+            "cargaHoraria": "5",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "1PPR1",
+            "nombre": "PRÁCTICA PROFESIONALIZANTE I",
+            "anio": "1",
+            "cargaHoraria": "13",
+            "comisiones": [
+              "A",
+              "B",
+              "C"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2PSCO",
+            "nombre": "PROBLEMÁTICAS SOCIO CONTEMPORÁNEAS",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2UDI2",
+            "nombre": "UNIDAD DE DEFINICIÓN INSTITUCIONAL II",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2INSA",
+            "nombre": "INFORMÁTICA EN SALUD",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2SCS2",
+            "nombre": "SUJETO, CULTURA Y SOCIEDAD II",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Sujeto, Cultura Y Sociedad I"
+            ]
+          },
+          {
+            "codigo": "2BHUM2",
+            "nombre": "BIOLOGÍA HUMANA II",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Biología Humana"
+            ]
+          },
+          {
+            "codigo": "2BMAT",
+            "nombre": "BIOSEGURIDAD Y MEDIO AMBIENTE EN EL TRABAJO",
+            "anio": "2",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2FARE",
+            "nombre": "FARMACOLOGÍA EN ENFERMERÍA",
+            "anio": "2",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "2CEAAM",
+            "nombre": "CUIDADOS DE ENFERMERÍA A LOS ADULTOS Y A LOS ADULTOS MAYORES",
+            "anio": "2",
+            "cargaHoraria": "5",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Cuidados De Enfermería En La Comunidad Y En La Familia",
+              "Fundamentos Del Cuidado En Enfermería"
+            ]
+          },
+          {
+            "codigo": "2PPR2",
+            "nombre": "PRÁCTICA PROFESIONALIZANTE II",
+            "anio": "2",
+            "cargaHoraria": "13",
+            "comisiones": [
+              "A",
+              "B"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Práctica Profesionalizante I"
+            ]
+          },
+          {
+            "codigo": "3ERSO",
+            "nombre": "ÉTICA Y RESPONSABILIDAD SOCIAL",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3DLLA",
+            "nombre": "DERECHO Y LEGISLACIÓN LABORAL",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3INGT",
+            "nombre": "INGLÉS TÉCNICO",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3OGIS",
+            "nombre": "ORGANIZACIÓN Y GESTIÓN EN INSTITUCIONES DE SALUD",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3INEN",
+            "nombre": "INVESTIGACIÓN EN ENFERMERÍA",
+            "anio": "3",
+            "cargaHoraria": "3",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3CESM",
+            "nombre": "CUIDADOS DE ENFERMERÍA EN SALUD MENTAL",
+            "anio": "3",
+            "cargaHoraria": "4",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": []
+          },
+          {
+            "codigo": "3CENAD",
+            "nombre": "CUIDADOS DE ENFERMERÍA AL NIÑO Y AL ADOLESCENTE",
+            "anio": "3",
+            "cargaHoraria": "6",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Cuidados De Enfermería A Los Adultos Y A Los Adultos Mayores"
+            ]
+          },
+          {
+            "codigo": "3PPR3",
+            "nombre": "PRÁCTICA PROFESIONALIZANTE III",
+            "anio": "3",
+            "cargaHoraria": "15",
+            "comisiones": [
+              "A"
+            ],
+            "docentes": {
+              "A": "",
+              "B": "",
+              "C": ""
+            },
+            "correlativas": [
+              "Práctica Profesionalizante Ii"
+            ]
+          }
+        ]
       },
       {
         "id": "simulacion",
