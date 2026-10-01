@@ -33,7 +33,11 @@ header{background:var(--tinta);color:#fff;border-bottom:8px solid var(--celeste)
 .hero{text-align:center;padding-top:max(clamp(2.5rem,7vw,5rem),calc(env(safe-area-inset-top) + 1.5rem));padding-bottom:clamp(2rem,5vw,3.5rem)}
 .hero .tipo{margin:0 0 .5rem;color:var(--celeste);font-weight:700}
 .hero h1{margin:0;font:800 clamp(2.1rem,7.5vw,4.5rem)/1.05 var(--f-titulo);letter-spacing:-.02em}
-.hero .lema{max-width:34ch;margin:1.25rem auto 0;font-size:clamp(1.05rem,2.4vw,1.4rem);color:#dbe6f3}
+.hero-logo-wrap{margin:.4rem auto;display:flex;justify-content:center;align-items:center}
+.hero-logo{max-width:min(90vw,440px);width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 4px 14px rgba(0,0,0,.25));transition:transform .35s cubic-bezier(.34,1.5,.64,1)}
+.hero-logo:hover{transform:scale(1.03)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.hero .lema{max-width:36ch;margin:1rem auto 0;font-size:clamp(1.05rem,2.4vw,1.35rem);color:#dbe6f3}
 nav{margin-top:2rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
 nav a{display:inline-flex;align-items:center;min-height:44px;color:#fff;text-decoration:none;padding:.5rem 1.15rem;border:2px solid rgba(255,255,255,.4);border-radius:999px;font-weight:700;transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease,border-color .2s ease}
 nav a:hover{background:#fff;color:var(--tinta);border-color:#fff;transform:translateY(-4px) scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.25)}
@@ -53,7 +57,9 @@ h2{margin:0 0 .5rem;text-align:center;font:800 clamp(1.7rem,6vw,2.4rem)/1.1 var(
 .aviso.fecha:hover{box-shadow:0 10px 24px rgba(246,180,14,.18);border-color:var(--sol)}
 .aviso.info{border-left-color:var(--celeste)}
 .aviso.info:hover{box-shadow:0 10px 24px rgba(116,172,223,.18);border-color:var(--celeste)}
-.aviso-header{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
+.aviso-header{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.75rem}
+.aviso-icono{width:36px;height:36px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 2px 5px rgba(20,33,61,.14));transition:transform .3s cubic-bezier(.34,1.5,.64,1)}
+.aviso:hover .aviso-icono{transform:scale(1.14) rotate(-6deg)}
 .badge-espacio{display:inline-block;padding:.2rem .7rem;border-radius:999px;font:700 .82rem var(--f-texto);color:#fff;background:var(--celeste)}
 .aviso h3{margin:0;text-align:center;font:800 1.3rem/1.2 var(--f-titulo);color:var(--tinta)}
 .aviso p{margin:.4rem 0;max-width:70ch}
@@ -104,7 +110,8 @@ tbody tr:nth-child(even){background:var(--fondo)}
 .hero-actions{margin-top:1.6rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap}
 .btn-comunidad-hero{display:inline-flex;align-items:center;gap:.45rem;min-height:48px;padding:.55rem 1.45rem;background:var(--sol);color:var(--tinta);font:800 1rem var(--f-titulo);text-decoration:none;border-radius:999px;box-shadow:0 4px 14px rgba(246,180,14,.35);transition:transform .28s cubic-bezier(.34,1.5,.64,1),box-shadow .28s ease,background-color .2s ease}
 .btn-comunidad-hero:hover{transform:translateY(-5px) scale(1.04);box-shadow:0 10px 24px rgba(246,180,14,.55);background:#ffc324}
-.btn-inscripcion-hero{display:inline-flex;align-items:center;gap:.45rem;min-height:48px;padding:.55rem 1.35rem;background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.6);font:700 .95rem var(--f-texto);text-decoration:none;border-radius:999px;transition:transform .28s cubic-bezier(.34,1.5,.64,1),box-shadow .28s ease,background-color .2s ease,color .2s ease,border-color .2s ease}
+.btn-hero-icon{width:22px;height:22px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.25))}
+.btn-inscripcion-hero{display:inline-flex;align-items:center;gap:.55rem;min-height:48px;padding:.55rem 1.35rem;background:rgba(255,255,255,.12);color:#fff;border:2px solid rgba(255,255,255,.6);font:700 .95rem var(--f-texto);text-decoration:none;border-radius:999px;transition:transform .28s cubic-bezier(.34,1.5,.64,1),box-shadow .28s ease,background-color .2s ease,color .2s ease,border-color .2s ease}
 .btn-inscripcion-hero:hover{background:#fff;color:var(--tinta);border-color:#fff;transform:translateY(-4px) scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.25)}
 
 /* Movilidad en botones y cards */
@@ -178,11 +185,14 @@ footer p{margin:.2rem 0}
 <header>
   <div class="wrap hero">
     <p class="tipo" id="h-tipo"></p>
-    <h1 id="h-nombre">ISET N° 57</h1>
+    <h1 id="h-nombre" class="hero-logo-wrap">
+      <img src="img/general/logo.png" alt="ISET N° 57" class="hero-logo" id="h-logo">
+      <span class="sr-only">ISET N° 57</span>
+    </h1>
     <p class="lema" id="h-lema"></p>
     <div class="hero-actions">
       <a href="comunidad.html" class="btn-comunidad-hero">🌟 Comunidad &amp; Blog de Carreras</a>
-      <a href="inscripcion.html" class="btn-inscripcion-hero">📝 Guía de Inscripción</a>
+      <a href="inscripcion.html" class="btn-inscripcion-hero"><img src="img/general/inscripcion.png" alt="" class="btn-hero-icon"> Guía de Inscripción</a>
     </div>
     <nav aria-label="Secciones">
       <a href="#novedades">Novedades</a>
@@ -440,8 +450,16 @@ footer p{margin:.2rem 0}
       }
     }
 
+    const iconoAnuncio = h("img", {
+      src: "img/general/anuncio.png",
+      alt: "Anuncio",
+      class: "aviso-icono",
+      loading: "lazy"
+    });
+
     return h("article", { class: "aviso " + (a.tipo || "info") },
       h("div", { class: "aviso-header" },
+        iconoAnuncio,
         badge,
         h("h3", {}, a.titulo)
       ),
@@ -715,7 +733,7 @@ footer p{margin:.2rem 0}
   function render(d) {
     const i = d.institucion, g = d.informacionGeneral, o = d.ofertaAcademica;
     document.title = i.nombre + (i.nombreLargo ? " – " + i.nombreLargo : "");
-    $("h-nombre").textContent = i.nombre;
+    if ($("h-logo")) $("h-logo").alt = i.nombre + (i.nombreLargo ? " – " + i.nombreLargo : "");
     $("h-tipo").textContent = i.nombreLargo || "";
     $("h-lema").textContent = i.lema || "";
     $("t-nov").textContent = g.titulo || "Novedades";
