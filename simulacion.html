@@ -41,10 +41,8 @@ header{background:var(--tinta);color:#fff;border-bottom:8px solid var(--c-espaci
 .pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:.4rem 1rem;font-size:.92rem;color:#fff;font-weight:700}
 
 nav{margin-top:1.8rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem}
-nav a{display:inline-flex;align-items:center;min-height:44px;color:#fff;text-decoration:none;padding:.5rem 1.1rem;border:2px solid rgba(255,255,255,.4);border-radius:999px;font-weight:700;animation:sutilFlotar 4s ease-in-out infinite}
-nav a:nth-child(2){animation-delay:.6s}
-nav a:nth-child(3){animation-delay:1.2s}
-nav a:hover{background:#fff;color:var(--tinta)}
+nav a{display:inline-flex;align-items:center;min-height:44px;color:#fff;text-decoration:none;padding:.5rem 1.15rem;border:2px solid rgba(255,255,255,.4);border-radius:999px;font-weight:700;transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease,border-color .2s ease}
+nav a:hover{background:#fff;color:var(--tinta);border-color:#fff;transform:translateY(-4px) scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.25)}
 
 /* Secciones */
 main section{padding:clamp(2.5rem,5vw,3.5rem) 0}
