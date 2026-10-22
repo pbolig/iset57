@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin-editor.css">
 <style>
 :root{
   --tinta:#14213d; --celeste:#74acdf; --celeste-suave:#e6f0fa; --sol:#f6b40e;
@@ -336,15 +337,37 @@ footer p{margin:.2rem 0}
     );
   }
 
-  fetch("data.json?_t=" + Date.now(), { cache: "no-cache" })
-    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-    .then(render)
-    .catch(err => {
-      console.error(err);
-      $("pasos-container").replaceChildren(h("div", { class: "error", role: "alert" },
-        "No pudimos cargar la información de inscripción. Probá recargar la página en unos minutos."));
-    });
+  window.__iset_render = render;
+
+  const loadInitialData = () => {
+    if (window.ISET_CONTENT && window.ISET_CONTENT.data) {
+      render(window.ISET_CONTENT.data);
+    } else {
+      fetch("data.json?_t=" + Date.now(), { cache: "no-cache" })
+        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(render)
+        .catch(err => {
+          console.error(err);
+          $("pasos-container").replaceChildren(h("div", { class: "error", role: "alert" },
+            "No pudimos cargar la información de inscripción. Probá recargar la página en unos minutos."));
+        });
+    }
+  };
+
+  loadInitialData();
+  window.addEventListener("iset:content-loaded", (e) => {
+    if (e.detail && e.detail.data) render(e.detail.data);
+  });
 })();
 </script>
+
+<!-- Scripts de Autenticación, Roles y Edición en Tiempo Real -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth/config.js"></script>
+<script src="js/auth/authService.js"></script>
+<script src="js/editor/contentService.js"></script>
+<script src="js/auth/authUI.js"></script>
+<script src="js/editor/editorUI.js"></script>
+<script src="js/app-init.js"></script>
 </body>
 </html>

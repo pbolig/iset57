@@ -1,0 +1,1009 @@
+/* ==============================================================================
+   ISET N° 57 - Sistema de Autenticación, Roles, Píldoras de Edición y Dashboard
+   Diseño Premium, Accesible y Responsivo
+   ============================================================================== */
+
+/* --- Píldora Sutil de Edición ("Edit Pill") --- */
+.iset-edit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.75rem;
+  font: 700 0.8rem var(--f-texto, "Atkinson Hyperlegible", system-ui, sans-serif);
+  color: #ffffff;
+  background: rgba(20, 33, 61, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(116, 172, 223, 0.45);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(20, 33, 61, 0.16);
+  transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.25, 1),
+              background-color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.26s ease;
+  user-select: none;
+  z-index: 10;
+  vertical-align: middle;
+}
+
+.iset-edit-pill svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  stroke: var(--celeste, #74acdf);
+  transition: stroke 0.2s ease, transform 0.25s ease;
+}
+
+.iset-edit-pill:hover {
+  transform: translateY(-2px);
+  background: var(--tinta, #14213d);
+  border-color: var(--sol, #f6b40e);
+  box-shadow: 0 4px 12px rgba(246, 180, 14, 0.22);
+}
+
+.iset-edit-pill:hover svg {
+  stroke: var(--sol, #f6b40e);
+}
+
+.iset-edit-pill:active {
+  transform: translateY(0);
+}
+
+/* Contenedores con elementos editables */
+.iset-editable-host {
+  position: relative !important;
+}
+
+/* Píldora sutil flotante en la esquina superior derecha del elemento */
+.iset-pill-corner {
+  position: absolute !important;
+  top: 0.85rem !important;
+  right: 0.85rem !important;
+  z-index: 25 !important;
+}
+
+/* Píldora en héroes */
+.iset-pill-hero {
+  position: absolute !important;
+  top: 1.25rem !important;
+  right: 1.5rem !important;
+  z-index: 25 !important;
+}
+
+/* En tarjetas de oferta académica o avisos */
+.card.iset-editable-host .iset-pill-corner {
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+.aviso.iset-editable-host .iset-pill-corner {
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+}
+
+/* Píldora destacada y amigable para grillas y secciones */
+.iset-pill-prominent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.42rem 1.05rem;
+  font: 700 0.88rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  background: linear-gradient(135deg, var(--tinta, #14213d) 0%, #1e3a8a 100%);
+  border: 1.5px solid var(--sol, #f6b40e);
+  border-radius: 999px;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(20, 33, 61, 0.18);
+  transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.25, 1),
+              background 0.22s ease,
+              color 0.22s ease,
+              box-shadow 0.26s ease,
+              border-color 0.22s ease;
+  z-index: 6;
+  text-decoration: none;
+}
+
+.iset-pill-prominent:hover {
+  transform: translateY(-2px);
+  background: var(--sol, #f6b40e);
+  color: var(--tinta, #14213d);
+  border-color: var(--tinta, #14213d);
+  box-shadow: 0 5px 15px rgba(246, 180, 14, 0.28);
+}
+
+.iset-pill-prominent:active {
+  transform: translateY(0);
+}
+
+.iset-pill-add {
+  background: #065f46;
+  border-color: #34d399;
+}
+
+.iset-pill-add:hover {
+  background: #10b981;
+  color: #fff;
+  border-color: #064e3b;
+  box-shadow: 0 5px 15px rgba(16, 185, 129, 0.28);
+}
+
+/* --- Suavizado global de transiciones para cards, botones y enlaces (sin rebotes bruscos) --- */
+.card,
+.aviso,
+nav a,
+.enlace,
+.card-btn-plan,
+.carousel-btn,
+.tab-btn,
+.tabla-select {
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+              box-shadow 0.28s cubic-bezier(0.2, 0.8, 0.25, 1),
+              background-color 0.22s ease,
+              border-color 0.22s ease,
+              color 0.22s ease !important;
+}
+
+.card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 24px rgba(20, 33, 61, 0.1) !important;
+}
+
+.aviso:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 24px rgba(20, 33, 61, 0.08) !important;
+}
+
+.aviso:hover .aviso-icono {
+  transform: scale(1.05) !important;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1) !important;
+}
+
+.card:hover .carousel-slide img,
+.card:hover .carousel-slide svg {
+  transform: scale(1.02) !important;
+  transition: transform 0.35s ease !important;
+}
+
+nav a:hover,
+.enlace:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(20, 33, 61, 0.18) !important;
+}
+
+/* Barra de píldoras centrada para cabeceras de grillas */
+.iset-grid-toolbar-pills {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0.5rem auto 1.25rem;
+  z-index: 5;
+}
+
+/* Tarjeta individual de fila/elemento dentro del modal de edición */
+.iset-editor-row-card {
+  background: var(--fondo, #f5f8fb);
+  border: 1.5px solid var(--borde, #d3dde9);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.iset-editor-row-card:hover {
+  border-color: var(--celeste, #74acdf);
+  box-shadow: 0 3px 10px rgba(20, 33, 61, 0.06);
+}
+
+.iset-editor-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--borde, #d3dde9);
+}
+
+.iset-editor-row-title {
+  font: 800 0.95rem var(--f-titulo, "Bricolage Grotesque", sans-serif);
+  color: var(--tinta, #14213d);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.iset-btn-delete-row {
+  background: transparent;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font: 700 0.8rem var(--f-texto);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.iset-btn-delete-row:hover {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #991b1b;
+}
+
+/* Editor de Mesas de Examen y Grillas tabulares */
+.iset-table-header-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.2fr 1fr 90px 90px 85px;
+  gap: 0.6rem;
+  font: 700 0.78rem var(--f-texto);
+  color: var(--suave, #56647a);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1.5px solid var(--borde, #d3dde9);
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .iset-table-header-row {
+    display: none;
+  }
+}
+
+.iset-table-row-item {
+  background: #ffffff;
+  border: 1px solid var(--borde, #d3dde9);
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 1.4fr 1.2fr 1fr 90px 90px 85px;
+  gap: 0.6rem;
+  align-items: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.iset-table-row-item:hover {
+  border-color: var(--celeste, #74acdf);
+  box-shadow: 0 2px 8px rgba(20, 33, 61, 0.06);
+}
+
+@media (max-width: 768px) {
+  .iset-table-row-item {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.iset-btn-add-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: #f0fdf4;
+  border: 1.5px dashed #22c55e;
+  color: #15803d;
+  border-radius: 8px;
+  font: 700 0.92rem var(--f-texto);
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.iset-btn-add-item:hover {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #14532d;
+  transform: translateY(-1px);
+}
+
+/* Píldora flotante para secciones completas o headers */
+.iset-pill-corner {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+/* Envoltorio con posicionamiento relativo para elementos editables */
+.iset-editable-host {
+  position: relative !important;
+}
+
+/* --- Botón e Indicador de Usuario en el Header Nav --- */
+.iset-nav-auth {
+  display: inline-flex;
+  align-items: center;
+}
+
+.iset-login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.45rem 1.15rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font: 700 0.95rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.34, 1.5, 0.64, 1),
+              background-color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.28s ease;
+}
+
+.iset-login-btn:hover {
+  background: var(--sol, #f6b40e);
+  border-color: var(--sol, #f6b40e);
+  color: var(--tinta, #14213d);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.iset-user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(20, 33, 61, 0.92);
+  border: 1.5px solid var(--celeste, #74acdf);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem 0.3rem 0.4rem;
+  color: #fff;
+  font: 700 0.9rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.24s ease;
+}
+
+.iset-user-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--sol, #f6b40e);
+  box-shadow: 0 6px 18px rgba(246, 180, 14, 0.2);
+}
+
+.iset-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--celeste, #74acdf);
+  color: var(--tinta, #14213d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.iset-badge-role {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.iset-badge-superuser {
+  background: var(--sol, #f6b40e);
+  color: var(--tinta, #14213d);
+}
+
+.iset-badge-admin {
+  background: var(--celeste, #74acdf);
+  color: var(--tinta, #14213d);
+}
+
+.iset-badge-visitante {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* --- Menú Desplegable de Usuario --- */
+.iset-user-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 270px;
+  background: var(--papel, #ffffff);
+  border: 1px solid var(--borde, #d3dde9);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(20, 33, 61, 0.22);
+  padding: 0.6rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.3rem;
+  z-index: 1000;
+  color: var(--texto, #1f2a3d);
+  animation: isetFadeDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.iset-user-menu.open {
+  display: flex;
+}
+
+.iset-menu-header {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--borde, #d3dde9);
+  margin-bottom: 0.3rem;
+}
+
+.iset-menu-name {
+  font-weight: 800;
+  color: var(--tinta, #14213d);
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.iset-menu-email {
+  font-size: 0.82rem;
+  color: var(--suave, #56647a);
+  margin: 0.15rem 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iset-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--texto, #1f2a3d);
+  font: 700 0.9rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.iset-menu-item:hover {
+  background: var(--celeste-suave, #e6f0fa);
+  color: var(--tinta, #14213d);
+}
+
+.iset-menu-item.danger:hover {
+  background: #fee2e2;
+  color: var(--alerta, #b3261e);
+}
+
+/* --- Modales Generales (Auth, Dashboard, Editores) --- */
+.iset-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.iset-modal-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.iset-modal {
+  background: var(--papel, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
+  width: min(100%, 540px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(18px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--borde, #d3dde9);
+}
+
+.iset-modal-lg {
+  width: min(100%, 820px);
+}
+
+.iset-modal-backdrop.open .iset-modal {
+  transform: translateY(0) scale(1);
+}
+
+.iset-modal-header {
+  padding: 1.25rem 1.6rem;
+  background: var(--tinta, #14213d);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--celeste, #74acdf);
+}
+
+.iset-modal-title {
+  margin: 0;
+  font: 800 1.35rem/1.2 var(--f-titulo, "Bricolage Grotesque", sans-serif);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iset-modal-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.4rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+}
+
+.iset-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.iset-modal-body {
+  padding: 1.5rem 1.6rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Tabs */
+.iset-tabs {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--fondo, #f5f8fb);
+  padding: 0.35rem;
+  border-radius: 10px;
+  margin-bottom: 1.4rem;
+  border: 1px solid var(--borde, #d3dde9);
+}
+
+.iset-tab {
+  flex: 1;
+  padding: 0.55rem 0.8rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font: 700 0.88rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  color: var(--suave, #56647a);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.iset-tab.active {
+  background: #fff;
+  color: var(--tinta, #14213d);
+  box-shadow: 0 2px 6px rgba(20, 33, 61, 0.1);
+}
+
+/* Campos de Formulario */
+.iset-form-group {
+  margin-bottom: 1.15rem;
+}
+
+.iset-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font: 700 0.92rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  color: var(--tinta, #14213d);
+}
+
+.iset-input, .iset-textarea, .iset-select {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid var(--borde, #d3dde9);
+  border-radius: 8px;
+  font: 400 0.98rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  color: var(--texto, #1f2a3d);
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.iset-input:focus, .iset-textarea:focus, .iset-select:focus {
+  outline: none;
+  border-color: var(--celeste, #74acdf);
+  box-shadow: 0 0 0 3px rgba(116, 172, 223, 0.25);
+}
+
+.iset-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.iset-hint {
+  font-size: 0.82rem;
+  color: var(--suave, #56647a);
+  margin-top: 0.3rem;
+}
+
+/* Botones del Formulario */
+.iset-btn-primary {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.65rem 1.4rem;
+  background: var(--tinta, #14213d);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font: 700 1rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(20, 33, 61, 0.15);
+  transition: all 0.25s ease;
+}
+
+.iset-btn-primary:hover {
+  background: var(--celeste, #74acdf);
+  color: var(--tinta, #14213d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(20, 33, 61, 0.2);
+}
+
+.iset-btn-primary:active {
+  transform: translateY(1px);
+}
+
+.iset-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.5rem 1.1rem;
+  background: var(--fondo, #f5f8fb);
+  border: 1px solid var(--borde, #d3dde9);
+  color: var(--tinta, #14213d);
+  border-radius: 999px;
+  font: 700 0.92rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iset-btn-secondary:hover {
+  background: var(--celeste-suave, #e6f0fa);
+  border-color: var(--celeste, #74acdf);
+}
+
+.iset-modal-footer {
+  padding: 1rem 1.6rem;
+  background: var(--fondo, #f5f8fb);
+  border-top: 1px solid var(--borde, #d3dde9);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Alertas */
+.iset-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.iset-alert-info {
+  background: var(--celeste-suave, #e6f0fa);
+  color: var(--tinta, #14213d);
+  border: 1px solid var(--celeste, #74acdf);
+}
+
+.iset-alert-warning {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fde047;
+}
+
+.iset-alert-danger {
+  background: #fee2e2;
+  color: var(--alerta, #b3261e);
+  border: 1px solid #fca5a5;
+}
+
+.iset-alert-success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+/* --- Tabla de Gestión de Usuarios (Dashboard Superuser) --- */
+.iset-users-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--borde, #d3dde9);
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.iset-users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.iset-users-table th {
+  background: var(--tinta, #14213d);
+  color: #fff;
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+.iset-users-table td {
+  padding: 0.75rem 0.9rem;
+  border-top: 1px solid var(--borde, #d3dde9);
+}
+
+.iset-users-table tr:nth-child(even) td {
+  background: var(--fondo, #f5f8fb);
+}
+
+.iset-user-carreras-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+
+.iset-carrera-tag {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--tinta, #14213d);
+}
+
+/* Selector de carreras para Admin */
+.iset-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.iset-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  background: var(--fondo, #f5f8fb);
+  border: 1px solid var(--borde, #d3dde9);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iset-checkbox-label:hover {
+  background: var(--celeste-suave, #e6f0fa);
+  border-color: var(--celeste, #74acdf);
+}
+
+/* Subida de Imagen */
+.iset-image-uploader {
+  border: 2px dashed var(--borde, #d3dde9);
+  border-radius: 12px;
+  padding: 1.4rem;
+  text-align: center;
+  background: var(--fondo, #f5f8fb);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.iset-image-uploader:hover {
+  border-color: var(--celeste, #74acdf);
+  background: var(--celeste-suave, #e6f0fa);
+}
+
+.iset-image-preview {
+  max-width: 100%;
+  max-height: 220px;
+  border-radius: 8px;
+  margin-top: 0.8rem;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(20, 33, 61, 0.12);
+}
+
+/* Toast Notifications */
+.iset-toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.iset-toast {
+  pointer-events: auto;
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  background: var(--tinta, #14213d);
+  color: #fff;
+  font: 700 0.92rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-left: 5px solid var(--celeste, #74acdf);
+  animation: isetToastSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 380px;
+}
+
+.iset-toast.success {
+  border-left-color: #22c55e;
+}
+
+.iset-toast.error {
+  border-left-color: var(--alerta, #b3261e);
+}
+
+/* Animaciones */
+@keyframes isetToastSlide {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes isetFadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .iset-modal {
+    width: 100%;
+    max-height: 94vh;
+    border-radius: 12px;
+  }
+  .iset-modal-body {
+    padding: 1.2rem;
+  }
+  .iset-checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Editor de Código JSON en Tiempo Real (JSON Workspace) --- */
+.iset-modal-xl {
+  width: min(96vw, 1150px) !important;
+  height: 92vh !important;
+  max-height: 92vh !important;
+}
+
+.iset-json-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: var(--fondo, #f5f8fb);
+  border: 1px solid var(--borde, #d3dde9);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.iset-json-tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.iset-json-tab-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--borde, #d3dde9);
+  background: #fff;
+  color: var(--tinta, #14213d);
+  font: 700 0.88rem var(--f-texto, "Atkinson Hyperlegible", sans-serif);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iset-json-tab-btn.active {
+  background: var(--tinta, #14213d);
+  color: #fff;
+  border-color: var(--tinta, #14213d);
+}
+
+.iset-json-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.iset-json-editor-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid #334155;
+  background: #0f172a;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.iset-json-textarea {
+  width: 100%;
+  flex: 1;
+  min-height: 440px;
+  background: transparent;
+  color: #38bdf8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  padding: 1rem 1.25rem;
+  border: none;
+  outline: none;
+  resize: none;
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.iset-json-status {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.iset-json-status.valid {
+  background: #064e3b;
+  color: #6ee7b7;
+  border: 1px solid #059669;
+}
+
+.iset-json-status.invalid {
+  background: #450a0a;
+  color: #fca5a5;
+  border: 1px solid #dc2626;
+}
+
+.iset-json-error-banner {
+  padding: 0.6rem 1rem;
+  background: #7f1d1d;
+  color: #fecaca;
+  font-family: monospace;
+  font-size: 0.85rem;
+  border-top: 1px solid #b91c1c;
+  display: none;
+}
+
