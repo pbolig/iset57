@@ -48,6 +48,7 @@
           const { data: { session } } = await this.supabase.auth.getSession();
           if (session?.user) {
             await this._fetchSupabaseUserProfile(session.user);
+            this._subscribeToProfileChanges(session.user.id);
           }
 
           // Escuchar cambios de sesión
@@ -58,10 +59,29 @@
             }
             if (session?.user) {
               await this._fetchSupabaseUserProfile(session.user);
+              this._subscribeToProfileChanges(session.user.id);
             } else {
               this.currentUser = null;
             }
             this.emit("auth-changed", this.currentUser);
+          });
+
+          // Re-verificar perfil en foco de ventana por si cambiaron sus permisos mientras navegaba
+          window.addEventListener("focus", async () => {
+            if (this.supabase && this.currentUser?.id) {
+              try {
+                const { data: { session: s } } = await this.supabase.auth.getSession();
+                if (s?.user) {
+                  const prevRole = this.currentUser.role;
+                  const prevCarreras = (this.currentUser.carreras || []).join(",");
+                  await this._fetchSupabaseUserProfile(s.user);
+                  const newCarreras = (this.currentUser.carreras || []).join(",");
+                  if (this.currentUser.role !== prevRole || prevCarreras !== newCarreras) {
+                    this.emit("auth-changed", this.currentUser);
+                  }
+                }
+              } catch (_) {}
+            }
           });
         } catch (err) {
           console.warn("No se pudo conectar a Supabase, usando modo local:", err);
@@ -130,6 +150,32 @@
       }
     }
 
+    _subscribeToProfileChanges(userId) {
+      if (!this.supabase || this._profileSub || !userId) return;
+      try {
+        this._profileSub = this.supabase
+          .channel(`profile-changes-${userId}`)
+          .on("postgres_changes", {
+            event: "UPDATE",
+            schema: "public",
+            table: "profiles",
+            filter: `id=eq.${userId}`
+          }, (payload) => {
+            if (payload.new && this.currentUser) {
+              console.log("🔔 Permisos de usuario actualizados en vivo por Superusuario:", payload.new);
+              this.currentUser.role = payload.new.role;
+              this.currentUser.carreras = payload.new.carreras || [];
+              this.currentUser.fullName = payload.new.full_name || this.currentUser.fullName;
+              this.emit("auth-changed", this.currentUser);
+              window.ISET_TOAST?.(`🎉 Tus permisos se actualizaron a: ${payload.new.role.toUpperCase()}`, "success");
+            }
+          })
+          .subscribe();
+      } catch (e) {
+        console.warn("No se pudo suscribir a cambios de perfil en Supabase:", e);
+      }
+    }
+
     // ----------------------------------------------------
     // Modo Local / Mock Resiliente (localStorage)
     // ----------------------------------------------------
@@ -187,7 +233,11 @@
       if (!this.currentUser) return false;
       if (this.isSuperuser()) return true;
       if (this.currentUser.role === this.config.ROLES.ADMIN) {
-        return Array.isArray(this.currentUser.carreras) && this.currentUser.carreras.includes(carreraId);
+        // Si no tiene lista de carreras asignadas o está vacía, se considera Administrador General (acceso a todas las carreras)
+        if (!Array.isArray(this.currentUser.carreras) || this.currentUser.carreras.length === 0) {
+          return true;
+        }
+        return this.currentUser.carreras.includes(carreraId);
       }
       return false;
     }
@@ -198,7 +248,7 @@
       if (carreraId) {
         return this.isAdminOf(carreraId);
       }
-      // Administradores institucionales pueden editar secciones generales compartidas (ej. FAQ e inscripción)
+      // Administradores institucionales tienen permisos de edición en todas las secciones generales
       if (this.currentUser.role === this.config.ROLES.ADMIN) {
         return true;
       }

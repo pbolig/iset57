@@ -223,9 +223,25 @@
             if (window.ISET_EDITOR_UI) window.ISET_EDITOR_UI.openRawJSONEditor();
           }
         }, "📝 Editor de Código JSON / Subir Archivo") : null,
+        (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) ? h("button", {
+          class: "iset-menu-item",
+          style: "color:var(--tinta);font-weight:700",
+          onclick: () => {
+            menu.classList.remove("open");
+            if (window.ISET_EDITOR_UI) window.ISET_EDITOR_UI.openAddAvisoEditor();
+          }
+        }, "📢 Publicar Aviso / Mesas de Examen") : null,
+        (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) ? h("button", {
+          class: "iset-menu-item",
+          style: "color:var(--tinta);font-weight:700",
+          onclick: () => {
+            menu.classList.remove("open");
+            if (window.ISET_EDITOR_UI) window.ISET_EDITOR_UI.openInstitucionEditor();
+          }
+        }, "🏛️ Modificar Datos Institucionales") : null,
         user.role === config.ROLES.ADMIN ? h("div", {
           style: "padding:0.4rem 0.8rem;font-size:0.8rem;color:var(--suave)"
-        }, `Carreras: ${user.carreras?.join(", ") || "Ninguna"}`) : null,
+        }, `Carreras: ${(!user.carreras || user.carreras.length === 0 || user.carreras.length === config.carreras.length) ? "Todas las carreras (General)" : user.carreras.join(", ")}`) : null,
         h("button", {
           class: "iset-menu-item",
           onclick: () => {
@@ -793,14 +809,41 @@
         h("option", { value: config.ROLES.SUPERUSER, selected: user.role === config.ROLES.SUPERUSER }, "Superusuario (Permisos totales)")
       );
 
+      const isInitiallyAdmin = user.role === config.ROLES.ADMIN;
+      const initialCarreras = Array.isArray(user.carreras) && user.carreras.length > 0
+        ? user.carreras
+        : config.carreras.map(c => c.id);
+
       const carrerasSection = h("div", {
         id: "carreras-selector-section",
-        style: user.role === config.ROLES.ADMIN ? "display:block;margin-top:1.2rem" : "display:none;margin-top:1.2rem"
+        style: isInitiallyAdmin ? "display:block;margin-top:1.2rem" : "display:none;margin-top:1.2rem"
       },
-        h("label", { class: "iset-label" }, "Seleccioná las carreras que podrá administrar:"),
+        h("div", { style: "display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem" },
+          h("label", { class: "iset-label", style: "margin:0" }, "Carreras que podrá administrar:"),
+          h("div", { style: "display:flex;gap:0.5rem" },
+            h("button", {
+              type: "button",
+              class: "iset-btn-secondary",
+              style: "padding:0.2rem 0.55rem;font-size:0.75rem",
+              onclick: () => {
+                carrerasSection.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = true);
+              }
+            }, "Marcar todas"),
+            h("button", {
+              type: "button",
+              class: "iset-btn-secondary",
+              style: "padding:0.2rem 0.55rem;font-size:0.75rem",
+              onclick: () => {
+                carrerasSection.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+              }
+            }, "Desmarcar")
+          )
+        ),
         h("div", { class: "iset-checkbox-grid" },
           ...config.carreras.map(c => {
-            const isChecked = Array.isArray(user.carreras) && user.carreras.includes(c.id);
+            const isChecked = isInitiallyAdmin
+              ? initialCarreras.includes(c.id)
+              : true; // Por defecto marcar todas si se promueve a admin
             return h("label", { class: "iset-checkbox-label" },
               h("input", {
                 type: "checkbox",
@@ -811,11 +854,21 @@
               h("span", {}, `${c.icono} ${c.nombre}`)
             );
           })
+        ),
+        h("div", { class: "iset-alert iset-alert-info", style: "margin-top:0.8rem;font-size:0.82rem;line-height:1.45" },
+          "💡 Los administradores pueden editar Novedades, Avisos, Mesas de Examen, Planes de Estudio, Inscripción, FAQs, Comunidad y las carreras que tengan asignadas."
         )
       );
 
       roleSelect.addEventListener("change", () => {
-        carrerasSection.style.display = roleSelect.value === config.ROLES.ADMIN ? "block" : "none";
+        const isAdm = roleSelect.value === config.ROLES.ADMIN;
+        carrerasSection.style.display = isAdm ? "block" : "none";
+        if (isAdm) {
+          const checked = carrerasSection.querySelectorAll("input[type=checkbox]:checked");
+          if (checked.length === 0) {
+            carrerasSection.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = true);
+          }
+        }
       });
 
       body.appendChild(h("div", { class: "iset-form-group" },
@@ -839,6 +892,10 @@
             if (newRole === config.ROLES.ADMIN) {
               const checkedBoxes = carrerasSection.querySelectorAll("input[type=checkbox]:checked");
               assignedCarreras = Array.from(checkedBoxes).map(cb => cb.value);
+              // Si no tildó ninguna o tildó todas, asignar todas
+              if (assignedCarreras.length === 0) {
+                assignedCarreras = config.carreras.map(c => c.id);
+              }
             } else if (newRole === config.ROLES.SUPERUSER) {
               assignedCarreras = config.carreras.map(c => c.id);
             }

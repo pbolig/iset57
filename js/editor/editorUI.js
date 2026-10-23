@@ -222,10 +222,10 @@
     // PÍLDORAS EN INDEX.HTML (Portada)
     // ====================================================
     attachIndexPills() {
-      const isSuper = auth.isSuperuser();
+      const canEditGeneral = auth.canEdit();
 
-      // 1. Hero Institucional (Superusuario)
-      if (isSuper) {
+      // 1. Hero Institucional (Superusuario o Administrador)
+      if (canEditGeneral) {
         const hero = document.querySelector(".hero");
         if (hero && !hero.querySelector(".iset-pill-hero")) {
           hero.classList.add("iset-editable-host");
@@ -271,8 +271,8 @@
         }
       }
 
-      // 2. Cada Aviso individual en la grilla de Novedades
-      if (isSuper) {
+      // 2. Cada Aviso individual en la grilla de Novedades (Mesas de Examen)
+      if (canEditGeneral) {
         const avisos = document.querySelectorAll(".avisos .aviso");
         const avisosData = content.getData()?.informacionGeneral?.avisos || [];
         avisos.forEach((avisoEl, idx) => {
@@ -576,7 +576,7 @@
     // PÍLDORAS EN COMUNIDAD.HTML (Blog y Novedades)
     // ====================================================
     attachComunidadPills() {
-      if (!auth.isSuperuser()) return;
+      if (!auth.canEdit()) return;
 
       // 1. Cabecera
       const hero = document.querySelector(".hero");

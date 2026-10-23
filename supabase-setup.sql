@@ -151,7 +151,7 @@ create policy "Admins y Superusers pueden actualizar site_content"
     )
   );
 
--- Habilitar Supabase Realtime para site_content
+-- Habilitar Supabase Realtime para site_content y profiles
 do $$
 begin
   if not exists (
@@ -159,6 +159,13 @@ begin
     where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'site_content'
   ) then
     alter publication supabase_realtime add table public.site_content;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables 
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'profiles'
+  ) then
+    alter publication supabase_realtime add table public.profiles;
   end if;
 end;
 $$;
