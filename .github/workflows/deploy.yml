@@ -30,6 +30,28 @@ jobs:
           rsync -a --exclude='.git' --exclude='.github' --exclude='dist' --exclude='README.md' ./ dist/
           touch dist/.nojekyll
 
+      - name: Inyectar credenciales de Supabase en producción (GitHub Secrets)
+        env:
+          SECRET_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SECRET_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$SECRET_SUPABASE_URL" ] && [ -n "$SECRET_SUPABASE_ANON_KEY" ]; then
+            echo "Inyectando credenciales secretas de Supabase en dist/js/auth/config.js..."
+            python3 -c "
+import os
+url = os.environ.get('SECRET_SUPABASE_URL', '').strip()
+key = os.environ.get('SECRET_SUPABASE_ANON_KEY', '').strip()
+if url and key:
+    with open('dist/js/auth/config.js', 'r', encoding='utf-8') as f:
+        content = f.read()
+    content = content.replace('PRODUCTION_SUPABASE_URL = \"\"', f'PRODUCTION_SUPABASE_URL = \"{url}\"')
+    content = content.replace('PRODUCTION_SUPABASE_ANON_KEY = \"\"', f'PRODUCTION_SUPABASE_ANON_KEY = \"{key}\"')
+    with open('dist/js/auth/config.js', 'w', encoding='utf-8') as f:
+        f.write(content)
+print('✅ Credenciales de Supabase inyectadas correctamente en build de GitHub Pages.')
+"
+          fi
+
       - name: Configurar Pages
         uses: actions/configure-pages@v5
 

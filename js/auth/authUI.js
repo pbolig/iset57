@@ -666,6 +666,31 @@
     }
 
     async renderUsersTab(container) {
+      const isLive = auth.isLiveSupabase();
+      const statusBanner = h("div", {
+        class: `iset-alert ${isLive ? "iset-alert-success" : "iset-alert-warning"}`,
+        style: "display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.2rem"
+      },
+        h("div", {},
+          h("strong", {}, isLive ? "🟢 Origen: Base de datos Supabase en Vivo (Nube)" : "🟡 Origen: Modo Local / Pruebas (Almacenamiento de este navegador)"),
+          h("div", { style: "font-size:0.82rem;margin-top:0.25rem;opacity:0.9" },
+            isLive
+              ? `Conectado a ${auth.config.supabaseUrl}. Estás viendo los usuarios registrados en el servidor central.`
+              : "⚠️ La web en este navegador está en modo local. Los usuarios que se registren en otros dispositivos no aparecerán acá hasta que se conecte Supabase centralizado."
+          )
+        ),
+        h("button", {
+          type: "button",
+          class: "iset-btn-secondary",
+          style: "padding:0.4rem 0.85rem;font-size:0.82rem",
+          onclick: () => {
+            this.dashboardTab = "users";
+            this.openSuperuserDashboard();
+          }
+        }, "🔄 Actualizar Lista")
+      );
+      container.appendChild(statusBanner);
+
       const intro = h("div", { class: "iset-alert iset-alert-info" },
         "👑 Como Superusuario, podés convertir a cualquier usuario visitante en Administrador y asignarle una o más carreras específicas. Los administradores verán las píldoras de edición únicamente en las carreras que tengan asignadas."
       );
@@ -937,13 +962,36 @@
 
     renderSupabaseTab(container) {
       const isLive = auth.isLiveSupabase();
+      const hasProd = config.hasConfiguredProduction;
+
       const statusAlert = h("div", {
         class: `iset-alert ${isLive ? "iset-alert-success" : "iset-alert-warning"}`
       }, isLive
-        ? "🟢 Conexión activa con Supabase. Los usuarios, roles y datos se sincronizan en la nube en tiempo real."
-        : "🟡 Modo Local / Pruebas activo. Podés probar todos los flujos de inmediato. Para sincronización en la nube pública de GitHub Pages, ingresá tus credenciales de Supabase debajo."
+        ? `🟢 Conexión activa con Supabase (${auth.config.supabaseUrl}). Todos los registros de usuarios y cambios de contenido se sincronizan en la nube.`
+        : "🟡 Modo Local / Pruebas activo. Los registros de usuarios se guardan sólo en el almacenamiento local de este navegador."
       );
       container.appendChild(statusAlert);
+
+      const prodNotice = h("div", {
+        class: "iset-alert iset-alert-info",
+        style: "margin-top:0.8rem;line-height:1.5"
+      },
+        h("strong", {}, "💡 ¿Por qué no veías los usuarios en producción?"),
+        h("p", { style: "margin:0.4rem 0 0;font-size:0.88rem" },
+          "El formulario de abajo guarda las credenciales únicamente en el ",
+          h("code", {}, "localStorage"),
+          " de este navegador. Para que ",
+          h("strong", {}, "TODOS"),
+          " los visitantes que se registren en GitHub Pages queden registrados en la base centralizada de Supabase, las credenciales deben cargarse en el archivo ",
+          h("code", {}, "js/auth/config.js"),
+          " o como Secrets en GitHub Actions (",
+          h("code", {}, "SUPABASE_URL"),
+          " y ",
+          h("code", {}, "SUPABASE_ANON_KEY"),
+          ")."
+        )
+      );
+      container.appendChild(prodNotice);
 
       const form = h("form", {
         onsubmit: (e) => {
@@ -954,7 +1002,7 @@
           localStorage.setItem("iset_supabase_url", url);
           localStorage.setItem("iset_supabase_anon_key", key);
 
-          showToast("Configuración guardada. Recargando para conectar…", "success");
+          showToast("Credenciales guardadas en este navegador. Conectando…", "success");
           setTimeout(() => window.location.reload(), 1200);
         }
       },
@@ -965,7 +1013,7 @@
             id: "sb-url",
             name: "sbUrl",
             class: "iset-input",
-            defaultValue: localStorage.getItem("iset_supabase_url") || "",
+            defaultValue: localStorage.getItem("iset_supabase_url") || config.supabaseUrl || "",
             placeholder: "https://xyzcompany.supabase.co"
           })
         ),
@@ -976,12 +1024,28 @@
             id: "sb-key",
             name: "sbKey",
             class: "iset-input",
-            defaultValue: localStorage.getItem("iset_supabase_anon_key") || "",
+            defaultValue: localStorage.getItem("iset_supabase_anon_key") || config.supabaseAnonKey || "",
             placeholder: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           })
         ),
-        h("div", { style: "display:flex;gap:0.75rem;margin-top:1.2rem" },
-          h("button", { type: "submit", class: "iset-btn-primary", style: "width:auto" }, "Guardar y Conectar"),
+        h("div", { style: "display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:1.2rem" },
+          h("button", { type: "submit", class: "iset-btn-primary", style: "width:auto" }, "Guardar en este Navegador"),
+          h("button", {
+            type: "button",
+            class: "iset-btn-secondary",
+            onclick: () => {
+              const url = form.sbUrl.value.trim();
+              const key = form.sbKey.value.trim();
+              if (!url || !key) {
+                showToast("Ingresá la URL y Anon Key primero para copiar el código", "warning");
+                return;
+              }
+              const snippet = `  const PRODUCTION_SUPABASE_URL = "${url}";\n  const PRODUCTION_SUPABASE_ANON_KEY = "${key}";`;
+              navigator.clipboard?.writeText(snippet)
+                .then(() => showToast("📋 Código copiado. Pegalo en js/auth/config.js", "success"))
+                .catch(() => alert(snippet));
+            }
+          }, "📋 Copiar código para config.js"),
           h("button", {
             type: "button",
             class: "iset-btn-secondary",
@@ -997,11 +1061,22 @@
 
       container.appendChild(form);
 
-      // Guía rápida de SQL
+      // Guía rápida de SQL y Email Confirm
       const guideBox = h("div", { style: "margin-top:1.8rem;background:var(--fondo);border:1px solid var(--borde);border-radius:10px;padding:1.2rem" },
-        h("h4", { style: "margin:0 0 0.5rem;font:800 1.05rem var(--f-titulo)" }, "📜 Script de Base de Datos"),
-        h("p", { style: "margin:0 0 0.6rem;font-size:0.9rem;color:var(--suave)" },
-          "Para crear las tablas y roles en Supabase, ejecutá el archivo supabase-setup.sql en el SQL Editor de tu panel de Supabase."
+        h("h4", { style: "margin:0 0 0.5rem;font:800 1.05rem var(--f-titulo)" }, "📜 Pasos en tu panel de Supabase"),
+        h("ul", { style: "margin:0;padding-left:1.2rem;font-size:0.88rem;color:var(--suave);line-height:1.6" },
+          h("li", {},
+            h("strong", {}, "Desactivar confirmación por email obligatoria: "),
+            "Andá a ", h("em", {}, "Authentication -> Providers -> Email"),
+            " y desmarcá ", h("strong", {}, "'Confirm email'"),
+            ". Así cualquier usuario registrado podrá ingresar sin esperar correos."
+          ),
+          h("li", {},
+            h("strong", {}, "Ejecutar supabase-setup.sql: "),
+            "Copiá y ejecutá el script en ", h("em", {}, "SQL Editor"),
+            " de Supabase. El script sincroniza automáticamente todos los usuarios existentes en ",
+            h("code", {}, "auth.users"), " hacia la tabla ", h("code", {}, "profiles"), "."
+          )
         )
       );
       container.appendChild(guideBox);

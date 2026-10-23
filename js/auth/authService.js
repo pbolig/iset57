@@ -106,8 +106,8 @@
             carreras: initialCarreras
           };
 
-          const insertRes = await this.supabase.from("profiles").insert([newProfile]).select().single();
-          profile = insertRes.data || newProfile;
+          const insertRes = await this.supabase.from("profiles").insert([newProfile]).select().maybeSingle();
+          profile = insertRes?.data || newProfile;
         }
 
         this.currentUser = {
@@ -218,11 +218,21 @@
           }
         });
         if (error) throw error;
+
+        // Si Supabase tiene confirmación de correo obligatoria en su panel, no devuelve sesión activa
+        if (data.user && !data.session) {
+          return {
+            user: null,
+            requiresEmailConfirmation: true,
+            message: "¡Cuenta creada en Supabase! Si 'Confirm email' está activado en tu panel, revisá tu correo antes de iniciar sesión. (O podés desactivarlo en Supabase -> Auth -> Providers -> Email)."
+          };
+        }
+
         if (data.user) {
           await this._fetchSupabaseUserProfile(data.user);
           this.emit("auth-changed", this.currentUser);
         }
-        return { user: this.currentUser, message: "Registro exitoso en Supabase." };
+        return { user: this.currentUser, message: "¡Cuenta creada exitosamente en Supabase!" };
       }
 
       // Fallback local

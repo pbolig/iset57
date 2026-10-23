@@ -2,14 +2,28 @@
  * ISET N° 57 - Configuración Global de Autenticación, Roles y Supabase
  */
 window.ISET_CONFIG = (() => {
-  // Configuración predeterminada o persistida en localStorage
+  // ==============================================================================
+  // 1. CREDENCIALES DE PRODUCCIÓN PARA SUPABASE (CENTRALIZADAS)
+  // ==============================================================================
+  // La clave 'anon' de Supabase es PÚBLICA por diseño (diseñada para frontends web
+  // estáticos como GitHub Pages). Toda la seguridad se basa en Row Level Security (RLS).
+  // Colocá aquí tus datos reales para que TODOS los usuarios en producción se registren
+  // en la misma base de datos de Supabase en lugar de quedar aislados en modo local:
+  const PRODUCTION_SUPABASE_URL = ""; // Ej: "https://xyzcompany.supabase.co"
+  const PRODUCTION_SUPABASE_ANON_KEY = ""; // Ej: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+  // 2. Persistencia en localStorage (permite sobreescribir desde el navegador para pruebas locales)
   const savedUrl = localStorage.getItem("iset_supabase_url") || "";
   const savedKey = localStorage.getItem("iset_supabase_anon_key") || "";
 
+  const finalUrl = savedUrl || PRODUCTION_SUPABASE_URL || "https://su-proyecto.supabase.co";
+  const finalKey = savedKey || PRODUCTION_SUPABASE_ANON_KEY || "";
+
   return {
     // Credenciales de Supabase
-    supabaseUrl: savedUrl || "https://su-proyecto.supabase.co",
-    supabaseAnonKey: savedKey || "",
+    supabaseUrl: finalUrl,
+    supabaseAnonKey: finalKey,
+    hasConfiguredProduction: Boolean(PRODUCTION_SUPABASE_URL && PRODUCTION_SUPABASE_ANON_KEY),
 
     // Correos con asignación automática de Superusuario
     superuserEmails: [
