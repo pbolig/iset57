@@ -1,0 +1,61 @@
+name: Mantener Supabase Activo (Anti-Pausa)
+
+on:
+  schedule:
+    # Se ejecuta cada 3 días a las 12:00 UTC para evitar que Supabase se pause por inactividad
+    - cron: '0 12 */3 * *'
+  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions de GitHub
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Ejecutar Ping a Supabase
+        env:
+          SECRET_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SECRET_SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            let url = process.env.SECRET_SUPABASE_URL || "";
+            let key = process.env.SECRET_SUPABASE_KEY || "";
+
+            // Si no se pasaron como secrets en GitHub, intentar leerlos de js/auth/config.js
+            if (!url || !key) {
+              try {
+                const configContent = fs.readFileSync("js/auth/config.js", "utf8");
+                const urlMatch = configContent.match(/supabaseUrl:\s*savedUrl\s*\|\|\s*["'"'"]([^"'"'"]+)["'"'"]/);
+                const keyMatch = configContent.match(/supabaseAnonKey:\s*savedKey\s*\|\|\s*["'"'"]([^"'"'"]+)["'"'"]/);
+                if (urlMatch && urlMatch[1] && !urlMatch[1].includes("su-proyecto")) url = urlMatch[1];
+                if (keyMatch && keyMatch[1]) key = keyMatch[1];
+              } catch (e) {}
+            }
+
+            if (!url || url.includes("su-proyecto") || !key) {
+              console.log("ℹ️ No se encontraron credenciales de Supabase configuradas todavía en GitHub Secrets ni en config.js. Omitiendo ping.");
+              process.exit(0);
+            }
+
+            const targetUrl = url.replace(/\/+$/, "") + "/rest/v1/site_content?select=id&limit=1";
+            console.log("Enviando ping de actividad a Supabase: " + targetUrl);
+
+            fetch(targetUrl, {
+              headers: {
+                "apikey": key,
+                "Authorization": "Bearer " + key
+              }
+            })
+            .then(res => {
+              if (res.ok) {
+                console.log("✅ Ping exitoso (" + res.status + "). Supabase se mantendrá activo sin pausarse.");
+              } else {
+                console.log("⚠️ Respuesta de Supabase:", res.status, res.statusText);
+              }
+            })
+            .catch(err => {
+              console.error("❌ Error de conexión al hacer ping a Supabase:", err.message);
+            });
+          '

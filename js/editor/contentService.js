@@ -28,10 +28,13 @@
       window.dispatchEvent(new CustomEvent("iset:" + event, { detail: payload }));
     }
 
-    // Cargar contenido completo (data.json + materias.json)
-    async loadAll() {
+    // Cargar contenido completo (data.json + materias.json) siempre asegurando datos actuales
+    async loadAll(forceFresh = false) {
       const auth = window.ISET_AUTH;
       const supabase = auth?.supabase;
+
+      let remoteData = null;
+      let remoteMaterias = null;
 
       // 1. Intentar cargar desde Supabase si está disponible
       if (supabase) {
@@ -43,54 +46,52 @@
           if (!error && records && records.length > 0) {
             const dataRow = records.find(r => r.id === "data");
             const materiasRow = records.find(r => r.id === "materias");
-            if (dataRow?.content) this.data = dataRow.content;
-            if (materiasRow?.content) this.materias = materiasRow.content;
+            if (dataRow?.content) remoteData = dataRow.content;
+            if (materiasRow?.content) remoteMaterias = materiasRow.content;
           }
         } catch (e) {
-          console.warn("No se pudo obtener contenido de Supabase, recurriendo a archivos locales:", e);
+          console.warn("No se pudo obtener contenido de Supabase:", e);
         }
       }
 
-      // 2. Si no hay datos en memoria, cargar archivos estáticos
-      if (!this.data) {
-        // Verificar si hay caché local guardada
-        const localData = localStorage.getItem("iset_custom_data");
-        if (localData) {
-          try {
-            this.data = JSON.parse(localData);
-          } catch (_) {}
+      // 2. Cargar siempre los archivos JSON estáticos reales si no hay datos o si se fuerza refresco
+      let staticData = null;
+      let staticMaterias = null;
+      if (!this.data || forceFresh || !remoteData) {
+        try {
+          const [resData, resMat] = await Promise.all([
+            fetch("data.json?_t=" + Date.now(), { cache: "no-cache" }).then(r => r.ok ? r.json() : null).catch(() => null),
+            fetch("materias.json?_t=" + Date.now(), { cache: "no-cache" }).then(r => r.ok ? r.json() : null).catch(() => null)
+          ]);
+          staticData = resData;
+          staticMaterias = resMat;
+        } catch (e) {
+          console.warn("Error al cargar archivos JSON:", e);
         }
       }
 
-      if (!this.materias) {
-        const localMaterias = localStorage.getItem("iset_custom_materias");
-        if (localMaterias) {
-          try {
-            this.materias = JSON.parse(localMaterias);
-          } catch (_) {}
-        }
+      // 3. Resolución de datos:
+      // Prioridad: Supabase remoto > data.json/materias.json actuales > memoria previa > localStorage
+      if (remoteData) {
+        this.data = remoteData;
+      } else if (staticData) {
+        this.data = staticData;
+      } else if (!this.data) {
+        try {
+          const localData = localStorage.getItem("iset_custom_data");
+          if (localData) this.data = JSON.parse(localData);
+        } catch (_) {}
       }
 
-      // 3. Si aún faltan, fetch a los archivos estáticos
-      const fetchPromises = [];
-      if (!this.data) {
-        fetchPromises.push(
-          fetch("data.json?_t=" + Date.now(), { cache: "no-cache" })
-            .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-            .then(d => { this.data = d; })
-        );
-      }
-      if (!this.materias) {
-        fetchPromises.push(
-          fetch("materias.json?_t=" + Date.now(), { cache: "no-cache" })
-            .then(r => r.ok ? r.json() : null)
-            .then(m => { this.materias = m || {}; })
-            .catch(() => { this.materias = {}; })
-        );
-      }
-
-      if (fetchPromises.length > 0) {
-        await Promise.all(fetchPromises);
+      if (remoteMaterias) {
+        this.materias = remoteMaterias;
+      } else if (staticMaterias) {
+        this.materias = staticMaterias;
+      } else if (!this.materias) {
+        try {
+          const localMaterias = localStorage.getItem("iset_custom_materias");
+          if (localMaterias) this.materias = JSON.parse(localMaterias);
+        } catch (_) {}
       }
 
       // 4. Si hay materias detalladas, vincularlas a espacios en data

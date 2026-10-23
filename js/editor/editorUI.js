@@ -14,13 +14,41 @@
     const el = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs)) {
       if (v == null || v === false) continue;
-      if (k === "class") el.className = v;
-      else if (k.startsWith("on") && typeof v === "function") el.addEventListener(k.slice(2).toLowerCase(), v);
-      else el.setAttribute(k, v);
+      if (k === "class") {
+        el.className = v;
+      } else if (k === "value") {
+        el.value = v;
+        el.setAttribute("value", v);
+      } else if (k === "defaultValue") {
+        el.defaultValue = v;
+        el.value = v;
+      } else if (k === "checked") {
+        el.checked = Boolean(v);
+        if (v) el.setAttribute("checked", "");
+      } else if (k === "selected") {
+        el.selected = Boolean(v);
+        if (v) el.setAttribute("selected", "");
+      } else if (k.startsWith("on") && typeof v === "function") {
+        el.addEventListener(k.slice(2).toLowerCase(), v);
+      } else {
+        el.setAttribute(k, v);
+      }
     }
+
+    if (attrs.value != null) {
+      el.value = attrs.value;
+    } else if (attrs.defaultValue != null) {
+      el.value = attrs.defaultValue;
+    }
+
     children.flat().forEach(c => {
       if (c != null) el.append(c.nodeType ? c : document.createTextNode(c));
     });
+
+    if (tag.toLowerCase() === "textarea" && children.length > 0 && attrs.value == null && attrs.defaultValue == null) {
+      el.value = el.textContent;
+    }
+
     return el;
   };
 
@@ -554,12 +582,29 @@
     }
 
     // ====================================================
+    // MÉTODOS DE OBTENCIÓN DE DATOS FRESCOS Y ACTUALES
+    // ====================================================
+    async getFreshData() {
+      if (content && typeof content.loadAll === "function") {
+        await content.loadAll(true);
+      }
+      return content.getData() || {};
+    }
+
+    async getFreshMaterias() {
+      if (content && typeof content.loadAll === "function") {
+        await content.loadAll(true);
+      }
+      return content.getMaterias() || {};
+    }
+
+    // ====================================================
     // EDITORES VISUALES DE SECCIONES (100% AMIGABLES)
     // ====================================================
 
-    // 1. Institución (Nombre, Lema, Contacto)
-    openInstitucionEditor() {
-      const data = content.getData();
+    // 1. Institución (Nombre, Lema, Contacto, Dependencia)
+    async openInstitucionEditor() {
+      const data = await this.getFreshData();
       const inst = data.institucion || {};
       const c = inst.contacto || {};
 
@@ -569,11 +614,15 @@
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Nombre Corto Institucional"),
-          h("input", { type: "text", id: "ed-inst-nombre", class: "iset-input", defaultValue: inst.nombre || "" })
+          h("input", { type: "text", id: "ed-inst-nombre", class: "iset-input", defaultValue: inst.nombre || "", value: inst.nombre || "" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Nombre Oficial Completo"),
-          h("input", { type: "text", id: "ed-inst-largo", class: "iset-input", defaultValue: inst.nombreLargo || "" })
+          h("input", { type: "text", id: "ed-inst-largo", class: "iset-input", defaultValue: inst.nombreLargo || "", value: inst.nombreLargo || "" })
+        ),
+        h("div", { class: "iset-form-group" },
+          h("label", { class: "iset-label" }, "Tipo de Gestión y Dependencia"),
+          h("input", { type: "text", id: "ed-inst-gestion", class: "iset-input", defaultValue: inst.gestion || "", value: inst.gestion || "", placeholder: "Ej: Gestión pública provincial · Ministerio de Educación de Santa Fe" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Lema Institucional"),
@@ -582,21 +631,21 @@
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Dirección Física"),
-            h("input", { type: "text", id: "ed-inst-dir", class: "iset-input", defaultValue: c.direccion || "" })
+            h("input", { type: "text", id: "ed-inst-dir", class: "iset-input", defaultValue: c.direccion || "", value: c.direccion || "" })
           ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Teléfono de Contacto"),
-            h("input", { type: "text", id: "ed-inst-tel", class: "iset-input", defaultValue: c.telefono || "" })
+            h("input", { type: "text", id: "ed-inst-tel", class: "iset-input", defaultValue: c.telefono || "", value: c.telefono || "" })
           )
         ),
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Correo Electrónico"),
-            h("input", { type: "email", id: "ed-inst-mail", class: "iset-input", defaultValue: c.email || "" })
+            h("input", { type: "email", id: "ed-inst-mail", class: "iset-input", defaultValue: c.email || "", value: c.email || "" })
           ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Horario de Atención"),
-            h("input", { type: "text", id: "ed-inst-horario", class: "iset-input", defaultValue: c.horario || "" })
+            h("input", { type: "text", id: "ed-inst-horario", class: "iset-input", defaultValue: c.horario || "", value: c.horario || "" })
           )
         )
       );
@@ -606,6 +655,7 @@
           d.institucion = d.institucion || {};
           d.institucion.nombre = form.querySelector("#ed-inst-nombre").value.trim();
           d.institucion.nombreLargo = form.querySelector("#ed-inst-largo").value.trim();
+          d.institucion.gestion = form.querySelector("#ed-inst-gestion").value.trim();
           d.institucion.lema = form.querySelector("#ed-inst-lema").value.trim();
           d.institucion.contacto = d.institucion.contacto || {};
           d.institucion.contacto.direccion = form.querySelector("#ed-inst-dir").value.trim();
@@ -618,14 +668,14 @@
     }
 
     // 2. Encabezado de Novedades
-    openNovedadesHeadEditor() {
-      const data = content.getData();
+    async openNovedadesHeadEditor() {
+      const data = await this.getFreshData();
       const g = data.informacionGeneral || {};
 
       const form = h("form", {},
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título de la Sección"),
-          h("input", { type: "text", id: "ed-nov-titulo", class: "iset-input", defaultValue: g.titulo || "Novedades" })
+          h("input", { type: "text", id: "ed-nov-titulo", class: "iset-input", defaultValue: g.titulo || "Novedades", value: g.titulo || "Novedades" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Bajada o Introducción"),
@@ -644,14 +694,14 @@
     }
 
     // 3. Encabezado de Oferta Académica
-    openOfertaHeadEditor() {
-      const data = content.getData();
+    async openOfertaHeadEditor() {
+      const data = await this.getFreshData();
       const of = data.ofertaAcademica || {};
 
       const form = h("form", {},
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título de la Sección"),
-          h("input", { type: "text", id: "ed-of-titulo", class: "iset-input", defaultValue: of.titulo || "Oferta académica" })
+          h("input", { type: "text", id: "ed-of-titulo", class: "iset-input", defaultValue: of.titulo || "Oferta académica", value: of.titulo || "Oferta académica" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Introducción"),
@@ -670,8 +720,8 @@
     }
 
     // 4. Modificar o Publicar Aviso en Novedades
-    openAvisoEditor(avisoIndex) {
-      const data = content.getData();
+    async openAvisoEditor(avisoIndex) {
+      const data = await this.getFreshData();
       let avisos = data.informacionGeneral?.avisos || [];
       let av = avisos[avisoIndex];
       if (!av) return;
@@ -723,7 +773,8 @@
       }, false);
     }
 
-    openAddAvisoEditor() {
+    async openAddAvisoEditor() {
+      await this.getFreshData();
       const emptyAviso = {
         titulo: "Nuevo Aviso",
         tipo: "info",
@@ -772,7 +823,7 @@
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título del Aviso"),
-          h("input", { type: "text", id: "ed-av-titulo", class: "iset-input", defaultValue: av.titulo || "" })
+          h("input", { type: "text", id: "ed-av-titulo", class: "iset-input", defaultValue: av.titulo || "", value: av.titulo || "" })
         ),
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
@@ -804,16 +855,16 @@
 
         h("div", { class: "iset-form-group", style: "margin-top:1rem" },
           h("label", { class: "iset-label" }, "Nota Aclaratoria al Pie (Opcional)"),
-          h("input", { type: "text", id: "ed-av-nota", class: "iset-input", defaultValue: av.nota || "" })
+          h("input", { type: "text", id: "ed-av-nota", class: "iset-input", defaultValue: av.nota || "", value: av.nota || "" })
         ),
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Texto del Botón Enlace (Opcional)"),
-            h("input", { type: "text", id: "ed-av-link-txt", class: "iset-input", defaultValue: av.enlace?.texto || "Más información" })
+            h("input", { type: "text", id: "ed-av-link-txt", class: "iset-input", defaultValue: av.enlace?.texto || "Más información", value: av.enlace?.texto || "Más información" })
           ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Destino del Enlace (URL o página)"),
-            h("input", { type: "text", id: "ed-av-link-url", class: "iset-input", defaultValue: av.enlace?.url || "", placeholder: "inscripcion.html o https://..." })
+            h("input", { type: "text", id: "ed-av-link-url", class: "iset-input", defaultValue: av.enlace?.url || "", value: av.enlace?.url || "", placeholder: "inscripcion.html o https://..." })
           )
         )
       );
@@ -828,6 +879,8 @@
             id: "ed-av-contenido",
             class: "iset-textarea",
             style: "min-height:110px",
+            defaultValue: textContent,
+            value: textContent,
             oninput: (e) => { textContent = e.target.value; }
           }, textContent)
         );
@@ -845,6 +898,7 @@
               id: "ed-tabla-titulo",
               class: "iset-input",
               defaultValue: tableTitulo,
+              value: tableTitulo,
               placeholder: "Ej: Cronograma de exámenes finales",
               oninput: (e) => { tableTitulo = e.target.value; }
             })
@@ -887,6 +941,7 @@
                 class: "iset-input",
                 style: "font-weight:700",
                 defaultValue: row[0] || "",
+                value: row[0] || "",
                 placeholder: "Materia",
                 oninput: (e) => { row[0] = e.target.value; }
               }),
@@ -904,6 +959,7 @@
                 type: "text",
                 class: "iset-input",
                 defaultValue: row[2] || "",
+                value: row[2] || "",
                 placeholder: "Ej: Lun 7/12/2026",
                 oninput: (e) => { row[2] = e.target.value; }
               }),
@@ -911,6 +967,7 @@
                 type: "text",
                 class: "iset-input",
                 defaultValue: row[3] || "",
+                value: row[3] || "",
                 placeholder: "18:00",
                 oninput: (e) => { row[3] = e.target.value; }
               }),
@@ -918,6 +975,7 @@
                 type: "text",
                 class: "iset-input",
                 defaultValue: row[4] || "",
+                value: row[4] || "",
                 placeholder: "Aula 3",
                 oninput: (e) => { row[4] = e.target.value; }
               }),
@@ -996,12 +1054,12 @@
     }
 
     // 5. Card de Carrera e Imágenes (Carrusel)
-    openCarreraCardEditor(carreraId) {
-      const data = content.getData();
+    async openCarreraCardEditor(carreraId) {
+      const data = await this.getFreshData();
       const esp = data.ofertaAcademica?.espacios?.find(e => e.id === carreraId);
       if (!esp) return;
 
-      const carrusel = [...(esp.carrusel || [])];
+      const carrusel = JSON.parse(JSON.stringify(esp.carrusel || []));
 
       const form = h("form", {},
         h("div", { class: "iset-alert iset-alert-info" },
@@ -1009,7 +1067,11 @@
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título de la Carrera"),
-          h("input", { type: "text", id: "ed-c-titulo", class: "iset-input", defaultValue: esp.titulo || "" })
+          h("input", { type: "text", id: "ed-c-titulo", class: "iset-input", defaultValue: esp.titulo || "", value: esp.titulo || "" })
+        ),
+        h("div", { class: "iset-form-group" },
+          h("label", { class: "iset-label" }, "Título Corto / Abreviado"),
+          h("input", { type: "text", id: "ed-c-tcorto", class: "iset-input", defaultValue: esp.tituloCorto || "", value: esp.tituloCorto || "" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Descripción Breve"),
@@ -1017,7 +1079,7 @@
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Color Temático Hexadecimal"),
-          h("input", { type: "color", id: "ed-c-color", class: "iset-input", style: "height:45px", defaultValue: esp.color || "#74acdf" })
+          h("input", { type: "color", id: "ed-c-color", class: "iset-input", style: "height:45px", defaultValue: esp.color || "#74acdf", value: esp.color || "#74acdf" })
         ),
         h("div", { style: "margin-top:1.5rem;border-top:1px solid var(--borde);padding-top:1rem" },
           h("label", { class: "iset-label" }, `📸 Fotos del Carrusel (${carrusel.length} imágenes)`),
@@ -1042,6 +1104,7 @@
           const target = d.ofertaAcademica.espacios.find(e => e.id === carreraId);
           if (target) {
             target.titulo = form.querySelector("#ed-c-titulo").value.trim();
+            target.tituloCorto = form.querySelector("#ed-c-tcorto").value.trim();
             target.descripcion = form.querySelector("#ed-c-desc").value.trim();
             target.color = form.querySelector("#ed-c-color").value;
             target.carrusel = carrusel.filter(it => it.imagen || it.src);
@@ -1137,14 +1200,14 @@
     }
 
     // 6. Cabecera y Pills en Página de Carrera
-    openCarreraHeroEditor(carreraId) {
-      const data = content.getData();
+    async openCarreraHeroEditor(carreraId) {
+      const data = await this.getFreshData();
       const esp = data.ofertaAcademica?.espacios?.find(e => e.id === carreraId) || {};
 
       const form = h("form", {},
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título Principal de la Carrera"),
-          h("input", { type: "text", id: "ed-h-titulo", class: "iset-input", defaultValue: esp.titulo || "" })
+          h("input", { type: "text", id: "ed-h-titulo", class: "iset-input", defaultValue: esp.titulo || "", value: esp.titulo || "" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Lema o Descripción Destacada"),
@@ -1153,21 +1216,21 @@
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "⏱️ Duración"),
-            h("input", { type: "text", id: "ed-h-duracion", class: "iset-input", defaultValue: esp.duracion || "3 años" })
+            h("input", { type: "text", id: "ed-h-duracion", class: "iset-input", defaultValue: esp.duracion || "3 años", value: esp.duracion || "3 años" })
           ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "📍 Modalidad"),
-            h("input", { type: "text", id: "ed-h-modalidad", class: "iset-input", defaultValue: esp.modalidad || "Presencial" })
+            h("input", { type: "text", id: "ed-h-modalidad", class: "iset-input", defaultValue: esp.modalidad || "Presencial", value: esp.modalidad || "Presencial" })
           )
         ),
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "🌙 Turno de Cursado"),
-            h("input", { type: "text", id: "ed-h-turno", class: "iset-input", defaultValue: esp.turno || "Vespertino" })
+            h("input", { type: "text", id: "ed-h-turno", class: "iset-input", defaultValue: esp.turno || "Vespertino", value: esp.turno || "Vespertino" })
           ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "🎓 Validez del Título"),
-            h("input", { type: "text", id: "ed-h-validez", class: "iset-input", defaultValue: esp.validez || "Título Oficial con Validez Nacional" })
+            h("input", { type: "text", id: "ed-h-validez", class: "iset-input", defaultValue: esp.validez || "Título Oficial con Validez Nacional", value: esp.validez || "Título Oficial con Validez Nacional" })
           )
         )
       );
@@ -1189,8 +1252,8 @@
     }
 
     // 7. Grilla Perfil del Egresado (Lista dinámica)
-    openPerfilEditor(carreraId) {
-      const data = content.getData();
+    async openPerfilEditor(carreraId) {
+      const data = await this.getFreshData();
       const esp = data.ofertaAcademica?.espacios?.find(e => e.id === carreraId) || {};
       const list = [...(esp.perfil || [])];
 
@@ -1204,8 +1267,8 @@
     }
 
     // 8. Grilla Campo Laboral (Lista dinámica)
-    openCampoEditor(carreraId) {
-      const data = content.getData();
+    async openCampoEditor(carreraId) {
+      const data = await this.getFreshData();
       const esp = data.ofertaAcademica?.espacios?.find(e => e.id === carreraId) || {};
       const list = [...(esp.campoLaboral || [])];
 
@@ -1245,9 +1308,10 @@
               class: "iset-textarea",
               style: "min-height:55px",
               defaultValue: itemText,
+              value: itemText,
               placeholder: `Describí la ${itemNoun}…`,
               oninput: (e) => { listRef[idx] = e.target.value; }
-            })
+            }, itemText)
           );
           box.appendChild(row);
         });
@@ -1272,9 +1336,9 @@
     }
 
     // 9. Grilla Plan de Estudios y Materias (Pestañas por Año)
-    openPlanEstudiosEditor(carreraId) {
-      const materiasData = content.getMaterias() || {};
-      const materiasCarrera = [...(materiasData[carreraId] || [])];
+    async openPlanEstudiosEditor(carreraId) {
+      const materiasData = await this.getFreshMaterias();
+      const materiasCarrera = JSON.parse(JSON.stringify(materiasData[carreraId] || []));
       let activeAnioTab = "1";
 
       const container = h("div", {},
@@ -1333,6 +1397,7 @@
                 class: "iset-input",
                 style: "font-weight:700",
                 defaultValue: mat.nombre || "",
+                value: mat.nombre || "",
                 placeholder: "Ej: Programación I",
                 oninput: (e) => { mat.nombre = e.target.value; }
               })
@@ -1344,6 +1409,7 @@
                   type: "text",
                   class: "iset-input",
                   defaultValue: mat.codigo || "",
+                  value: mat.codigo || "",
                   placeholder: "Ej: 1PROG",
                   oninput: (e) => { mat.codigo = e.target.value; }
                 })
@@ -1354,8 +1420,46 @@
                   type: "text",
                   class: "iset-input",
                   defaultValue: mat.cargaHoraria || "4",
+                  value: mat.cargaHoraria || "4",
                   placeholder: "Ej: 4",
                   oninput: (e) => { mat.cargaHoraria = e.target.value; }
+                })
+              )
+            ),
+            h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
+              h("div", { class: "iset-form-group", style: "margin:0" },
+                h("label", { class: "iset-label" }, "Comisiones (Separadas por comas)"),
+                h("input", {
+                  type: "text",
+                  class: "iset-input",
+                  defaultValue: (mat.comisiones || ["A"]).join(", "),
+                  value: (mat.comisiones || ["A"]).join(", "),
+                  placeholder: "Ej: A, B",
+                  oninput: (e) => {
+                    mat.comisiones = e.target.value.split(",").map(s => s.trim()).filter(Boolean);
+                  }
+                })
+              ),
+              h("div", { class: "iset-form-group", style: "margin:0" },
+                h("label", { class: "iset-label" }, "Docentes (ej: A: Prof. Pérez · B: Prof. Gómez)"),
+                h("input", {
+                  type: "text",
+                  class: "iset-input",
+                  defaultValue: Object.entries(mat.docentes || {}).map(([c, d]) => d ? `${c}: ${d}` : c).join(" · "),
+                  value: Object.entries(mat.docentes || {}).map(([c, d]) => d ? `${c}: ${d}` : c).join(" · "),
+                  placeholder: "Ej: A: Prof. Pérez",
+                  oninput: (e) => {
+                    const docObj = {};
+                    e.target.value.split("·").forEach(item => {
+                      const parts = item.split(":");
+                      if (parts.length >= 2) {
+                        docObj[parts[0].trim()] = parts.slice(1).join(":").trim();
+                      } else if (parts[0].trim()) {
+                        docObj[parts[0].trim()] = "";
+                      }
+                    });
+                    mat.docentes = docObj;
+                  }
                 })
               )
             ),
@@ -1365,6 +1469,7 @@
                 type: "text",
                 class: "iset-input",
                 defaultValue: (mat.correlativas || []).join(" · "),
+                value: (mat.correlativas || []).join(" · "),
                 placeholder: "Ej: Matemática I · Algoritmos",
                 oninput: (e) => {
                   mat.correlativas = e.target.value.split("·").map(s => s.trim()).filter(Boolean);
@@ -1405,23 +1510,23 @@
     }
 
     // 10. CTA de Inscripción en Carrera
-    openCarreraCtaEditor(carreraId) {
-      const data = content.getData();
+    async openCarreraCtaEditor(carreraId) {
+      const data = await this.getFreshData();
       const insG = data.inscripcionGeneral || {};
       const p1 = (insG.periodos && insG.periodos[0]) || {};
 
       const form = h("form", {},
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Ciclo Lectivo"),
-          h("input", { type: "text", id: "ed-cta-ciclo", class: "iset-input", defaultValue: insG.ciclo || "2027" })
+          h("input", { type: "text", id: "ed-cta-ciclo", class: "iset-input", defaultValue: insG.ciclo || "2027", value: insG.ciclo || "2027" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Fechas del Primer Período"),
-          h("input", { type: "text", id: "ed-cta-fechas", class: "iset-input", defaultValue: p1.fechas || "" })
+          h("input", { type: "text", id: "ed-cta-fechas", class: "iset-input", defaultValue: p1.fechas || "", value: p1.fechas || "" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Horario y Atención"),
-          h("input", { type: "text", id: "ed-cta-horario", class: "iset-input", defaultValue: p1.horario || "" })
+          h("input", { type: "text", id: "ed-cta-horario", class: "iset-input", defaultValue: p1.horario || "", value: p1.horario || "" })
         )
       );
 
@@ -1438,10 +1543,10 @@
     }
 
     // 11. Simulación Clínica: Equipamiento y Actividades
-    openSimulacionEquipamientoEditor() {
-      const data = content.getData();
+    async openSimulacionEquipamientoEditor() {
+      const data = await this.getFreshData();
       const esp = data.ofertaAcademica?.espacios?.find(e => e.id === "simulacion") || {};
-      const list = [...(esp.equipamiento || [])];
+      const list = JSON.parse(JSON.stringify(esp.equipamiento || []));
 
       this._renderFriendlyListEditor("Equipamiento de Simulación Clínica", "Listado de simuladores de alta fidelidad, tecnología y simuladores hápticos del centro.", list, "equipo o simulador", async (updatedList) => {
         await content.updateData(d => {
@@ -1452,10 +1557,10 @@
       });
     }
 
-    openSimulacionActividadesEditor() {
-      const data = content.getData();
+    async openSimulacionActividadesEditor() {
+      const data = await this.getFreshData();
       const esp = data.ofertaAcademica?.espacios?.find(e => e.id === "simulacion") || {};
-      const list = [...(esp.actividades || [])];
+      const list = JSON.parse(JSON.stringify(esp.actividades || []));
 
       this._renderFriendlyListEditor("Actividades y Formación Continua", "Listado de programas de capacitación, cursos y vinculaciones del Centro Regional de Simulación.", list, "actividad o curso", async (updatedList) => {
         await content.updateData(d => {
@@ -1471,26 +1576,26 @@
     // ====================================================
 
     // 12. Hero de Inscripción
-    openInscripcionHeroEditor() {
-      const data = content.getData();
+    async openInscripcionHeroEditor() {
+      const data = await this.getFreshData();
       const ins = data.inscripcionGeneral || {};
 
       const form = h("form", {},
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Ciclo Lectivo"),
-          h("input", { type: "text", id: "ed-insh-ciclo", class: "iset-input", defaultValue: ins.ciclo || "2027" })
+          h("input", { type: "text", id: "ed-insh-ciclo", class: "iset-input", defaultValue: ins.ciclo || "2027", value: ins.ciclo || "2027" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título Principal"),
-          h("input", { type: "text", id: "ed-insh-titulo", class: "iset-input", defaultValue: ins.titulo || "Inscripción a Tecnicaturas" })
+          h("input", { type: "text", id: "ed-insh-titulo", class: "iset-input", defaultValue: ins.titulo || "Inscripción a Tecnicaturas", value: ins.titulo || "Inscripción a Tecnicaturas" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Subtítulo"),
-          h("input", { type: "text", id: "ed-insh-sub", class: "iset-input", defaultValue: ins.subtitulo || "Ciclo Lectivo 2027" })
+          h("input", { type: "text", id: "ed-insh-sub", class: "iset-input", defaultValue: ins.subtitulo || "Ciclo Lectivo 2027", value: ins.subtitulo || "Ciclo Lectivo 2027" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Texto Introductorio"),
-          h("textarea", { id: "ed-insh-intro", class: "iset-textarea" }, ins.introduccion || "")
+          h("textarea", { id: "ed-insh-intro", class: "iset-textarea", defaultValue: ins.introduccion || "", value: ins.introduccion || "" }, ins.introduccion || "")
         )
       );
 
@@ -1507,9 +1612,9 @@
     }
 
     // 13. Pasos de Inscripción (Grilla dinámica)
-    openInscripcionPasosEditor() {
-      const data = content.getData();
-      const pasos = [...(data.inscripcionGeneral?.pasos || [])];
+    async openInscripcionPasosEditor() {
+      const data = await this.getFreshData();
+      const pasos = JSON.parse(JSON.stringify(data.inscripcionGeneral?.pasos || []));
 
       const container = h("div", {},
         h("div", { class: "iset-alert iset-alert-info" },
@@ -1543,6 +1648,7 @@
                   class: "iset-input",
                   style: "text-align:center;font-weight:800",
                   defaultValue: p.numero || String(idx + 1),
+                  value: p.numero || String(idx + 1),
                   oninput: (e) => { p.numero = e.target.value; }
                 })
               ),
@@ -1553,6 +1659,7 @@
                   class: "iset-input",
                   style: "font-weight:700",
                   defaultValue: p.titulo || "",
+                  value: p.titulo || "",
                   oninput: (e) => { p.titulo = e.target.value; }
                 })
               )
@@ -1562,8 +1669,9 @@
               h("textarea", {
                 class: "iset-textarea",
                 defaultValue: p.descripcion || "",
+                value: p.descripcion || "",
                 oninput: (e) => { p.descripcion = e.target.value; }
-              })
+              }, p.descripcion || "")
             )
           );
           box.appendChild(card);
@@ -1592,26 +1700,26 @@
     }
 
     // 14. Curso Propedéutico
-    openInscripcionPropedeuticoEditor() {
-      const data = content.getData();
+    async openInscripcionPropedeuticoEditor() {
+      const data = await this.getFreshData();
       const prop = data.inscripcionGeneral?.propedeutico || {};
 
       const form = h("form", {},
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Fecha de Inicio"),
-          h("input", { type: "text", id: "ed-prop-inicio", class: "iset-input", defaultValue: prop.inicio || "" })
+          h("input", { type: "text", id: "ed-prop-inicio", class: "iset-input", defaultValue: prop.inicio || "", value: prop.inicio || "" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Modalidad de Cursado"),
-          h("input", { type: "text", id: "ed-prop-mod", class: "iset-input", defaultValue: prop.modalidad || "" })
+          h("input", { type: "text", id: "ed-prop-mod", class: "iset-input", defaultValue: prop.modalidad || "", value: prop.modalidad || "" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Duración del Curso"),
-          h("input", { type: "text", id: "ed-prop-dur", class: "iset-input", defaultValue: prop.duracion || "" })
+          h("input", { type: "text", id: "ed-prop-dur", class: "iset-input", defaultValue: prop.duracion || "", value: prop.duracion || "" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Nota Aclaratoria"),
-          h("input", { type: "text", id: "ed-prop-nota", class: "iset-input", defaultValue: prop.nota || "Obligatorio para todas las tecnicaturas" })
+          h("input", { type: "text", id: "ed-prop-nota", class: "iset-input", defaultValue: prop.nota || "Obligatorio para todas las tecnicaturas", value: prop.nota || "Obligatorio para todas las tecnicaturas" })
         )
       );
 
@@ -1630,9 +1738,9 @@
     }
 
     // 15. Requisitos Comunes (Grilla dinámica)
-    openInscripcionRequisitosEditor() {
-      const data = content.getData();
-      const reqs = [...(data.inscripcionGeneral?.requisitosComunes || [])];
+    async openInscripcionRequisitosEditor() {
+      const data = await this.getFreshData();
+      const reqs = JSON.parse(JSON.stringify(data.inscripcionGeneral?.requisitosComunes || []));
 
       const container = h("div", {},
         h("div", { class: "iset-alert iset-alert-info" },
@@ -1665,6 +1773,7 @@
                 class: "iset-input",
                 style: "font-weight:700",
                 defaultValue: r.item || "",
+                value: r.item || "",
                 placeholder: "Ej: Documento Nacional de Identidad (DNI)",
                 oninput: (e) => { r.item = e.target.value; }
               })
@@ -1675,9 +1784,10 @@
                 class: "iset-textarea",
                 style: "min-height:50px",
                 defaultValue: r.detalle || "",
+                value: r.detalle || "",
                 placeholder: "Ej: Original y fotocopia de ambas caras.",
                 oninput: (e) => { r.detalle = e.target.value; }
-              })
+              }, r.detalle || "")
             )
           );
           box.appendChild(card);
@@ -1706,9 +1816,9 @@
     }
 
     // 16. Períodos de Inscripción (Tabla dinámica)
-    openInscripcionPeriodosEditor() {
-      const data = content.getData();
-      const periodos = [...(data.inscripcionGeneral?.periodos || [])];
+    async openInscripcionPeriodosEditor() {
+      const data = await this.getFreshData();
+      const periodos = JSON.parse(JSON.stringify(data.inscripcionGeneral?.periodos || []));
 
       const container = h("div", {},
         h("div", { class: "iset-alert iset-alert-info" },
@@ -1741,6 +1851,7 @@
                 class: "iset-input",
                 style: "font-weight:700",
                 defaultValue: p.etapa || "",
+                value: p.etapa || "",
                 placeholder: "Ej: Inscripción general",
                 oninput: (e) => { p.etapa = e.target.value; }
               })
@@ -1752,6 +1863,7 @@
                   type: "text",
                   class: "iset-input",
                   defaultValue: p.fechas || "",
+                  value: p.fechas || "",
                   placeholder: "Ej: 2 de noviembre al 18 de diciembre",
                   oninput: (e) => { p.fechas = e.target.value; }
                 })
@@ -1762,6 +1874,7 @@
                   type: "text",
                   class: "iset-input",
                   defaultValue: p.horario || "",
+                  value: p.horario || "",
                   placeholder: "Ej: Lunes a viernes de 9:00 a 20:00 h",
                   oninput: (e) => { p.horario = e.target.value; }
                 })
@@ -1773,6 +1886,7 @@
                 type: "text",
                 class: "iset-input",
                 defaultValue: p.lugar || "",
+                value: p.lugar || "",
                 placeholder: "Ej: Secretaría del Instituto (Necochea 1339, Rosario)",
                 oninput: (e) => { p.lugar = e.target.value; }
               })
@@ -1804,9 +1918,9 @@
     }
 
     // 17. Preguntas Frecuentes (FAQ)
-    openInscripcionFaqEditor() {
-      const data = content.getData();
-      const faqs = [...(data.inscripcionGeneral?.preguntasFrecuentes || [])];
+    async openInscripcionFaqEditor() {
+      const data = await this.getFreshData();
+      const faqs = JSON.parse(JSON.stringify(data.inscripcionGeneral?.preguntasFrecuentes || []));
 
       const container = h("div", {},
         h("div", { class: "iset-alert iset-alert-info" },
@@ -1839,6 +1953,7 @@
                 class: "iset-input",
                 style: "font-weight:700",
                 defaultValue: f.pregunta || "",
+                value: f.pregunta || "",
                 placeholder: "¿La carrera tiene costo?",
                 oninput: (e) => { f.pregunta = e.target.value; }
               })
@@ -1849,9 +1964,10 @@
                 class: "iset-textarea",
                 style: "min-height:65px",
                 defaultValue: f.respuesta || "",
+                value: f.respuesta || "",
                 placeholder: "Escribí aquí la respuesta clara y concisa…",
                 oninput: (e) => { f.respuesta = e.target.value; }
-              })
+              }, f.respuesta || "")
             )
           );
           box.appendChild(card);
@@ -1884,18 +2000,18 @@
     // ====================================================
 
     // 18. Cabecera de Comunidad
-    openComunidadHeroEditor() {
-      const data = content.getData();
+    async openComunidadHeroEditor() {
+      const data = await this.getFreshData();
       const com = data.comunidad || {};
 
       const form = h("form", {},
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título Principal"),
-          h("input", { type: "text", id: "ed-com-titulo", class: "iset-input", defaultValue: com.titulo || "Comunidad & Blog" })
+          h("input", { type: "text", id: "ed-com-titulo", class: "iset-input", defaultValue: com.titulo || "Comunidad & Blog", value: com.titulo || "Comunidad & Blog" })
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Bajada o Introducción"),
-          h("textarea", { id: "ed-com-bajada", class: "iset-textarea" }, com.bajada || com.subtitulo || "")
+          h("textarea", { id: "ed-com-bajada", class: "iset-textarea", defaultValue: com.bajada || com.subtitulo || "", value: com.bajada || com.subtitulo || "" }, com.bajada || com.subtitulo || "")
         )
       );
 
@@ -1910,9 +2026,9 @@
     }
 
     // 19. Carrusel Hero de Comunidad
-    openComunidadCarruselEditor() {
-      const data = content.getData();
-      const carrusel = [...(data.comunidad?.carruselHero || data.comunidad?.carrusel || [])];
+    async openComunidadCarruselEditor() {
+      const data = await this.getFreshData();
+      const carrusel = JSON.parse(JSON.stringify(data.comunidad?.carruselHero || data.comunidad?.carrusel || []));
 
       const container = h("div", {},
         h("div", { class: "iset-alert iset-alert-info" },
@@ -1943,7 +2059,8 @@
     }
 
     // 20. Publicar / Modificar Artículo de Comunidad
-    openComunidadNuevoArticuloEditor() {
+    async openComunidadNuevoArticuloEditor() {
+      await this.getFreshData();
       const emptyArt = {
         id: "art-" + Date.now(),
         titulo: "Nuevo Proyecto o Jornada",
@@ -1968,8 +2085,8 @@
       }, true);
     }
 
-    openComunidadEditarArticuloEditor(articuloId) {
-      const data = content.getData();
+    async openComunidadEditarArticuloEditor(articuloId) {
+      const data = await this.getFreshData();
       const articulos = data.comunidad?.articulos || [];
       const artIndex = articulos.findIndex(a => a.id === articuloId);
       const art = artIndex !== -1 ? articulos[artIndex] : articulos[Number(articuloId)] || {};
@@ -2000,7 +2117,7 @@
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Título de la Publicación"),
-          h("input", { type: "text", id: "ed-art-titulo", class: "iset-input", defaultValue: art.titulo || "" })
+          h("input", { type: "text", id: "ed-art-titulo", class: "iset-input", defaultValue: art.titulo || "", value: art.titulo || "" })
         ),
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
@@ -2015,12 +2132,12 @@
           ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Fecha"),
-            h("input", { type: "date", id: "ed-art-fecha", class: "iset-input", defaultValue: art.fecha || "" })
+            h("input", { type: "date", id: "ed-art-fecha", class: "iset-input", defaultValue: art.fecha || "", value: art.fecha || "" })
           )
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Autor o Coordinación"),
-          h("input", { type: "text", id: "ed-art-autor", class: "iset-input", defaultValue: art.autor || "ISET N° 57" })
+          h("input", { type: "text", id: "ed-art-autor", class: "iset-input", defaultValue: art.autor || "ISET N° 57", value: art.autor || "ISET N° 57" })
         ),
         // Imagen de Portada
         h("div", { class: "iset-form-group" },
@@ -2043,6 +2160,7 @@
             id: "ed-art-img",
             class: "iset-input",
             defaultValue: currentImg,
+            value: currentImg,
             placeholder: "Ruta local o URL de la imagen",
             oninput: (e) => {
               currentImg = e.target.value.trim();
@@ -2053,15 +2171,15 @@
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Resumen Breve (Visible en la tarjeta)"),
-          h("textarea", { id: "ed-art-resumen", class: "iset-textarea", style: "min-height:60px" }, art.resumen || "")
+          h("textarea", { id: "ed-art-resumen", class: "iset-textarea", style: "min-height:60px", defaultValue: art.resumen || "", value: art.resumen || "" }, art.resumen || "")
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Contenido Completo de la Nota"),
-          h("textarea", { id: "ed-art-contenido", class: "iset-textarea", style: "min-height:120px" }, art.contenido || "")
+          h("textarea", { id: "ed-art-contenido", class: "iset-textarea", style: "min-height:120px", defaultValue: art.contenido || "", value: art.contenido || "" }, art.contenido || "")
         ),
         h("div", { class: "iset-form-group" },
           h("label", { class: "iset-label" }, "Etiquetas (Separadas por comas)"),
-          h("input", { type: "text", id: "ed-art-tags", class: "iset-input", defaultValue: (art.etiquetas || []).join(", ") })
+          h("input", { type: "text", id: "ed-art-tags", class: "iset-input", defaultValue: (art.etiquetas || []).join(", "), value: (art.etiquetas || []).join(", ") })
         )
       );
 
@@ -2129,11 +2247,14 @@
     // ====================================================
     // EDITOR DIRECTO DE JSON (PARA SUPERUSUARIOS Y AVANZADOS)
     // ====================================================
-    openRawJSONEditor(initialFile = "data") {
+    async openRawJSONEditor(initialFile = "data") {
       if (!auth.canEdit()) {
         window.ISET_TOAST("Acceso denegado: se requieren permisos de administrador o superusuario.", "error");
         return;
       }
+
+      await this.getFreshData();
+      await this.getFreshMaterias();
 
       let currentFile = initialFile;
       const isSuper = auth.isSuperuser();
