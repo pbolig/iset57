@@ -140,11 +140,23 @@ details.iset-editable-host .iset-pill-corner {
   box-shadow: 0 5px 15px rgba(16, 185, 129, 0.28);
 }
 
-/* --- Suavizado global de transiciones para cards, botones y enlaces (sin rebotes bruscos) --- */
+/* --- Suavizado global de transiciones para cards, botones, enlaces y logo hero (sin rebotes bruscos) --- */
+.hero-logo {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.25, 1),
+              filter 0.35s ease !important;
+}
+
+.hero-logo:hover {
+  transform: scale(1.02) !important;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.3)) !important;
+}
+
 .card,
 .aviso,
 nav a,
 .enlace,
+.btn-comunidad-hero,
+.btn-inscripcion-hero,
 .card-btn-plan,
 .carousel-btn,
 .tab-btn,
@@ -175,6 +187,30 @@ nav a,
 .card:hover .carousel-slide svg {
   transform: scale(1.02) !important;
   transition: transform 0.35s ease !important;
+}
+
+.btn-comunidad-hero:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(246, 180, 14, 0.45) !important;
+  background-color: #ffc324 !important;
+}
+
+.btn-comunidad-hero:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow: 0 2px 8px rgba(246, 180, 14, 0.3) !important;
+}
+
+.btn-inscripcion-hero:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(20, 33, 61, 0.18) !important;
+  background-color: #ffffff !important;
+  color: var(--tinta) !important;
+  border-color: #ffffff !important;
+}
+
+.btn-inscripcion-hero:active {
+  transform: translateY(1px) scale(0.98) !important;
+  box-shadow: none !important;
 }
 
 nav a:hover,

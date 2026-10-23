@@ -35,22 +35,21 @@ jobs:
           SECRET_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SECRET_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          if [ -n "$SECRET_SUPABASE_URL" ] && [ -n "$SECRET_SUPABASE_ANON_KEY" ]; then
-            echo "Inyectando credenciales secretas de Supabase en dist/js/auth/config.js..."
-            python3 -c "
-import os
-url = os.environ.get('SECRET_SUPABASE_URL', '').strip()
-key = os.environ.get('SECRET_SUPABASE_ANON_KEY', '').strip()
-if url and key:
-    with open('dist/js/auth/config.js', 'r', encoding='utf-8') as f:
-        content = f.read()
-    content = content.replace('PRODUCTION_SUPABASE_URL = \"\"', f'PRODUCTION_SUPABASE_URL = \"{url}\"')
-    content = content.replace('PRODUCTION_SUPABASE_ANON_KEY = \"\"', f'PRODUCTION_SUPABASE_ANON_KEY = \"{key}\"')
-    with open('dist/js/auth/config.js', 'w', encoding='utf-8') as f:
-        f.write(content)
-print('✅ Credenciales de Supabase inyectadas correctamente en build de GitHub Pages.')
-"
-          fi
+          node -e '
+            const fs = require("fs");
+            const url = (process.env.SECRET_SUPABASE_URL || "").trim();
+            const key = (process.env.SECRET_SUPABASE_ANON_KEY || "").trim();
+            if (url && key) {
+              const file = "dist/js/auth/config.js";
+              let content = fs.readFileSync(file, "utf8");
+              content = content.replace("PRODUCTION_SUPABASE_URL = \"\"", "PRODUCTION_SUPABASE_URL = \"" + url + "\"");
+              content = content.replace("PRODUCTION_SUPABASE_ANON_KEY = \"\"", "PRODUCTION_SUPABASE_ANON_KEY = \"" + key + "\"");
+              fs.writeFileSync(file, content, "utf8");
+              console.log("✅ Credenciales de Supabase inyectadas correctamente en dist/js/auth/config.js");
+            } else {
+              console.log("ℹ️ No se detectaron secretos SUPABASE_URL / SUPABASE_ANON_KEY en GitHub Secrets. Se usarán las credenciales configuradas en config.js.");
+            }
+          '
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
