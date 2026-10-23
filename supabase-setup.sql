@@ -111,7 +111,38 @@ create policy "Admins y Superusers pueden actualizar site_content"
 -- Habilitar Supabase Realtime para site_content
 alter publication supabase_realtime add table public.site_content;
 
--- 5. Bucket de almacenamiento para subida de imágenes (Storage)
+-- 5. Tabla de Auditoría y Registro de Sincronizaciones (Offline & Online Sync Log)
+create table if not exists public.site_sync_log (
+  id uuid primary key default uuid_generate_v4(),
+  section text not null, -- 'data', 'materias'
+  updated_by uuid references auth.users,
+  sync_source text not null default 'online' check (sync_source in ('online', 'offline_sync', 'manual')),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.site_sync_log enable row level security;
+
+create policy "Admins y Superusers pueden leer logs de sincronización"
+  on public.site_sync_log for select
+  to authenticated
+  using (
+    exists (
+      select 1 from public.profiles
+      where id = auth.uid() and role in ('admin', 'superuser')
+    )
+  );
+
+create policy "Admins y Superusers pueden registrar logs de sincronización"
+  on public.site_sync_log for insert
+  to authenticated
+  with check (
+    exists (
+      select 1 from public.profiles
+      where id = auth.uid() and role in ('admin', 'superuser')
+    )
+  );
+
+-- 6. Bucket de almacenamiento para subida de imágenes (Storage)
 insert into storage.buckets (id, name, public)
 values ('iset-assets', 'iset-assets', true)
 on conflict (id) do nothing;

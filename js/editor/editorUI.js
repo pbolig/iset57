@@ -136,6 +136,7 @@
       document.querySelectorAll(".iset-edit-pill").forEach(el => el.remove());
       document.querySelectorAll(".iset-pill-prominent").forEach(el => el.remove());
       document.querySelectorAll(".iset-grid-toolbar-pills").forEach(el => el.remove());
+      document.querySelectorAll(".iset-cta-restore-box").forEach(el => el.remove());
     }
 
     // Refrescar píldoras según el usuario logueado y la página actual
@@ -314,9 +315,70 @@
             pill.style.fontSize = "0.82rem";
             pill.style.padding = "0.32rem 0.85rem";
             btnWrap.appendChild(pill);
+
+            if (espacio.id !== "simulacion" && !cardEl.querySelector(".iset-pill-card-plan")) {
+              const pillPlan = this.createProminentPill("Gestionar Plan", () => this.openPlanEstudiosEditor(espacio.id), "📋");
+              pillPlan.classList.add("iset-pill-card-plan");
+              pillPlan.style.marginTop = "0.5rem";
+              pillPlan.style.marginLeft = "0.4rem";
+              pillPlan.style.fontSize = "0.82rem";
+              pillPlan.style.padding = "0.32rem 0.85rem";
+              btnWrap.appendChild(pillPlan);
+            }
           }
         }
       });
+
+      // 4. Botón en Oferta Académica (.oferta-acciones)
+      const ofAcciones = document.querySelector(".oferta-acciones");
+      if (ofAcciones && !ofAcciones.querySelector(".iset-pill-planes")) {
+        const editableCarreras = config.carreras.filter(c => auth.canEdit(c.id) && c.id !== "simulacion");
+        if (editableCarreras.length > 0) {
+          const pillPlanes = this.createProminentPill(
+            "Gestionar Planes de Estudio y Correlatividades",
+            () => this.openPlanEstudiosEditor(),
+            "📋"
+          );
+          pillPlanes.classList.add("iset-pill-planes");
+          pillPlanes.style.marginLeft = "0.75rem";
+          pillPlanes.style.fontSize = "0.95rem";
+          pillPlanes.style.padding = "0.55rem 1.25rem";
+          ofAcciones.appendChild(pillPlanes);
+        }
+      }
+
+      // 5. Botón en Cabecera del Modal de Planes (#modal-plan)
+      const modalPlan = document.getElementById("modal-plan");
+      if (modalPlan) {
+        const headerActions = modalPlan.querySelector(".modal-header-actions") || modalPlan.querySelector(".modal-header");
+        if (headerActions && !modalPlan.querySelector(".iset-pill-modal-plan")) {
+          const editableCarreras = config.carreras.filter(c => auth.canEdit(c.id) && c.id !== "simulacion");
+          if (editableCarreras.length > 0) {
+            const pillModal = this.createProminentPill(
+              "✏️ Modificar / Gestionar Materias de este Plan",
+              () => {
+                const activeCareerId = modalPlan.getAttribute("data-active-career") ||
+                                       modalPlan.querySelector("#plan-tabs .tab-btn.active")?.getAttribute("data-carrera") ||
+                                       editableCarreras[0].id;
+                this.openPlanEstudiosEditor(activeCareerId, (savedCarreraId) => {
+                  if (window.abrirModalPlanCarrera) {
+                    window.abrirModalPlanCarrera(savedCarreraId || activeCareerId);
+                  }
+                });
+              },
+              "📋"
+            );
+            pillModal.classList.add("iset-pill-modal-plan");
+
+            const closeBtn = headerActions.querySelector(".modal-close");
+            if (closeBtn) {
+              closeBtn.before(pillModal);
+            } else {
+              headerActions.appendChild(pillModal);
+            }
+          }
+        }
+      }
     }
 
     // ====================================================
@@ -401,7 +463,8 @@
     // PÍLDORAS EN INSCRIPCIÓN.HTML
     // ====================================================
     attachInscripcionPills() {
-      if (!auth.isSuperuser()) return;
+      const user = auth.getCurrentUser();
+      if (!user || user.role === config.ROLES.VISITANTE) return;
 
       // 1. Cabecera Hero
       const hero = document.querySelector(".hero");
@@ -413,7 +476,7 @@
       }
 
       // 2. Grilla de Pasos
-      const secPasos = document.getElementById("pasos") || document.querySelector(".pasos-grid")?.closest("section");
+      const secPasos = document.getElementById("pasos") || document.getElementById("pasos-sec") || document.querySelector(".pasos-grid")?.closest("section");
       if (secPasos && !secPasos.querySelector(".iset-pasos-toolbar")) {
         const h2 = secPasos.querySelector("h2");
         const toolbar = h("div", { class: "iset-grid-toolbar-pills iset-pasos-toolbar" },
@@ -425,7 +488,7 @@
       }
 
       // 3. Grilla de Requisitos Comunes
-      const secReq = document.getElementById("requisitos");
+      const secReq = document.getElementById("requisitos") || document.getElementById("requisitos-sec") || document.getElementById("req-list")?.closest("section");
       if (secReq && !secReq.querySelector(".iset-req-toolbar")) {
         const h2 = secReq.querySelector("h2");
         const toolbar = h("div", { class: "iset-grid-toolbar-pills iset-req-toolbar" },
@@ -436,7 +499,7 @@
       }
 
       // 4. Tabla de Períodos de Inscripción
-      const secPer = document.getElementById("fechas") || document.querySelector("table")?.closest("section");
+      const secPer = document.getElementById("fechas") || document.getElementById("fechas-sec") || document.getElementById("periodos-container")?.closest("section") || document.querySelector("table")?.closest("section");
       if (secPer && !secPer.querySelector(".iset-per-toolbar")) {
         const h2 = secPer.querySelector("h2");
         const toolbar = h("div", { class: "iset-grid-toolbar-pills iset-per-toolbar" },
@@ -447,14 +510,65 @@
       }
 
       // 5. Grilla de Preguntas Frecuentes (FAQ)
-      const secFaq = document.getElementById("faq");
+      const secFaq = document.getElementById("faq") || document.getElementById("faq-sec") || document.getElementById("faq-container")?.closest("section") || document.getElementById("t-faq")?.closest("section");
       if (secFaq && !secFaq.querySelector(".iset-faq-toolbar")) {
         const h2 = secFaq.querySelector("h2");
         const toolbar = h("div", { class: "iset-grid-toolbar-pills iset-faq-toolbar" },
-          this.createProminentPill("Gestionar Preguntas Frecuentes (Agregar / Editar / Borrar)", () => this.openInscripcionFaqEditor(), "❓")
+          this.createProminentPill("Gestionar Preguntas Frecuentes (Agregar / Editar / Borrar)", () => this.openInscripcionFaqEditor(), "❓"),
+          this.createProminentPill("Agregar Nueva Pregunta", () => this.openInscripcionFaqEditor(true), "➕", true)
         );
         if (h2) h2.after(toolbar);
         else secFaq.prepend(toolbar);
+      }
+
+      // 6. En cada ítem individual de Pregunta Frecuente
+      const faqDetails = document.querySelectorAll("#faq-container details");
+      faqDetails.forEach((det, idx) => {
+        if (!det.querySelector(".iset-pill-faq-item")) {
+          det.classList.add("iset-editable-host");
+          const pill = this.createPill("Editar esta pregunta", (e) => {
+            this.openInscripcionFaqEditor(false, idx);
+          }, "iset-pill-faq-item iset-pill-corner");
+          det.appendChild(pill);
+        }
+      });
+
+      // 7. Caja de Dudas Adicionales y Contacto Secretaría (#cta-box)
+      const ctaBox = document.getElementById("cta-box");
+      const secFaqWrap = secFaq?.querySelector(".wrap") || secFaq;
+      const cs = content.getData()?.inscripcionGeneral?.contactoSecretaria;
+      const isCtaActive = cs ? cs.activo !== false : true;
+
+      if (isCtaActive && ctaBox) {
+        if (!ctaBox.querySelector(".iset-pill-cta-dudas")) {
+          ctaBox.classList.add("iset-editable-host");
+          const toolbar = h("div", { class: "iset-grid-toolbar-pills iset-pill-cta-dudas", style: "margin-top:1.25rem" },
+            this.createProminentPill("Modificar Caja '¿Tenés dudas adicionales?'", () => this.openInscripcionDudasEditor(), "✏️"),
+            this.createProminentPill("Ocultar / Eliminar esta Caja", async () => {
+              if (confirm("¿Seguro que deseás ocultar o eliminar la caja '¿Tenés dudas adicionales?' de la página?")) {
+                await content.updateData(d => {
+                  d.inscripcionGeneral = d.inscripcionGeneral || {};
+                  d.inscripcionGeneral.contactoSecretaria = d.inscripcionGeneral.contactoSecretaria || {};
+                  d.inscripcionGeneral.contactoSecretaria.activo = false;
+                  return d;
+                });
+                window.ISET_TOAST("Caja de dudas adicionales ocultada. Podés reactivarla cuando quieras.", "info");
+              }
+            }, "🗑️")
+          );
+          ctaBox.appendChild(toolbar);
+        }
+      } else if (!isCtaActive && secFaqWrap) {
+        if (!secFaqWrap.querySelector(".iset-cta-restore-box")) {
+          const restoreBox = h("div", {
+            class: "iset-cta-restore-box",
+            style: "border:2px dashed var(--borde,#d3dde9);border-radius:10px;padding:1.4rem;text-align:center;margin-top:2rem;background:rgba(116,172,223,0.06)"
+          },
+            h("p", { style: "margin:0 0 0.75rem;color:var(--suave);font-style:italic" }, "La caja de '¿Tenés dudas adicionales?' se encuentra oculta / eliminada de la página pública."),
+            this.createProminentPill("➕ Activar / Agregar Caja '¿Tenés dudas adicionales?'", () => this.openInscripcionDudasEditor(true), "➕", true)
+          );
+          secFaqWrap.appendChild(restoreBox);
+        }
       }
     }
 
@@ -1335,21 +1449,70 @@
       });
     }
 
-    // 9. Grilla Plan de Estudios y Materias (Pestañas por Año)
-    async openPlanEstudiosEditor(carreraId) {
+    // 9. Grilla Plan de Estudios y Materias (Pestañas por Carrera y Año)
+    async openPlanEstudiosEditor(initialCarreraId = null, onFinish = null) {
+      const editableCarreras = config.carreras.filter(c => auth.canEdit(c.id) && c.id !== "simulacion");
+      if (!editableCarreras.length) {
+        window.ISET_TOAST("No tenés permisos para gestionar planes de estudio.", "error");
+        return;
+      }
+
+      let activeCarreraId = (initialCarreraId && editableCarreras.some(c => c.id === initialCarreraId))
+        ? initialCarreraId
+        : editableCarreras[0].id;
+
+      // Si el modal de visualización (#modal-plan) está abierto, cerrarlo temporalmente para no solaparse en el top-layer
+      const modalPlan = document.getElementById("modal-plan");
+      const wasModalPlanOpen = modalPlan && modalPlan.open;
+      if (wasModalPlanOpen) {
+        modalPlan.close();
+      }
+
       const materiasData = await this.getFreshMaterias();
-      const materiasCarrera = JSON.parse(JSON.stringify(materiasData[carreraId] || []));
+      const workingMaterias = JSON.parse(JSON.stringify(materiasData || {}));
+      editableCarreras.forEach(c => {
+        if (!Array.isArray(workingMaterias[c.id])) {
+          workingMaterias[c.id] = [];
+        }
+      });
+
       let activeAnioTab = "1";
 
       const container = h("div", {},
         h("div", { class: "iset-alert iset-alert-info" },
-          `📋 Administrá las materias de ${carreraId}. Podés editar nombres, códigos, carga horaria, comisiones, docentes y correlatividades, o sumar y borrar materias en cada año.`
+          "📋 Administrá las materias y correlatividades oficiales del ISET N° 57. Podés modificar nombres, códigos, carga horaria, comisiones, docentes o agregar y eliminar materias por año."
         ),
+        editableCarreras.length > 1 ? h("div", { id: "carreras-selector-tabs", class: "iset-career-tabs" }) : null,
         h("div", { id: "anios-tabs-nav", class: "iset-tabs" }),
         h("div", { id: "materias-year-container" })
       );
 
-      const renderTabsAndMaterias = () => {
+      const renderAll = () => {
+        // 1. Pestañas de Carrera (si el usuario tiene acceso a más de una)
+        const cTabsNav = container.querySelector("#carreras-selector-tabs");
+        if (cTabsNav) {
+          cTabsNav.innerHTML = "";
+          editableCarreras.forEach(c => {
+            const count = (workingMaterias[c.id] || []).length;
+            const btn = h("button", {
+              type: "button",
+              class: `iset-career-tab-btn ${c.id === activeCarreraId ? "active" : ""}`,
+              onclick: () => {
+                activeCarreraId = c.id;
+                activeAnioTab = "1";
+                renderAll();
+              }
+            },
+              h("span", {}, c.icono || "🎓"),
+              h("span", {}, c.nombre.replace(/^Tecnicatura Superior en\s+/i, "")),
+              h("span", { style: "font-size:0.75rem;opacity:0.85;background:rgba(20,33,61,0.12);padding:1px 7px;border-radius:10px" }, `${count}`)
+            );
+            cTabsNav.appendChild(btn);
+          });
+        }
+
+        // 2. Pestañas de Año para la carrera activa
+        const materiasCarrera = workingMaterias[activeCarreraId] || [];
         const tabsNav = container.querySelector("#anios-tabs-nav");
         tabsNav.innerHTML = "";
         ["1", "2", "3"].forEach(an => {
@@ -1359,39 +1522,55 @@
             class: `iset-tab ${activeAnioTab === an ? "active" : ""}`,
             onclick: () => {
               activeAnioTab = an;
-              renderTabsAndMaterias();
+              renderMateriasList();
             }
           }, `${an}° Año (${count} materias)`);
           tabsNav.appendChild(btn);
         });
 
+        renderMateriasList();
+      };
+
+      const renderMateriasList = () => {
+        const materiasCarrera = workingMaterias[activeCarreraId] || [];
         const box = container.querySelector("#materias-year-container");
         box.innerHTML = "";
+
+        // Actualizar estado activo de las pestañas de año
+        const yearButtons = container.querySelectorAll("#anios-tabs-nav .iset-tab");
+        yearButtons.forEach((btn, idx) => {
+          const an = String(idx + 1);
+          btn.classList.toggle("active", activeAnioTab === an);
+        });
 
         const currentYearMaterias = materiasCarrera.filter(m => String(m.anio).trim() === activeAnioTab);
 
         if (!currentYearMaterias.length) {
-          box.appendChild(h("p", { style: "color:var(--suave);font-style:italic;padding:1rem 0" }, `No hay materias registradas para ${activeAnioTab}° Año todavía.`));
+          box.appendChild(h("p", { style: "color:var(--suave);font-style:italic;padding:1.5rem 0;text-align:center" }, `No hay materias registradas para ${activeAnioTab}° Año todavía.`));
         }
 
         currentYearMaterias.forEach((mat) => {
           const card = h("div", { class: "iset-editor-row-card" },
             h("div", { class: "iset-editor-row-header" },
-              h("h4", { class: "iset-editor-row-title" }, `📖 ${mat.nombre || "Materia sin nombre"}`),
+              h("h4", { class: "iset-editor-row-title" },
+                h("span", {}, `📖 ${mat.nombre || "Materia sin nombre"}`),
+                mat.codigo ? h("span", { style: "font-size:0.78rem;color:var(--celeste-oscuro,#1e3a8a);background:rgba(116,172,223,0.2);padding:1px 6px;border-radius:4px" }, mat.codigo) : null
+              ),
               h("button", {
                 type: "button",
                 class: "iset-btn-delete-row",
+                title: "Eliminar esta materia del plan",
                 onclick: () => {
                   const idx = materiasCarrera.indexOf(mat);
                   if (idx !== -1) {
                     materiasCarrera.splice(idx, 1);
-                    renderTabsAndMaterias();
+                    renderAll();
                   }
                 }
               }, "🗑️ Eliminar Materia")
             ),
             h("div", { class: "iset-form-group", style: "margin:0" },
-              h("label", { class: "iset-label" }, "Nombre de la Materia"),
+              h("label", { class: "iset-label" }, "Nombre de la Materia *"),
               h("input", {
                 type: "text",
                 class: "iset-input",
@@ -1415,7 +1594,7 @@
                 })
               ),
               h("div", { class: "iset-form-group", style: "margin:0" },
-                h("label", { class: "iset-label" }, "Carga Horaria Semanal (Módulos)"),
+                h("label", { class: "iset-label" }, "Carga Horaria Semanal (Módulos / Hs)"),
                 h("input", {
                   type: "text",
                   class: "iset-input",
@@ -1447,7 +1626,7 @@
                   class: "iset-input",
                   defaultValue: Object.entries(mat.docentes || {}).map(([c, d]) => d ? `${c}: ${d}` : c).join(" · "),
                   value: Object.entries(mat.docentes || {}).map(([c, d]) => d ? `${c}: ${d}` : c).join(" · "),
-                  placeholder: "Ej: A: Prof. Pérez",
+                  placeholder: "Ej: A: Prof. Pérez · B: Prof. Gómez",
                   oninput: (e) => {
                     const docObj = {};
                     e.target.value.split("·").forEach(item => {
@@ -1464,17 +1643,18 @@
               )
             ),
             h("div", { class: "iset-form-group", style: "margin:0" },
-              h("label", { class: "iset-label" }, "Correlatividades Previas (Separadas por punto '·')"),
+              h("label", { class: "iset-label" }, "Correlatividades Previas (Separadas por punto '·' o coma)"),
               h("input", {
                 type: "text",
                 class: "iset-input",
                 defaultValue: (mat.correlativas || []).join(" · "),
                 value: (mat.correlativas || []).join(" · "),
-                placeholder: "Ej: Matemática I · Algoritmos",
+                placeholder: "Ej: Matemática I · Algoritmos y Estructuras de Datos",
                 oninput: (e) => {
-                  mat.correlativas = e.target.value.split("·").map(s => s.trim()).filter(Boolean);
+                  mat.correlativas = e.target.value.split(/[·,]/).map(s => s.trim()).filter(Boolean);
                 }
-              })
+              }),
+              h("small", { style: "color:var(--suave);font-size:0.75rem" }, "Materias que el estudiante debe tener aprobadas antes de cursar esta materia.")
             )
           );
           box.appendChild(card);
@@ -1493,20 +1673,40 @@
               docentes: { A: "" },
               correlativas: []
             });
-            renderTabsAndMaterias();
+            renderAll();
           }
-        }, `➕ Agregar Materia a ${activeAnioTab}° Año`);
+        }, `➕ Agregar Nueva Materia a ${activeAnioTab}° Año`);
         box.appendChild(addBtn);
       };
 
-      renderTabsAndMaterias();
+      renderAll();
 
-      this.createEditorModal(`Plan de Estudios · ${carreraId}`, container, async () => {
-        await content.updateMaterias(m => {
-          m[carreraId] = materiasCarrera;
-          return m;
-        }, carreraId);
-      });
+      const finishCallback = () => {
+        if (typeof onFinish === "function") {
+          onFinish(activeCarreraId);
+        } else if (wasModalPlanOpen && window.abrirModalPlanCarrera) {
+          window.abrirModalPlanCarrera(activeCarreraId);
+        }
+      };
+
+      this.createEditorModal(
+        `Planes de Estudio y Correlatividades`,
+        container,
+        async () => {
+          await content.updateMaterias(m => {
+            editableCarreras.forEach(c => {
+              if (workingMaterias[c.id]) {
+                m[c.id] = workingMaterias[c.id];
+              }
+            });
+            return m;
+          }, activeCarreraId);
+          finishCallback();
+        },
+        () => {
+          finishCallback();
+        }
+      );
     }
 
     // 10. CTA de Inscripción en Carrera
@@ -1918,13 +2118,18 @@
     }
 
     // 17. Preguntas Frecuentes (FAQ)
-    async openInscripcionFaqEditor() {
+    async openInscripcionFaqEditor(addNew = false, focusIndex = null) {
       const data = await this.getFreshData();
       const faqs = JSON.parse(JSON.stringify(data.inscripcionGeneral?.preguntasFrecuentes || []));
 
+      if (addNew) {
+        faqs.push({ pregunta: "¿Nueva pregunta frecuente?", respuesta: "" });
+        focusIndex = faqs.length - 1;
+      }
+
       const container = h("div", {},
         h("div", { class: "iset-alert iset-alert-info" },
-          "❓ Editá las preguntas frecuentes, sumá respuestas a dudas habituales o eliminá las que ya no apliquen."
+          "❓ Administrá las preguntas frecuentes oficiales del ISET N° 57. Podés modificar preguntas y respuestas, reordenarlas con las flechas, agregar nuevas o eliminar las que ya no apliquen."
         ),
         h("div", { id: "faqs-list-box" })
       );
@@ -1933,21 +2138,61 @@
         const box = container.querySelector("#faqs-list-box");
         box.innerHTML = "";
 
+        if (!faqs.length) {
+          box.appendChild(h("p", { style: "color:var(--suave);font-style:italic;padding:1.5rem 0;text-align:center" }, "No hay preguntas frecuentes registradas todavía. Hacé clic en 'Agregar Nueva Pregunta' abajo para crear la primera."));
+        }
+
         faqs.forEach((f, idx) => {
-          const card = h("div", { class: "iset-editor-row-card" },
+          const isFocused = focusIndex === idx;
+          const card = h("div", {
+            class: "iset-editor-row-card",
+            id: `faq-card-${idx}`,
+            style: isFocused ? "border-color:var(--celeste,#74acdf);box-shadow:0 0 0 2px rgba(116,172,223,0.3)" : ""
+          },
             h("div", { class: "iset-editor-row-header" },
-              h("h4", { class: "iset-editor-row-title" }, `Pregunta #${idx + 1}`),
+              h("h4", { class: "iset-editor-row-title" },
+                h("span", {}, `❓ Pregunta #${idx + 1}`),
+                h("div", { style: "display:inline-flex;gap:0.3rem;margin-left:0.5rem" },
+                  idx > 0 ? h("button", {
+                    type: "button",
+                    class: "iset-btn-reorder",
+                    title: "Subir pregunta en el orden",
+                    style: "background:transparent;border:1px solid var(--borde,#d3dde9);border-radius:4px;cursor:pointer;padding:2px 7px;font-size:0.75rem",
+                    onclick: () => {
+                      const temp = faqs[idx];
+                      faqs[idx] = faqs[idx - 1];
+                      faqs[idx - 1] = temp;
+                      focusIndex = idx - 1;
+                      renderRows();
+                    }
+                  }, "⬆️ Subir") : null,
+                  idx < faqs.length - 1 ? h("button", {
+                    type: "button",
+                    class: "iset-btn-reorder",
+                    title: "Bajar pregunta en el orden",
+                    style: "background:transparent;border:1px solid var(--borde,#d3dde9);border-radius:4px;cursor:pointer;padding:2px 7px;font-size:0.75rem",
+                    onclick: () => {
+                      const temp = faqs[idx];
+                      faqs[idx] = faqs[idx + 1];
+                      faqs[idx + 1] = temp;
+                      focusIndex = idx + 1;
+                      renderRows();
+                    }
+                  }, "⬇️ Bajar") : null
+                )
+              ),
               h("button", {
                 type: "button",
                 class: "iset-btn-delete-row",
+                title: "Eliminar esta pregunta frecuente",
                 onclick: () => {
                   faqs.splice(idx, 1);
                   renderRows();
                 }
-              }, "🗑️ Eliminar")
+              }, "🗑️ Eliminar Pregunta")
             ),
             h("div", { class: "iset-form-group", style: "margin:0" },
-              h("label", { class: "iset-label" }, "¿Pregunta?"),
+              h("label", { class: "iset-label" }, "¿Pregunta? *"),
               h("input", {
                 type: "text",
                 class: "iset-input",
@@ -1959,10 +2204,10 @@
               })
             ),
             h("div", { class: "iset-form-group", style: "margin:0" },
-              h("label", { class: "iset-label" }, "Respuesta"),
+              h("label", { class: "iset-label" }, "Respuesta *"),
               h("textarea", {
                 class: "iset-textarea",
-                style: "min-height:65px",
+                style: "min-height:75px",
                 defaultValue: f.respuesta || "",
                 value: f.respuesta || "",
                 placeholder: "Escribí aquí la respuesta clara y concisa…",
@@ -1977,8 +2222,16 @@
           type: "button",
           class: "iset-btn-add-item",
           onclick: () => {
-            faqs.push({ pregunta: "¿Nueva pregunta?", respuesta: "" });
+            faqs.push({ pregunta: "¿Nueva pregunta frecuente?", respuesta: "" });
+            focusIndex = faqs.length - 1;
             renderRows();
+            setTimeout(() => {
+              const newCard = container.querySelector(`#faq-card-${faqs.length - 1}`);
+              if (newCard) {
+                newCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                newCard.querySelector("input")?.focus();
+              }
+            }, 60);
           }
         }, "➕ Agregar Nueva Pregunta Frecuente");
         box.appendChild(addBtn);
@@ -1986,10 +2239,160 @@
 
       renderRows();
 
-      this.createEditorModal("Gestionar Preguntas Frecuentes", container, async () => {
+      this.createEditorModal("Gestionar Preguntas Frecuentes (FAQ)", container, async () => {
         await content.updateData(d => {
           d.inscripcionGeneral = d.inscripcionGeneral || {};
-          d.inscripcionGeneral.preguntasFrecuentes = faqs.filter(f => f.pregunta);
+          d.inscripcionGeneral.preguntasFrecuentes = faqs.filter(f => f.pregunta && f.pregunta.trim());
+          return d;
+        });
+      });
+
+      if (addNew || focusIndex !== null) {
+        setTimeout(() => {
+          const targetCard = container.querySelector(`#faq-card-${focusIndex || (faqs.length - 1)}`);
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+            targetCard.querySelector("input")?.focus();
+          }
+        }, 120);
+      }
+    }
+
+    // 17b. Caja de Dudas Adicionales y Contacto Secretaría
+    async openInscripcionDudasEditor(forceActivate = false) {
+      const data = await this.getFreshData();
+      const insG = data.inscripcionGeneral || {};
+      const cs = JSON.parse(JSON.stringify(insG.contactoSecretaria || {
+        titulo: "¿Tenés dudas adicionales?",
+        atencion: "Atención presencial en Secretaría",
+        horario: "Lunes a viernes de 9:00 a 20:00 h",
+        direccion: "Calle Ejemplo 1234, Rosario, Santa Fe",
+        email: "contacto@iset57.edu.ar",
+        telefono: "(0341) 000-0000",
+        botonTexto: "Escribir a Secretaría",
+        activo: true
+      }));
+
+      if (forceActivate) {
+        cs.activo = true;
+      }
+
+      const form = h("form", {},
+        h("div", { class: "iset-alert iset-alert-info" },
+          "💬 Personalizá el bloque '¿Tenés dudas adicionales?' al pie de las preguntas frecuentes. Podés cambiar el título, los datos de contacto de Secretaría, el enlace de correo o desactivarlo para que no aparezca en la página."
+        ),
+        h("div", { class: "iset-form-group", style: "display:flex;align-items:center;gap:0.75rem;background:var(--fondo,#f5f8fb);padding:0.75rem 1rem;border-radius:8px;border:1px solid var(--borde,#d3dde9)" },
+          h("input", {
+            type: "checkbox",
+            id: "ed-dudas-activo",
+            style: "width:1.25rem;height:1.25rem;cursor:pointer",
+            checked: cs.activo !== false
+          }),
+          h("label", { for: "ed-dudas-activo", style: "cursor:pointer;font-weight:700;margin:0" }, "Mostrar esta caja en la página pública de inscripción")
+        ),
+        h("div", { class: "iset-form-group" },
+          h("label", { class: "iset-label" }, "Título de la Caja *"),
+          h("input", {
+            type: "text",
+            id: "ed-dudas-titulo",
+            class: "iset-input",
+            style: "font-weight:700",
+            defaultValue: cs.titulo || "¿Tenés dudas adicionales?",
+            value: cs.titulo || "¿Tenés dudas adicionales?"
+          })
+        ),
+        h("div", { class: "iset-form-group" },
+          h("label", { class: "iset-label" }, "Texto o Bajada Explicativa"),
+          h("textarea", {
+            id: "ed-dudas-desc",
+            class: "iset-textarea",
+            style: "min-height:65px",
+            defaultValue: cs.descripcion || "",
+            value: cs.descripcion || "",
+            placeholder: "Dejá en blanco para generar automáticamente con el horario, dirección y teléfono cargados abajo."
+          }, cs.descripcion || "")
+        ),
+        h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
+          h("div", { class: "iset-form-group", style: "margin:0" },
+            h("label", { class: "iset-label" }, "Correo Electrónico de Contacto"),
+            h("input", {
+              type: "email",
+              id: "ed-dudas-email",
+              class: "iset-input",
+              defaultValue: cs.email || "contacto@iset57.edu.ar",
+              value: cs.email || "contacto@iset57.edu.ar"
+            })
+          ),
+          h("div", { class: "iset-form-group", style: "margin:0" },
+            h("label", { class: "iset-label" }, "Texto del Botón de Acción"),
+            h("input", {
+              type: "text",
+              id: "ed-dudas-boton",
+              class: "iset-input",
+              defaultValue: cs.botonTexto || "Escribir a Secretaría",
+              value: cs.botonTexto || "Escribir a Secretaría"
+            })
+          )
+        ),
+        h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem" },
+          h("div", { class: "iset-form-group", style: "margin:0" },
+            h("label", { class: "iset-label" }, "Horario de Atención"),
+            h("input", {
+              type: "text",
+              id: "ed-dudas-horario",
+              class: "iset-input",
+              defaultValue: cs.horario || "Lunes a viernes de 9:00 a 20:00 h",
+              value: cs.horario || "Lunes a viernes de 9:00 a 20:00 h"
+            })
+          ),
+          h("div", { class: "iset-form-group", style: "margin:0" },
+            h("label", { class: "iset-label" }, "Teléfono"),
+            h("input", {
+              type: "text",
+              id: "ed-dudas-tel",
+              class: "iset-input",
+              defaultValue: cs.telefono || "",
+              value: cs.telefono || "",
+              placeholder: "Ej: (0341) 000-0000"
+            })
+          )
+        ),
+        h("div", { class: "iset-form-group", style: "margin-top:0.75rem" },
+          h("label", { class: "iset-label" }, "Dirección / Lugar de Atención"),
+          h("input", {
+            type: "text",
+            id: "ed-dudas-dir",
+            class: "iset-input",
+            defaultValue: cs.direccion || "",
+            value: cs.direccion || "",
+            placeholder: "Ej: Calle Ejemplo 1234, Rosario, Santa Fe"
+          })
+        )
+      );
+
+      this.createEditorModal("Modificar Caja '¿Tenés dudas adicionales?'", form, async () => {
+        const activo = form.querySelector("#ed-dudas-activo").checked;
+        const titulo = form.querySelector("#ed-dudas-titulo").value.trim();
+        const descripcion = form.querySelector("#ed-dudas-desc").value.trim();
+        const email = form.querySelector("#ed-dudas-email").value.trim();
+        const botonTexto = form.querySelector("#ed-dudas-boton").value.trim();
+        const horario = form.querySelector("#ed-dudas-horario").value.trim();
+        const telefono = form.querySelector("#ed-dudas-tel").value.trim();
+        const direccion = form.querySelector("#ed-dudas-dir").value.trim();
+
+        await content.updateData(d => {
+          d.inscripcionGeneral = d.inscripcionGeneral || {};
+          d.inscripcionGeneral.contactoSecretaria = {
+            activo,
+            titulo: titulo || "¿Tenés dudas adicionales?",
+            descripcion,
+            email: email || "contacto@iset57.edu.ar",
+            botonTexto: botonTexto || "Escribir a Secretaría",
+            horario: horario || "",
+            telefono: telefono || "",
+            direccion: direccion || "",
+            atencion: "Atención presencial en Secretaría"
+          };
           return d;
         });
       });

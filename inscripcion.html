@@ -152,7 +152,7 @@ footer p{margin:.2rem 0}
 
 <main id="contenido">
   <!-- Pasos -->
-  <section id="pasos-sec" aria-labelledby="t-pasos">
+  <section id="pasos" class="pasos-sec" aria-labelledby="t-pasos">
     <div class="wrap">
       <h2 id="t-pasos">Cómo inscribirse paso a paso</h2>
       <p class="intro">Seguí estos simples pasos para completar tu ingreso a la institución.</p>
@@ -163,7 +163,7 @@ footer p{margin:.2rem 0}
   </section>
 
   <!-- Requisitos -->
-  <section id="requisitos-sec" style="background:var(--celeste-suave)" aria-labelledby="t-req">
+  <section id="requisitos" class="requisitos-sec" style="background:var(--celeste-suave)" aria-labelledby="t-req">
     <div class="wrap">
       <h2 id="t-req">Documentación y Requisitos Comunes</h2>
       <p class="intro">Documentación general requerida para todas las carreras. Presentar en original y fotocopia en Secretaría.</p>
@@ -181,7 +181,7 @@ footer p{margin:.2rem 0}
   </section>
 
   <!-- Fechas y Períodos -->
-  <section id="fechas-sec" aria-labelledby="t-fechas">
+  <section id="fechas" class="fechas-sec" aria-labelledby="t-fechas">
     <div class="wrap">
       <h2 id="t-fechas">Fechas y Horarios de Inscripción</h2>
       <p class="intro">Consultá los plazos vigentes para la entrega de legajos y documentación.</p>
@@ -190,14 +190,14 @@ footer p{margin:.2rem 0}
   </section>
 
   <!-- Preguntas Frecuentes -->
-  <section id="faq-sec" style="background:var(--papel);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)" aria-labelledby="t-faq">
+  <section id="faq" class="faq-sec" style="background:var(--papel);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)" aria-labelledby="t-faq">
     <div class="wrap">
       <h2 id="t-faq">Preguntas Frecuentes</h2>
       <p class="intro">Respuestas a las dudas habituales sobre el ingreso y cursado.</p>
       <div class="faq-grid" id="faq-container"></div>
       
       <div class="cta-box" id="cta-box">
-        <h3>¿Tenés dudas adicionales?</h3>
+        <h3 id="cta-titulo">¿Tenés dudas adicionales?</h3>
         <p id="cta-desc">Acercate a Secretaría en el horario de atención o envianos tu consulta por correo.</p>
         <a class="enlace" id="cta-btn" href="mailto:contacto@iset57.edu.ar">Escribir a Secretaría</a>
       </div>
@@ -306,23 +306,41 @@ footer p{margin:.2rem 0}
 
     // Preguntas frecuentes
     if (ins.preguntasFrecuentes && ins.preguntasFrecuentes.length) {
-      $("faq-container").replaceChildren(...ins.preguntasFrecuentes.map(faq =>
-        h("details", {},
+      $("faq-container").replaceChildren(...ins.preguntasFrecuentes.map((faq, idx) =>
+        h("details", { class: "faq-item", "data-faq-index": idx },
           h("summary", {}, faq.pregunta || ""),
           h("p", {}, faq.respuesta || "")
         )
       ));
     }
 
-    // Contacto Secretaría
-    if (ins.contactoSecretaria) {
+    // Contacto Secretaría / Dudas adicionales
+    const ctaBox = $("cta-box");
+    if (ctaBox) {
       const cs = ins.contactoSecretaria;
-      if (cs.email) {
-        $("cta-btn").href = "mailto:" + cs.email;
-        $("cta-btn").textContent = "Consultar por correo (" + cs.email + ")";
-      }
-      if (cs.horario) {
-        $("cta-desc").textContent = (cs.atencion || "Atención en Secretaría") + ": " + cs.horario + (cs.direccion ? " · " + cs.direccion : "") + ".";
+      if (cs && cs.activo !== false) {
+        ctaBox.style.display = "";
+        if ($("cta-titulo")) $("cta-titulo").textContent = cs.titulo || "¿Tenés dudas adicionales?";
+        if ($("cta-desc")) {
+          if (cs.descripcion) {
+            $("cta-desc").textContent = cs.descripcion;
+          } else {
+            const descParts = [];
+            if (cs.atencion || cs.horario) {
+              descParts.push((cs.atencion || "Atención en Secretaría") + (cs.horario ? ": " + cs.horario : ""));
+            }
+            if (cs.direccion) descParts.push(cs.direccion);
+            if (cs.telefono) descParts.push("Tel.: " + cs.telefono);
+            $("cta-desc").textContent = descParts.join(" · ") || "Acercate a Secretaría en el horario de atención o envianos tu consulta por correo.";
+          }
+        }
+        if ($("cta-btn")) {
+          const btnText = cs.botonTexto || (cs.email ? "Consultar por correo (" + cs.email + ")" : "Escribir a Secretaría");
+          $("cta-btn").textContent = btnText;
+          $("cta-btn").href = cs.email ? "mailto:" + cs.email : "mailto:contacto@iset57.edu.ar";
+        }
+      } else {
+        ctaBox.style.display = "none";
       }
     }
 

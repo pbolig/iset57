@@ -67,6 +67,13 @@
       auth.on("password-recovery-mode", () => {
         this.openAuthModal("reset");
       });
+
+      // Reaccionar a eventos de sincronización y red
+      if (content && typeof content.on === "function") {
+        content.on("sync-status", () => this.renderNavButton());
+        content.on("network-status", () => this.renderNavButton());
+        content.on("sync-completed", () => this.renderNavButton());
+      }
     }
 
     // Comprobar si la URL viene de un correo de recuperación
@@ -115,6 +122,36 @@
         roleBadgeClass = "iset-badge-admin";
       }
 
+      // Estado de sincronización en la nube (Offline-First)
+      const syncInfo = (content && typeof content.getSyncStatus === "function")
+        ? content.getSyncStatus()
+        : { isOnline: true, isSyncing: false, pendingCount: 0 };
+
+      let syncBadge = null;
+      if (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) {
+        if (!syncInfo.isOnline) {
+          syncBadge = h("span", {
+            class: "iset-sync-indicator offline",
+            title: "Modo sin conexión. Los cambios se guardan localmente y se sincronizarán al volver internet."
+          }, "📴 Offline");
+        } else if (syncInfo.isSyncing) {
+          syncBadge = h("span", {
+            class: "iset-sync-indicator syncing",
+            title: "Sincronizando cambios en la nube con Supabase..."
+          }, "🔄 Sincronizando");
+        } else if (syncInfo.pendingCount > 0) {
+          syncBadge = h("span", {
+            class: "iset-sync-indicator pending",
+            title: `${syncInfo.pendingCount} cambio(s) guardados localmente esperando conexión.`
+          }, `🟡 ${syncInfo.pendingCount} pend.`);
+        } else {
+          syncBadge = h("span", {
+            class: "iset-sync-indicator synced",
+            title: "Conectado a internet y sincronizado con Supabase en tiempo real."
+          }, "☁️ En línea");
+        }
+      }
+
       const chip = h("div", {
         class: "iset-user-chip",
         onclick: (e) => {
@@ -126,6 +163,7 @@
         h("div", { class: "iset-user-avatar" }, initial),
         h("span", {}, user.fullName?.split(" ")[0] || user.email),
         h("span", { class: `iset-badge-role ${roleBadgeClass}` }, roleLabel),
+        syncBadge,
         h("span", { style: "font-size:0.7rem;margin-left:2px" }, "▼")
       );
 
@@ -135,6 +173,17 @@
           h("p", { class: "iset-menu-name" }, user.fullName),
           h("p", { class: "iset-menu-email" }, user.email)
         ),
+        (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) ? h("button", {
+          class: "iset-menu-item",
+          style: "color:var(--celeste-oscuro, #1e3a8a);font-weight:700",
+          onclick: async () => {
+            menu.classList.remove("open");
+            showToast("Verificando y sincronizando con la nube…", "info");
+            if (content && typeof content.syncPendingQueue === "function") {
+              await content.syncPendingQueue();
+            }
+          }
+        }, `☁️ Sincronizar en la nube ${syncInfo.pendingCount > 0 ? `(${syncInfo.pendingCount} pendientes)` : "(Al día)"}`) : null,
         user.role === config.ROLES.SUPERUSER ? h("button", {
           class: "iset-menu-item",
           onclick: () => {
@@ -142,6 +191,30 @@
             this.openDashboardModal();
           }
         }, "⚙️ Dashboard de Superusuario") : null,
+        (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) ? h("button", {
+          class: "iset-menu-item",
+          style: "color:var(--tinta);font-weight:700",
+          onclick: () => {
+            menu.classList.remove("open");
+            if (window.ISET_EDITOR_UI) window.ISET_EDITOR_UI.openPlanEstudiosEditor();
+          }
+        }, "📋 Gestionar Planes de Estudio y Correlatividades") : null,
+        (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) ? h("button", {
+          class: "iset-menu-item",
+          style: "color:var(--tinta);font-weight:700",
+          onclick: () => {
+            menu.classList.remove("open");
+            if (window.ISET_EDITOR_UI) window.ISET_EDITOR_UI.openInscripcionFaqEditor();
+          }
+        }, "❓ Gestionar Preguntas Frecuentes (FAQ)") : null,
+        (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) ? h("button", {
+          class: "iset-menu-item",
+          style: "color:var(--tinta);font-weight:700",
+          onclick: () => {
+            menu.classList.remove("open");
+            if (window.ISET_EDITOR_UI) window.ISET_EDITOR_UI.openInscripcionDudasEditor();
+          }
+        }, "💬 Modificar Caja '¿Tenés dudas adicionales?'") : null,
         (user.role === config.ROLES.SUPERUSER || user.role === config.ROLES.ADMIN) ? h("button", {
           class: "iset-menu-item",
           style: "color:var(--tinta);font-weight:800;background:var(--celeste-suave)",

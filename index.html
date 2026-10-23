@@ -232,7 +232,9 @@ footer p{margin:.2rem 0}
         <p class="modal-sub">ISET N° 57 · Planes Oficiales</p>
         <h3 id="modal-plan-title" class="modal-title">Planes de Estudio y Correlatividades</h3>
       </div>
-      <button type="button" class="modal-close" id="btn-cerrar-modal" aria-label="Cerrar">✕</button>
+      <div class="modal-header-actions" id="modal-plan-header-actions" style="display:flex;align-items:center;gap:0.75rem">
+        <button type="button" class="modal-close" id="btn-cerrar-modal" aria-label="Cerrar">✕</button>
+      </div>
     </div>
     <div class="modal-body">
       <div class="modal-tabs" id="plan-tabs"></div>
@@ -488,16 +490,22 @@ footer p{margin:.2rem 0}
     let activeCareerId = carrerasConMaterias[0].id;
 
     function renderTabs() {
+      dialog.setAttribute("data-active-career", activeCareerId);
       tabsContainer.replaceChildren(...carrerasConMaterias.map(c => {
         const btn = h("button", {
           type: "button",
           class: "tab-btn" + (c.id === activeCareerId ? " active" : ""),
+          "data-carrera": c.id,
           style: "--c-tab:" + (c.color || "var(--tinta)")
         }, c.tituloCorto || c.titulo.replace(/^Tecnicatura Superior en\s+/i, ""));
         btn.addEventListener("click", () => {
           activeCareerId = c.id;
+          dialog.setAttribute("data-active-career", activeCareerId);
           renderTabs();
           renderTabla();
+          if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+            window.ISET_EDITOR_UI.refreshPills();
+          }
         });
         return btn;
       }));
@@ -578,23 +586,26 @@ footer p{margin:.2rem 0}
     }
 
     if (btnAbrir) {
-      btnAbrir.addEventListener("click", () => {
+      btnAbrir.onclick = () => {
         renderTabs();
         renderTabla();
         dialog.showModal();
-      });
+        if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+          window.ISET_EDITOR_UI.refreshPills();
+        }
+      };
     }
 
     if (btnCerrar) {
-      btnCerrar.addEventListener("click", () => dialog.close());
+      btnCerrar.onclick = () => dialog.close();
     }
 
-    dialog.addEventListener("click", (e) => {
+    dialog.onclick = (e) => {
       if (e.target === dialog) dialog.close();
-    });
+    };
 
-    selectAnio.addEventListener("change", renderTabla);
-    inputBuscar.addEventListener("input", renderTabla);
+    selectAnio.onchange = renderTabla;
+    inputBuscar.oninput = renderTabla;
 
     window.abrirModalPlanCarrera = (carreraId) => {
       if (carrerasConMaterias.some(c => c.id === carreraId)) {
@@ -603,6 +614,9 @@ footer p{margin:.2rem 0}
       renderTabs();
       renderTabla();
       dialog.showModal();
+      if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+        window.ISET_EDITOR_UI.refreshPills();
+      }
     };
   }
 

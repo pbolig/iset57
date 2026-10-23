@@ -198,6 +198,10 @@
       if (carreraId) {
         return this.isAdminOf(carreraId);
       }
+      // Administradores institucionales pueden editar secciones generales compartidas (ej. FAQ e inscripción)
+      if (this.currentUser.role === this.config.ROLES.ADMIN) {
+        return true;
+      }
       return false;
     }
 
