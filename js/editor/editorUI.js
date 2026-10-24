@@ -280,7 +280,7 @@
           if (!avisoEl.querySelector(".iset-pill-aviso")) {
             avisoEl.classList.add("iset-editable-host");
             const isTable = Boolean(avData?.contenido?.filas || avData?.contenido?.columnas);
-            const pillLabel = isTable ? "Modificar Mesas de Examen / Tabla" : "Modificar Aviso";
+            const pillLabel = isTable ? "Modificar Mesas de Examen / Tabla" : (avData?.imagen ? "Modificar Publicación / Foto" : "Modificar Aviso");
             const pill = this.createPill(pillLabel, () => this.openAvisoEditor(idx), "iset-pill-aviso iset-pill-corner");
             avisoEl.appendChild(pill);
           }
@@ -891,6 +891,7 @@
       await this.getFreshData();
       const emptyAviso = {
         titulo: "Nuevo Aviso",
+        espacioId: "general",
         tipo: "info",
         contenido: "Ingresá aquí el detalle de la noticia o aviso institucional.",
         nota: "",
@@ -908,9 +909,14 @@
     }
 
     _renderAvisoForm(av, onSaveCallback, isNew = false) {
-      // Determinar si el aviso contiene una tabla estructurada (ej: Mesas de examen)
+      // Determinar modo inicial: "texto", "foto", o "tabla"
       const hasInitialTable = Boolean(av.contenido && (av.contenido.filas || av.contenido.columnas));
-      let isTableMode = hasInitialTable;
+      let currentMode = "texto";
+      if (hasInitialTable) {
+        currentMode = "tabla";
+      } else if (av.imagen) {
+        currentMode = "foto";
+      }
 
       const rawContenido = av.contenido;
       let textContent = "";
@@ -920,6 +926,17 @@
         textContent = rawContenido.filter(c => typeof c === "string").join("\n");
       }
 
+      let photoUrl = av.imagen || "";
+
+      const normalizarUrl = (url) => {
+        if (!url) return "";
+        let u = String(url).trim();
+        if (!u) return "";
+        if (/^(https?:\/\/|mailto:|tel:|#|\/|\.\/|\.\.\/)/i.test(u)) return u;
+        if (/\.html(\?.*)?(#.*)?$/i.test(u)) return u;
+        return "https://" + u;
+      };
+
       // Estructura de tabla si existe o valores iniciales para Mesas de Examen
       let tableTitulo = (hasInitialTable && av.contenido.titulo) ? av.contenido.titulo : "Cronograma de exámenes finales";
       let tableCols = (hasInitialTable && av.contenido.columnas) ? [...av.contenido.columnas] : ["Materia", "Carrera", "Fecha", "Hora", "Aula"];
@@ -927,19 +944,45 @@
         ["Programación I", "Tecnologías Digitales", "Lun 7/12/2026", "18:00", "Aula 3"]
       ];
 
+      // Opciones dinámicas de Carreras
+      const carreraOptions = [
+        h("option", { value: "general", selected: !av.espacioId || av.espacioId === "general" }, "🏛️ Institucional / General (Todas las carreras)")
+      ];
+      const allData = content.getData() || {};
+      const espacios = allData.ofertaAcademica?.espacios || [];
+      if (espacios.length) {
+        espacios.forEach(esp => {
+          const label = esp.tituloCorto || esp.titulo.replace(/^Tecnicatura Superior en\s+|^Tecnicatura en\s+/i, "");
+          carreraOptions.push(
+            h("option", { value: esp.id, selected: av.espacioId === esp.id }, `🎓 ${label}`)
+          );
+        });
+      } else {
+        carreraOptions.push(
+          h("option", { value: "digital", selected: av.espacioId === "digital" }, "🎓 Tecnologías Digitales"),
+          h("option", { value: "higiene", selected: av.espacioId === "higiene" }, "🎓 Higiene y Seguridad"),
+          h("option", { value: "enfermeria", selected: av.espacioId === "enfermeria" }, "🎓 Enfermería"),
+          h("option", { value: "simulacion", selected: av.espacioId === "simulacion" }, "🎓 Simulación Clínica")
+        );
+      }
+
       const form = h("form", {},
         h("div", { class: "iset-alert iset-alert-info" },
           isNew
-            ? "➕ Completá los datos del nuevo aviso. Podés elegir publicar texto plano o una tabla interactiva (como mesas de examen)."
-            : (isTableMode
-                ? "📊 Modificá el cronograma de la tabla o mesas de examen. Podés editar cualquier celda, sumar nuevas filas o eliminar las que no correspondan."
-                : "✏️ Modificá los datos del aviso seleccionado o eliminalo si ya caducó.")
+            ? "➕ Publicá un nuevo anuncio o novedad. Podés elegir entre Comunicado de Texto, Publicación con Foto, o Tabla Interactiva (ej: Mesas de Examen)."
+            : "✏️ Modificá los datos del aviso, su carrera destinataria, formato de contenido o eliminalo si ya caducó."
         ),
         h("div", { class: "iset-form-group" },
-          h("label", { class: "iset-label" }, "Título del Aviso"),
-          h("input", { type: "text", id: "ed-av-titulo", class: "iset-input", defaultValue: av.titulo || "", value: av.titulo || "" })
+          h("label", { class: "iset-label" }, "Título del Aviso / Noticia"),
+          h("input", { type: "text", id: "ed-av-titulo", class: "iset-input", defaultValue: av.titulo || "", value: av.titulo || "", placeholder: "Ej: Inicio de Inscripciones, Actos, Mesas..." })
         ),
-        h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
+        h("div", { style: "display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:0.75rem" },
+          h("div", { class: "iset-form-group" },
+            h("label", { class: "iset-label" }, "Carrera / Destinatario"),
+            h("select", { id: "ed-av-espacio", class: "iset-select" },
+              ...carreraOptions
+            )
+          ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Estilo / Prioridad Visual"),
             h("select", { id: "ed-av-tipo", class: "iset-select" },
@@ -954,22 +997,23 @@
               id: "ed-av-mode",
               class: "iset-select",
               onchange: (e) => {
-                isTableMode = e.target.value === "tabla";
+                currentMode = e.target.value;
                 updateView();
               }
             },
-              h("option", { value: "texto", selected: !isTableMode }, "📝 Texto / Párrafos"),
-              h("option", { value: "tabla", selected: isTableMode }, "📊 Tabla Interactiva (Mesas de Examen / Fechas)")
+              h("option", { value: "texto", selected: currentMode === "texto" }, "📝 Noticia / Comunicado de Texto"),
+              h("option", { value: "foto", selected: currentMode === "foto" }, "📸 Foto / Publicación con Imagen"),
+              h("option", { value: "tabla", selected: currentMode === "tabla" }, "📊 Tabla Interactiva (Mesas de Examen / Fechas)")
             )
           )
         ),
 
-        // Contenedores dinámicos para Texto o Tabla
+        // Contenedores dinámicos para Texto, Foto o Tabla
         h("div", { id: "aviso-content-container" }),
 
         h("div", { class: "iset-form-group", style: "margin-top:1rem" },
           h("label", { class: "iset-label" }, "Nota Aclaratoria al Pie (Opcional)"),
-          h("input", { type: "text", id: "ed-av-nota", class: "iset-input", defaultValue: av.nota || "", value: av.nota || "" })
+          h("input", { type: "text", id: "ed-av-nota", class: "iset-input", defaultValue: av.nota || "", value: av.nota || "", placeholder: "Ej: Consultar requisitos completos en Secretaría." })
         ),
         h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
           h("div", { class: "iset-form-group" },
@@ -978,7 +1022,8 @@
           ),
           h("div", { class: "iset-form-group" },
             h("label", { class: "iset-label" }, "Destino del Enlace (URL o página)"),
-            h("input", { type: "text", id: "ed-av-link-url", class: "iset-input", defaultValue: av.enlace?.url || "", value: av.enlace?.url || "", placeholder: "inscripcion.html o https://..." })
+            h("input", { type: "text", id: "ed-av-link-url", class: "iset-input", defaultValue: av.enlace?.url || "", value: av.enlace?.url || "", placeholder: "inscripcion.html, instagram.com o https://..." }),
+            h("small", { style: "color:var(--suave);font-size:0.78rem;display:block;margin-top:0.25rem" }, "💡 Páginas locales (ej: inscripcion.html) o sitios web externos (ej: instagram.com)")
           )
         )
       );
@@ -988,17 +1033,122 @@
       const renderTextEditor = () => {
         contentBox.innerHTML = "";
         const group = h("div", { class: "iset-form-group" },
-          h("label", { class: "iset-label" }, "Texto o Detalle del Aviso"),
+          h("label", { class: "iset-label" }, "Texto o Detalle del Comunicado"),
           h("textarea", {
             id: "ed-av-contenido",
             class: "iset-textarea",
-            style: "min-height:110px",
+            style: "min-height:120px",
+            placeholder: "Escribí aquí los detalles o párrafos del comunicado...",
             defaultValue: textContent,
             value: textContent,
             oninput: (e) => { textContent = e.target.value; }
           }, textContent)
         );
         contentBox.appendChild(group);
+      };
+
+      const renderFotoEditor = () => {
+        contentBox.innerHTML = "";
+        const wrap = h("div", { style: "background:#fff;border:1.5px solid var(--borde);border-radius:10px;padding:1rem;display:grid;gap:0.85rem" });
+
+        const fileInput = h("input", {
+          type: "file",
+          accept: "image/*",
+          style: "display:none",
+          onchange: async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+              window.ISET_TOAST("Subiendo y optimizando imagen…", "info");
+              const uploadedUrl = await content.uploadImage(file);
+              photoUrl = uploadedUrl;
+              updateFotoPreview();
+              window.ISET_TOAST("Imagen cargada con éxito", "success");
+            } catch (err) {
+              window.ISET_TOAST(err.message || "Error al subir imagen", "error");
+            }
+          }
+        });
+
+        const uploadBtn = h("button", {
+          type: "button",
+          class: "iset-btn-secondary",
+          style: "font-size:0.88rem;padding:0.45rem 0.9rem",
+          onclick: () => fileInput.click()
+        }, "📁 Seleccionar Foto desde mi PC");
+
+        const urlInput = h("input", {
+          type: "text",
+          class: "iset-input",
+          placeholder: "O pegá la URL web / ruta de la imagen (https://... o img/...)",
+          defaultValue: photoUrl,
+          value: photoUrl,
+          oninput: (e) => {
+            photoUrl = e.target.value.trim();
+            updateFotoPreview();
+          }
+        });
+
+        const previewContainer = h("div", {
+          style: "min-height:110px;border:1.5px dashed var(--borde);border-radius:8px;padding:0.75rem;display:flex;align-items:center;justify-content:center;background:rgba(20,33,61,0.02);position:relative"
+        });
+
+        const updateFotoPreview = () => {
+          previewContainer.innerHTML = "";
+          urlInput.value = photoUrl;
+          if (photoUrl) {
+            const img = h("img", {
+              src: photoUrl,
+              alt: "Vista previa",
+              style: "max-height:220px;max-width:100%;border-radius:6px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.1)"
+            });
+            const removeBtn = h("button", {
+              type: "button",
+              class: "iset-btn-delete-row",
+              style: "margin-left:0.75rem;align-self:flex-start",
+              title: "Quitar imagen",
+              onclick: () => {
+                photoUrl = "";
+                updateFotoPreview();
+              }
+            }, "🗑️ Quitar");
+            previewContainer.appendChild(h("div", { style: "display:flex;align-items:center;gap:0.75rem;width:100%;justify-content:center;flex-wrap:wrap" }, img, removeBtn));
+          } else {
+            previewContainer.appendChild(
+              h("div", { style: "text-align:center;color:var(--suave);font-size:0.88rem" },
+                h("p", { style: "margin:0" }, "📷 Aún no seleccionaste ninguna imagen."),
+                h("p", { style: "margin:0.25rem 0 0;font-size:0.8rem" }, "Hacé clic en 'Seleccionar Foto' o pegá una dirección URL arriba.")
+              )
+            );
+          }
+        };
+
+        updateFotoPreview();
+
+        const descGroup = h("div", { class: "iset-form-group", style: "margin:0" },
+          h("label", { class: "iset-label" }, "Descripción o Epígrafe que acompaña la Foto (Opcional)"),
+          h("textarea", {
+            class: "iset-textarea",
+            style: "min-height:80px",
+            placeholder: "Detalle o comentario para acompañar la imagen (opcional)...",
+            defaultValue: textContent,
+            value: textContent,
+            oninput: (e) => { textContent = e.target.value; }
+          }, textContent)
+        );
+
+        wrap.appendChild(h("div", { class: "iset-form-group", style: "margin:0" },
+          h("label", { class: "iset-label" }, "Fotografía / Imagen del Anuncio"),
+          h("div", { style: "display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-bottom:0.5rem" },
+            uploadBtn,
+            fileInput
+          ),
+          urlInput
+        ));
+        wrap.appendChild(previewContainer);
+        wrap.appendChild(descGroup);
+
+        contentBox.appendChild(wrap);
       };
 
       const renderTableEditor = () => {
@@ -1111,7 +1261,8 @@
       };
 
       const updateView = () => {
-        if (isTableMode) renderTableEditor();
+        if (currentMode === "tabla") renderTableEditor();
+        else if (currentMode === "foto") renderFotoEditor();
         else renderTextEditor();
       };
 
@@ -1133,32 +1284,59 @@
         form.appendChild(deleteBtn);
       }
 
-      const modalTitle = isNew ? "Publicar Nuevo Aviso" : (isTableMode ? "Modificar Mesas de Examen / Tabla" : "Modificar Aviso");
+      const modalTitle = isNew
+        ? "Publicar Nuevo Aviso"
+        : (currentMode === "tabla" ? "Modificar Mesas de Examen / Tabla" : (currentMode === "foto" ? "Modificar Publicación / Foto" : "Modificar Aviso"));
 
       this.createEditorModal(modalTitle, form, async () => {
         let finalContenido;
-        if (isTableMode) {
+        let finalImagen = null;
+
+        if (currentMode === "tabla") {
           finalContenido = {
             titulo: tableTitulo.trim() || "Cronograma de exámenes finales",
             columnas: tableCols,
             filas: tableRows.filter(r => r[0] && r[0].trim())
           };
+        } else if (currentMode === "foto") {
+          finalContenido = textContent.trim();
+          finalImagen = photoUrl.trim();
+          if (!finalImagen) {
+            window.ISET_TOAST("Por favor seleccioná o ingresá una imagen para el formato Foto", "error");
+            return;
+          }
         } else {
           finalContenido = textContent.trim();
         }
 
+        const rawTitulo = form.querySelector("#ed-av-titulo").value.trim();
+        if (!rawTitulo) {
+          window.ISET_TOAST("El aviso debe tener un título", "error");
+          return;
+        }
+
+        const espacioVal = form.querySelector("#ed-av-espacio") ? form.querySelector("#ed-av-espacio").value : (av.espacioId || "general");
+
         const updated = {
           ...av,
-          titulo: form.querySelector("#ed-av-titulo").value.trim(),
+          titulo: rawTitulo,
+          espacioId: espacioVal,
           tipo: form.querySelector("#ed-av-tipo").value,
           contenido: finalContenido,
           nota: form.querySelector("#ed-av-nota").value.trim()
         };
 
-        const linkUrl = form.querySelector("#ed-av-link-url").value.trim();
+        if (finalImagen) {
+          updated.imagen = finalImagen;
+        } else {
+          delete updated.imagen;
+        }
+
+        const rawLinkUrl = form.querySelector("#ed-av-link-url").value.trim();
         const linkTxt = form.querySelector("#ed-av-link-txt").value.trim();
-        if (linkUrl) {
-          updated.enlace = { texto: linkTxt || "Más información", url: linkUrl };
+        if (rawLinkUrl) {
+          const cleanUrl = normalizarUrl(rawLinkUrl);
+          updated.enlace = { texto: linkTxt || "Más información", url: cleanUrl };
         } else {
           delete updated.enlace;
         }

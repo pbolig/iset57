@@ -61,7 +61,10 @@ h2{margin:0 0 .5rem;text-align:center;font:800 clamp(1.7rem,6vw,2.4rem)/1.1 var(
 .aviso-header{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.75rem}
 .aviso-icono{width:36px;height:36px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 2px 5px rgba(20,33,61,.14));transition:transform .3s cubic-bezier(.34,1.5,.64,1)}
 .aviso:hover .aviso-icono{transform:scale(1.14) rotate(-6deg)}
-.badge-espacio{display:inline-block;padding:.2rem .7rem;border-radius:999px;font:700 .82rem var(--f-texto);color:#fff;background:var(--celeste)}
+.badge-espacio{display:inline-block;padding:.2rem .7rem;border-radius:999px;font:700 .82rem var(--f-texto);color:#fff;background:var(--celeste);box-shadow:0 1px 3px rgba(20,33,61,.12)}
+.aviso-img-wrap{margin:1rem auto;text-align:center;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(20,33,61,.08);background:rgba(20,33,61,.02);max-width:100%}
+.aviso-img{max-width:100%;max-height:460px;width:auto;height:auto;object-fit:cover;display:block;margin:0 auto;border-radius:10px;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease}
+.aviso-img:hover{transform:scale(1.015);box-shadow:0 6px 20px rgba(20,33,61,.14)}
 .aviso h3{margin:0;text-align:center;font:800 1.3rem/1.2 var(--f-titulo);color:var(--tinta)}
 .aviso p{margin:.4rem 0;max-width:70ch}
 .aviso ul{margin:.4rem 0;padding-left:1.2rem}
@@ -284,6 +287,18 @@ footer p{margin:.2rem 0}
   };
   const $ = id => document.getElementById(id);
   const urlAbsoluta = ruta => new URL(ruta, document.baseURI).href;
+  const normalizarUrl = url => {
+    if (!url) return "";
+    const u = String(url).trim();
+    if (!u) return "";
+    if (/^(https?:\/\/|mailto:|tel:|#|\/|\.\/|\.\.\/)/i.test(u)) return u;
+    if (/\.html(\?.*)?(#.*)?$/i.test(u)) return u;
+    return "https://" + u;
+  };
+  const esUrlExterna = url => {
+    if (!url) return false;
+    return /^https?:\/\//i.test(url) && !url.includes(window.location.host);
+  };
 
   function buscarColorCarrera(nombreCarrera, espacios = []) {
     if (!nombreCarrera) return { color: "#14213d", darkText: false };
@@ -397,7 +412,12 @@ footer p{margin:.2rem 0}
 
   // "contenido" puede ser: string | array de strings (lista) | objeto tabla | array mixto
   function contenido(c, d) {
-    if (typeof c === "string") return [h("p", {}, c)];
+    if (typeof c === "string") {
+      const trimmed = c.trim();
+      if (!trimmed) return [];
+      const paragraphs = trimmed.split(/\n+/).filter(Boolean);
+      return paragraphs.map(p => h("p", {}, p));
+    }
     if (Array.isArray(c)) {
       if (c.every(x => typeof x === "string")) return [h("ul", {}, c.map(x => h("li", {}, x)))];
       return c.flatMap(item => contenido(item, d));
@@ -446,10 +466,12 @@ footer p{margin:.2rem 0}
     if (a.espacioId && a.espacioId !== "general" && d.ofertaAcademica && d.ofertaAcademica.espacios) {
       const espacio = d.ofertaAcademica.espacios.find(e => e.id === a.espacioId);
       if (espacio) {
+        const bgCol = espacio.color || "var(--celeste)";
+        const isYellow = bgCol.toLowerCase() === "#f6b40e";
         badge = h("span", {
           class: "badge-espacio",
-          style: espacio.color ? "background-color:" + espacio.color : null
-        }, espacio.titulo.replace(/^Tecnicatura Superior en\s+|^Tecnicatura en\s+/i, ""));
+          style: `background-color:${bgCol};color:${isYellow ? "#14213d" : "#fff"}`
+        }, espacio.tituloCorto || espacio.titulo.replace(/^Tecnicatura Superior en\s+|^Tecnicatura en\s+/i, ""));
       }
     }
 
@@ -460,15 +482,40 @@ footer p{margin:.2rem 0}
       loading: "lazy"
     });
 
+    const imgEl = a.imagen ? h("div", { class: "aviso-img-wrap" },
+      h("img", {
+        src: a.imagen,
+        alt: a.titulo || "Imagen de aviso",
+        class: "aviso-img",
+        loading: "lazy",
+        onclick: () => {
+          if (a.imagen) window.open(a.imagen, "_blank");
+        }
+      })
+    ) : null;
+
+    let enlaceEl = null;
+    if (a.enlace && a.enlace.url) {
+      const urlNorm = normalizarUrl(a.enlace.url);
+      const isExt = esUrlExterna(urlNorm);
+      enlaceEl = h("a", {
+        class: "enlace",
+        href: urlNorm,
+        target: isExt ? "_blank" : null,
+        rel: isExt ? "noopener noreferrer" : null
+      }, a.enlace.texto || "Más información");
+    }
+
     return h("article", { class: "aviso " + (a.tipo || "info") },
       h("div", { class: "aviso-header" },
         iconoAnuncio,
         badge,
         h("h3", {}, a.titulo)
       ),
+      imgEl,
       contenido(a.contenido, d),
       a.nota ? h("p", { class: "nota" }, a.nota) : null,
-      a.enlace ? h("a", { class: "enlace", href: a.enlace.url }, a.enlace.texto) : null
+      enlaceEl
     );
   }
 
