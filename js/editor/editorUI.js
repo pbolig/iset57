@@ -281,8 +281,34 @@
             avisoEl.classList.add("iset-editable-host");
             const isTable = Boolean(avData?.contenido?.filas || avData?.contenido?.columnas);
             const pillLabel = isTable ? "Modificar Mesas de Examen / Tabla" : (avData?.imagen ? "Modificar Publicación / Foto" : "Modificar Aviso");
-            const pill = this.createPill(pillLabel, () => this.openAvisoEditor(idx), "iset-pill-aviso iset-pill-corner");
-            avisoEl.appendChild(pill);
+
+            const pillGroup = h("div", {
+              class: "iset-pill-cluster iset-pill-corner",
+              style: "display:inline-flex;gap:0.35rem;align-items:center"
+            },
+              this.createPill(pillLabel, () => this.openAvisoEditor(idx), "iset-pill-aviso"),
+              h("button", {
+                type: "button",
+                class: "iset-edit-pill iset-pill-delete",
+                title: "Eliminar este aviso",
+                "aria-label": "Eliminar aviso",
+                style: "padding:0.32rem 0.6rem;background:rgba(179,38,30,0.92);border-color:rgba(255,255,255,0.4)",
+                onclick: (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  this.deleteAviso(idx);
+                }
+              },
+                document.createRange().createContextualFragment(`
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                `),
+                h("span", {}, "Eliminar")
+              )
+            );
+            avisoEl.appendChild(pillGroup);
           }
 
           // Si el aviso contiene una tabla de datos (ej: Mesas de examen), agregamos una píldora prominente directamente en la toolbar de la tabla
@@ -887,6 +913,24 @@
       }, false);
     }
 
+    async deleteAviso(avisoIndex) {
+      const data = await this.getFreshData();
+      const avisos = data.informacionGeneral?.avisos || [];
+      const av = avisos[avisoIndex];
+      if (!av) return;
+      const title = av.titulo ? `"${av.titulo}"` : "este aviso";
+      if (!confirm(`¿Estás seguro de que deseás eliminar ${title} permanentemente?`)) return;
+
+      await content.updateData(d => {
+        d.informacionGeneral = d.informacionGeneral || {};
+        d.informacionGeneral.avisos = d.informacionGeneral.avisos || [];
+        d.informacionGeneral.avisos.splice(avisoIndex, 1);
+        return d;
+      });
+      window.ISET_TOAST("Aviso eliminado correctamente", "info");
+      setTimeout(() => this.refreshPills(), 60);
+    }
+
     async openAddAvisoEditor() {
       await this.getFreshData();
       const emptyAviso = {
@@ -1269,19 +1313,38 @@
       updateView();
 
       if (!isNew) {
-        const deleteBtn = h("button", {
-          type: "button",
-          class: "iset-btn-delete-row",
-          style: "margin-top:0.6rem;font-size:0.86rem;padding:0.4rem 0.8rem",
-          onclick: async () => {
-            if (confirm("¿Estás seguro de eliminar este aviso permanentemente?")) {
-              await onSaveCallback(null, true);
-              window.ISET_TOAST("Aviso eliminado correctamente", "info");
-              if (this.activeModal) this.activeModal.remove();
+        const deleteBox = h("div", {
+          style: "margin-top:1.5rem;padding:0.95rem 1.1rem;border:1.5px dashed var(--alerta,#b3261e);border-radius:10px;background:#fff5f5;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem"
+        },
+          h("div", {},
+            h("div", { style: "color:var(--alerta,#b3261e);font-weight:800;font-size:0.92rem;display:flex;align-items:center;gap:0.35rem" },
+              "🗑️ Eliminar este Anuncio"
+            ),
+            h("div", { style: "color:var(--suave);font-size:0.8rem;margin-top:0.2rem" },
+              "Esta acción quitará el aviso definitivamente de la portada y novedades del instituto."
+            )
+          ),
+          h("button", {
+            type: "button",
+            class: "iset-btn-danger",
+            style: "background:#b3261e;color:#fff;border:none;padding:0.45rem 1rem;border-radius:6px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:transform 0.2s ease,background-color 0.2s ease;box-shadow:0 2px 6px rgba(179,38,30,0.25)",
+            onmouseover: (e) => { e.currentTarget.style.background = "#8f1d16"; },
+            onmouseout: (e) => { e.currentTarget.style.background = "#b3261e"; },
+            onclick: async () => {
+              const tituloAviso = form.querySelector("#ed-av-titulo")?.value || av.titulo || "este aviso";
+              if (confirm(`¿Estás seguro de que deseás eliminar "${tituloAviso}" permanentemente?`)) {
+                await onSaveCallback(null, true);
+                window.ISET_TOAST("Aviso eliminado correctamente", "info");
+                if (this.activeModal) {
+                  this.activeModal.remove();
+                  this.activeModal = null;
+                }
+                setTimeout(() => this.refreshPills(), 60);
+              }
             }
-          }
-        }, "🗑️ Eliminar este aviso");
-        form.appendChild(deleteBtn);
+          }, "🗑️ Eliminar Anuncio")
+        );
+        form.appendChild(deleteBox);
       }
 
       const modalTitle = isNew
