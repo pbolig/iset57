@@ -59,8 +59,18 @@
     }
 
     init() {
-      auth.on("auth-changed", () => this.refreshPills());
-      auth.on("auth-ready", () => this.refreshPills());
+      auth.on("auth-changed", () => {
+        if (typeof window.__iset_render === "function" && content.getData()) {
+          window.__iset_render(content.getData());
+        }
+        this.refreshPills();
+      });
+      auth.on("auth-ready", () => {
+        if (typeof window.__iset_render === "function" && content.getData()) {
+          window.__iset_render(content.getData());
+        }
+        this.refreshPills();
+      });
       content.on("content-updated", () => this.refreshPills());
 
       // Enganchar a __iset_render para refrescar píldoras limpiamente tras renderizados
@@ -239,10 +249,22 @@
         if (novSec) {
           const tNov = document.getElementById("t-nov");
           if (tNov && !tNov.parentNode.querySelector(".iset-nov-toolbar")) {
-            const toolbar = h("div", { class: "iset-grid-toolbar-pills iset-nov-toolbar" },
+            const avisosData = content.getData()?.informacionGeneral?.avisos || [];
+            const apagadosCount = avisosData.filter(a => a.activo === false).length;
+            const toolbarPills = [
               this.createProminentPill("Modificar Título e Intro de Novedades", () => this.openNovedadesHeadEditor(), "✏️"),
               this.createProminentPill("Publicar Nuevo Aviso", () => this.openAddAvisoEditor(), "➕", true)
-            );
+            ];
+            if (apagadosCount > 0) {
+              toolbarPills.push(
+                h("span", {
+                  class: "iset-pill-prominent",
+                  style: "background:#fff3cd;color:#856404;border-color:#ffeeba;font-size:0.84rem;cursor:default",
+                  title: "Hay avisos apagados (ocultos al público) que podés volver a encender con 1 clic"
+                }, `⏸️ ${apagadosCount} aviso(s) apagado(s)`)
+              );
+            }
+            const toolbar = h("div", { class: "iset-grid-toolbar-pills iset-nov-toolbar" }, ...toolbarPills);
             tNov.after(toolbar);
           }
         }
@@ -276,37 +298,59 @@
         const avisos = document.querySelectorAll(".avisos .aviso");
         const avisosData = content.getData()?.informacionGeneral?.avisos || [];
         avisos.forEach((avisoEl, idx) => {
-          const avData = avisosData[idx];
+          const realIdx = parseInt(avisoEl.getAttribute("data-aviso-idx") ?? idx, 10);
+          const avData = avisosData[realIdx];
           if (!avisoEl.querySelector(".iset-pill-aviso")) {
             avisoEl.classList.add("iset-editable-host");
             const isTable = Boolean(avData?.contenido?.filas || avData?.contenido?.columnas);
+            const isApagado = avData?.activo === false;
             const pillLabel = isTable ? "Modificar Mesas de Examen / Tabla" : (avData?.imagen ? "Modificar Publicación / Foto" : "Modificar Aviso");
+
+            const toggleBtn = h("button", {
+              type: "button",
+              class: `iset-edit-pill iset-pill-toggle ${isApagado ? "iset-pill-turn-on" : "iset-pill-turn-off"}`,
+              title: isApagado ? "Prender este aviso (hacerlo visible para todos)" : "Apagar este aviso (ocultarlo temporalmente)",
+              "aria-label": isApagado ? "Prender aviso" : "Apagar aviso",
+              style: isApagado
+                ? "padding:0.32rem 0.65rem;background:#1e7e34;border-color:rgba(255,255,255,0.4);font-weight:700"
+                : "padding:0.32rem 0.65rem;background:rgba(20,33,61,0.85);border-color:rgba(255,255,255,0.3)",
+              onclick: (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleAvisoActivo(realIdx);
+              }
+            },
+              h("span", {}, isApagado ? "🟢 Prender" : "⏸️ Apagar")
+            );
+
+            const deleteBtn = h("button", {
+              type: "button",
+              class: "iset-edit-pill iset-pill-delete",
+              title: "Eliminar este aviso",
+              "aria-label": "Eliminar aviso",
+              style: "padding:0.32rem 0.6rem;background:rgba(179,38,30,0.92);border-color:rgba(255,255,255,0.4)",
+              onclick: (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.deleteAviso(realIdx);
+              }
+            },
+              document.createRange().createContextualFragment(`
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              `),
+              h("span", {}, "Eliminar")
+            );
 
             const pillGroup = h("div", {
               class: "iset-pill-cluster iset-pill-corner",
               style: "display:inline-flex;gap:0.35rem;align-items:center"
             },
-              this.createPill(pillLabel, () => this.openAvisoEditor(idx), "iset-pill-aviso"),
-              h("button", {
-                type: "button",
-                class: "iset-edit-pill iset-pill-delete",
-                title: "Eliminar este aviso",
-                "aria-label": "Eliminar aviso",
-                style: "padding:0.32rem 0.6rem;background:rgba(179,38,30,0.92);border-color:rgba(255,255,255,0.4)",
-                onclick: (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  this.deleteAviso(idx);
-                }
-              },
-                document.createRange().createContextualFragment(`
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                `),
-                h("span", {}, "Eliminar")
-              )
+              toggleBtn,
+              this.createPill(pillLabel, () => this.openAvisoEditor(realIdx), "iset-pill-aviso"),
+              deleteBtn
             );
             avisoEl.appendChild(pillGroup);
           }
@@ -314,7 +358,7 @@
           // Si el aviso contiene una tabla de datos (ej: Mesas de examen), agregamos una píldora prominente directamente en la toolbar de la tabla
           const tablaToolbar = avisoEl.querySelector(".tabla-toolbar");
           if (tablaToolbar && !tablaToolbar.querySelector(".iset-pill-tabla")) {
-            const pillTabla = this.createProminentPill("Gestionar Mesas de Examen (Editar / Agregar / Borrar)", () => this.openAvisoEditor(idx), "📋");
+            const pillTabla = this.createProminentPill("Gestionar Mesas de Examen (Editar / Agregar / Borrar)", () => this.openAvisoEditor(realIdx), "📋");
             pillTabla.classList.add("iset-pill-tabla");
             pillTabla.style.fontSize = "0.82rem";
             pillTabla.style.padding = "0.32rem 0.85rem";
@@ -907,10 +951,22 @@
             d.informacionGeneral.avisos.splice(avisoIndex, 1);
           } else {
             d.informacionGeneral.avisos[avisoIndex] = updatedAviso;
+            // Mantener avisos ordenados por orden de llegada (más nuevo arriba).
+            // Si el aviso conserva su fecha original, se mantiene en su posición.
+            this.sortAvisos(d.informacionGeneral.avisos);
           }
           return d;
         });
       }, false);
+    }
+
+    sortAvisos(avisos) {
+      if (!Array.isArray(avisos)) return [];
+      return avisos.sort((a, b) => {
+        const tA = (a && (a.fechaPublicacion || a.creadoEn)) ? new Date(a.fechaPublicacion || a.creadoEn).getTime() : 0;
+        const tB = (b && (b.fechaPublicacion || b.creadoEn)) ? new Date(b.fechaPublicacion || b.creadoEn).getTime() : 0;
+        return (tB || 0) - (tA || 0);
+      });
     }
 
     async deleteAviso(avisoIndex) {
@@ -931,11 +987,43 @@
       setTimeout(() => this.refreshPills(), 60);
     }
 
+    async toggleAvisoActivo(avisoIndex) {
+      const data = await this.getFreshData();
+      const avisos = data.informacionGeneral?.avisos || [];
+      const av = avisos[avisoIndex];
+      if (!av) return;
+
+      const nuevoEstado = av.activo === false ? true : false;
+      const titulo = av.titulo ? `"${av.titulo}"` : "El aviso";
+
+      await content.updateData(d => {
+        d.informacionGeneral = d.informacionGeneral || {};
+        d.informacionGeneral.avisos = d.informacionGeneral.avisos || [];
+        if (d.informacionGeneral.avisos[avisoIndex]) {
+          d.informacionGeneral.avisos[avisoIndex].activo = nuevoEstado;
+        }
+        return d;
+      });
+
+      if (nuevoEstado) {
+        window.ISET_TOAST(`🟢 ${titulo} ahora está ENCENDIDO y visible para todos.`, "success");
+      } else {
+        window.ISET_TOAST(`⏸️ ${titulo} fue APAGADO (suspendido). Ya no es visible para el público.`, "info");
+      }
+
+      if (typeof window.__iset_render === "function" && content.getData()) {
+        window.__iset_render(content.getData());
+      }
+      setTimeout(() => this.refreshPills(), 60);
+    }
+
     async openAddAvisoEditor() {
       await this.getFreshData();
       const emptyAviso = {
         titulo: "Nuevo Aviso",
         espacioId: "general",
+        activo: true,
+        fechaPublicacion: new Date().toISOString(),
         tipo: "info",
         contenido: "Ingresá aquí el detalle de la noticia o aviso institucional.",
         nota: "",
@@ -947,6 +1035,7 @@
           d.informacionGeneral = d.informacionGeneral || {};
           d.informacionGeneral.avisos = d.informacionGeneral.avisos || [];
           d.informacionGeneral.avisos.unshift(newAviso);
+          this.sortAvisos(d.informacionGeneral.avisos);
           return d;
         });
       }, true);
@@ -971,6 +1060,14 @@
       }
 
       let photoUrl = av.imagen || "";
+
+      const toDatetimeLocal = (isoOrDateStr) => {
+        if (!isoOrDateStr) return "";
+        const d = new Date(isoOrDateStr);
+        if (isNaN(d.getTime())) return "";
+        const pad = (n) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      };
 
       const normalizarUrl = (url) => {
         if (!url) return "";
@@ -1048,6 +1145,28 @@
               h("option", { value: "texto", selected: currentMode === "texto" }, "📝 Noticia / Comunicado de Texto"),
               h("option", { value: "foto", selected: currentMode === "foto" }, "📸 Foto / Publicación con Imagen"),
               h("option", { value: "tabla", selected: currentMode === "tabla" }, "📊 Tabla Interactiva (Mesas de Examen / Fechas)")
+            )
+          ),
+          h("div", { class: "iset-form-group" },
+            h("label", { class: "iset-label" }, "Estado de Publicación"),
+            h("select", { id: "ed-av-activo", class: "iset-select" },
+              h("option", { value: "true", selected: av.activo !== false }, "🟢 Encendido / Activo (Visible para todos)"),
+              h("option", { value: "false", selected: av.activo === false }, "⏸️ Apagado / Suspendido (Oculto al público)")
+            )
+          ),
+          h("div", { class: "iset-form-group" },
+            h("label", { class: "iset-label" }, "Fecha y Hora de Publicación"),
+            h("input", {
+              type: "datetime-local",
+              id: "ed-av-fecha",
+              class: "iset-input",
+              defaultValue: toDatetimeLocal(av.fechaPublicacion || (isNew ? new Date().toISOString() : "")),
+              value: toDatetimeLocal(av.fechaPublicacion || (isNew ? new Date().toISOString() : ""))
+            }),
+            h("small", { style: "color:var(--suave);font-size:0.75rem;display:block;margin-top:0.25rem" },
+              isNew
+                ? "🕒 Define el orden de llegada en pantalla (el más nuevo arriba)."
+                : "🕒 Al modificar se conserva la fecha original para no alterar su lugar."
             )
           )
         ),
@@ -1380,10 +1499,24 @@
 
         const espacioVal = form.querySelector("#ed-av-espacio") ? form.querySelector("#ed-av-espacio").value : (av.espacioId || "general");
 
+        const rawFecha = form.querySelector("#ed-av-fecha")?.value;
+        let finalFecha = av.fechaPublicacion;
+        if (rawFecha) {
+          const parsed = new Date(rawFecha);
+          if (!isNaN(parsed.getTime())) {
+            finalFecha = parsed.toISOString();
+          }
+        }
+        if (!finalFecha) {
+          finalFecha = new Date().toISOString();
+        }
+
         const updated = {
           ...av,
+          fechaPublicacion: finalFecha,
           titulo: rawTitulo,
           espacioId: espacioVal,
+          activo: form.querySelector("#ed-av-activo") ? form.querySelector("#ed-av-activo").value === "true" : (av.activo !== false),
           tipo: form.querySelector("#ed-av-tipo").value,
           contenido: finalContenido,
           nota: form.querySelector("#ed-av-nota").value.trim()
@@ -1405,6 +1538,9 @@
         }
 
         await onSaveCallback(updated, false);
+        if (typeof window.__iset_render === "function" && content.getData()) {
+          window.__iset_render(content.getData());
+        }
       });
     }
 

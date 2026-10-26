@@ -1672,14 +1672,17 @@
     "avisos": [
       {
         "tipo": "auto_inscripcion",
+        "fechaPublicacion": "2026-10-25T14:30:00.000Z",
         "nota": "Consultá el cronograma completo, etapas de febrero y requisitos detallados en la sección de inscripción."
       },
       {
-        "tipo": "auto_propedeutico"
+        "tipo": "auto_propedeutico",
+        "fechaPublicacion": "2026-10-24T10:00:00.000Z"
       },
       {
         "espacioId": "general",
         "tipo": "importante",
+        "fechaPublicacion": "2026-10-23T18:00:00.000Z",
         "titulo": "Mesas de examen – turno diciembre 2026",
         "contenido": {
           "titulo": "Cronograma de exámenes finales",
@@ -1761,6 +1764,7 @@
       {
         "espacioId": "enfermeria",
         "tipo": "info",
+        "fechaPublicacion": "2026-10-22T09:00:00.000Z",
         "titulo": "Prácticas Hospitalarias – Enfermería",
         "contenido": "Recordamos a los estudiantes de 2° y 3° año que deben presentar su carnet de vacunas y apto médico al día antes del inicio de rotaciones clínicas.",
         "nota": "Consultas en Coordinación de Enfermería."

@@ -65,6 +65,11 @@ h2{margin:0 0 .5rem;text-align:center;font:800 clamp(1.7rem,6vw,2.4rem)/1.1 var(
 .aviso-img-wrap{margin:1rem auto;text-align:center;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(20,33,61,.08);background:rgba(20,33,61,.02);max-width:100%}
 .aviso-img{max-width:100%;max-height:460px;width:auto;height:auto;object-fit:cover;display:block;margin:0 auto;border-radius:10px;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease}
 .aviso-img:hover{transform:scale(1.015);box-shadow:0 6px 20px rgba(20,33,61,.14)}
+.aviso.aviso-apagado{border-style:dashed;border-left-style:solid;background:rgba(20,33,61,.02);opacity:.85;box-shadow:none}
+.aviso.aviso-apagado:hover{opacity:1;box-shadow:0 6px 18px rgba(20,33,61,.08)}
+.badge-estado{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .7rem;border-radius:999px;font:700 .8rem var(--f-texto)}
+.badge-estado.badge-apagado{color:#b3261e;background:#fee;border:1px solid rgba(179,38,30,.35)}
+.badge-fecha{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .7rem;border-radius:999px;font:700 .8rem var(--f-texto);color:var(--suave);background:rgba(20,33,61,.04);border:1px solid rgba(20,33,61,.12)}
 .aviso h3{margin:0;text-align:center;font:800 1.3rem/1.2 var(--f-titulo);color:var(--tinta)}
 .aviso p{margin:.4rem 0;max-width:70ch}
 .aviso ul{margin:.4rem 0;padding-left:1.2rem}
@@ -84,6 +89,25 @@ thead th{background:var(--tinta);color:#fff;border-top:0}
 tbody tr:nth-child(even){background:var(--fondo)}
 .enlace{display:flex;align-items:center;justify-content:center;width:fit-content;max-width:100%;min-height:44px;margin:1rem auto 0;padding:.5rem 1.4rem;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;text-align:center;transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease}
 .enlace:hover{transform:translateY(-4px) scale(1.03);background:var(--celeste);color:var(--tinta);box-shadow:0 8px 20px rgba(20,33,61,.2)}
+
+/* Filtro General de Avisos por Carrera */
+.avisos-filtro-wrap{margin:1.4rem 0 1.75rem;padding:1.15rem 1.4rem;background:linear-gradient(135deg,rgba(255,255,255,0.98),rgba(240,244,248,0.92));border:2px solid var(--borde);border-radius:14px;box-shadow:0 4px 16px rgba(20,33,61,.06);transition:border-color .2s ease}
+.avisos-filtro-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.85rem}
+.avisos-filtro-title{display:inline-flex;align-items:center;gap:.45rem;font:800 1.05rem var(--f-titulo);color:var(--tinta);margin:0}
+.avisos-filtro-incluir{display:inline-flex;align-items:center;gap:.45rem;font:600 .86rem var(--f-texto);color:var(--suave);cursor:pointer;user-select:none;transition:color .2s ease}
+.avisos-filtro-incluir:hover{color:var(--tinta)}
+.avisos-filtro-incluir input{accent-color:var(--celeste);cursor:pointer;width:17px;height:17px}
+.avisos-filtro-chips{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
+.chip-filtro{display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;border-radius:999px;font:700 .88rem var(--f-texto);border:1.5px solid var(--borde);background:#fff;color:var(--tinta);cursor:pointer;transition:transform .2s cubic-bezier(.34,1.5,.64,1),border-color .2s ease,box-shadow .2s ease,background-color .2s ease,color .2s ease;box-shadow:0 1px 4px rgba(20,33,61,.04);user-select:none}
+.chip-filtro:hover{transform:translateY(-2px);border-color:var(--c-chip,var(--celeste));box-shadow:0 4px 12px rgba(20,33,61,.1)}
+.chip-filtro.active{background:var(--c-chip,var(--tinta));color:#fff;border-color:var(--c-chip,var(--tinta));box-shadow:0 4px 14px rgba(20,33,61,.22);transform:scale(1.02)}
+.chip-filtro.active.dark-text{color:var(--tinta)}
+.chip-filtro-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 .4rem;border-radius:999px;font-size:.76rem;background:rgba(20,33,61,.08);color:inherit}
+.chip-filtro.active .chip-filtro-count{background:rgba(255,255,255,.28);color:#fff}
+.chip-filtro.active.dark-text .chip-filtro-count{background:rgba(20,33,61,.15);color:var(--tinta)}
+.avisos-filtro-resultado{margin-top:.8rem;padding-top:.7rem;border-top:1px solid rgba(20,33,61,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.86rem;color:var(--suave)}
+.btn-limpiar-filtro{background:none;border:none;color:var(--alerta,#b3261e);font-weight:700;cursor:pointer;text-decoration:underline;padding:0;font-size:.86rem}
+.btn-limpiar-filtro:hover{color:#8f1d16}
 
 /* Oferta */
 .oferta{background:var(--celeste-suave)}
@@ -212,6 +236,7 @@ footer p{margin:.2rem 0}
     <div class="wrap">
       <h2 id="t-nov">Novedades</h2>
       <p class="intro" id="i-nov"></p>
+      <div id="filtro-avisos" class="avisos-filtro-wrap" style="display:none"></div>
       <div class="avisos" id="avisos" aria-live="polite"><p>Cargando información…</p></div>
     </div>
   </section>
@@ -426,6 +451,37 @@ footer p{margin:.2rem 0}
     return [];
   }
 
+  function obtenerTimestampAviso(a, indexOriginal = 0) {
+    if (a) {
+      if (a.fechaPublicacion) {
+        const t = new Date(a.fechaPublicacion).getTime();
+        if (!isNaN(t) && t > 0) return t;
+      }
+      if (a.creadoEn) {
+        const t = new Date(a.creadoEn).getTime();
+        if (!isNaN(t) && t > 0) return t;
+      }
+    }
+    const base = 1792600000000;
+    return base - ((indexOriginal || 0) * 3600000);
+  }
+
+  function formatearFechaAviso(fechaStr) {
+    if (!fechaStr) return "";
+    try {
+      const d = new Date(fechaStr);
+      if (isNaN(d.getTime())) return "";
+      const dia = String(d.getDate()).padStart(2, "0");
+      const mes = String(d.getMonth() + 1).padStart(2, "0");
+      const anio = d.getFullYear();
+      const hora = String(d.getHours()).padStart(2, "0");
+      const min = String(d.getMinutes()).padStart(2, "0");
+      return `${dia}/${mes}/${anio} ${hora}:${min} hs`;
+    } catch (e) {
+      return "";
+    }
+  }
+
   function resolverAviso(a, d) {
     const ig = d.inscripcionGeneral || {};
     if (a.tipo === "auto_inscripcion") {
@@ -433,17 +489,21 @@ footer p{margin:.2rem 0}
       const reqList = (ig.requisitosComunes || []).map(r => typeof r === "string" ? r : r.item);
       const reqTxt = reqList.slice(0, 4).join(", ") + (reqList.length > 4 ? " y más." : ".");
       return {
+        ...a,
         tipo: "fecha",
         espacioId: a.espacioId || "general",
         titulo: "Inscripciones ciclo lectivo " + (ig.ciclo || "2027"),
         contenido: (p.fechas ? p.fechas + ", " : "") + (p.horario ? p.horario + ", " : "") + "en Secretaría del Instituto. Presentar " + reqTxt,
         nota: a.nota || "Consultá el cronograma completo, etapas de febrero y requisitos detallados en la página de inscripción.",
-        enlace: a.enlace || { texto: "Ver requisitos y fechas de inscripción", url: "inscripcion.html" }
+        enlace: a.enlace || { texto: "Ver requisitos y fechas de inscripción", url: "inscripcion.html" },
+        activo: a.activo !== false,
+        fechaPublicacion: a.fechaPublicacion
       };
     }
     if (a.tipo === "auto_propedeutico") {
       const prop = ig.propedeutico || {};
       return {
+        ...a,
         tipo: "info",
         espacioId: a.espacioId || "general",
         titulo: "Curso propedéutico",
@@ -454,14 +514,17 @@ footer p{margin:.2rem 0}
           prop.nota || "Obligatorio para todas las tecnicaturas"
         ].filter(Boolean),
         nota: a.nota || null,
-        enlace: a.enlace || null
+        enlace: a.enlace || null,
+        activo: a.activo !== false,
+        fechaPublicacion: a.fechaPublicacion
       };
     }
     return a;
   }
 
-  function aviso(rawAviso, d) {
+  function aviso(rawAviso, d, idx = 0) {
     const a = resolverAviso(rawAviso, d);
+    const isApagado = a.activo === false;
     let badge = null;
     if (a.espacioId && a.espacioId !== "general" && d.ofertaAcademica && d.ofertaAcademica.espacios) {
       const espacio = d.ofertaAcademica.espacios.find(e => e.id === a.espacioId);
@@ -474,6 +537,21 @@ footer p{margin:.2rem 0}
         }, espacio.tituloCorto || espacio.titulo.replace(/^Tecnicatura Superior en\s+|^Tecnicatura en\s+/i, ""));
       }
     }
+
+    const badgeEstado = isApagado
+      ? h("span", {
+          class: "badge-estado badge-apagado",
+          title: "Aviso suspendido / apagado. Solo visible para administradores."
+        }, "⏸️ Apagado (Oculto al público)")
+      : null;
+
+    const fechaFormateada = a.fechaPublicacion ? formatearFechaAviso(a.fechaPublicacion) : "";
+    const badgeFecha = fechaFormateada
+      ? h("span", {
+          class: "badge-fecha",
+          title: "Fecha de publicación: " + fechaFormateada
+        }, "🕒 " + fechaFormateada)
+      : null;
 
     const iconoAnuncio = h("img", {
       src: "img/general/anuncio.png",
@@ -506,10 +584,15 @@ footer p{margin:.2rem 0}
       }, a.enlace.texto || "Más información");
     }
 
-    return h("article", { class: "aviso " + (a.tipo || "info") },
+    return h("article", {
+      class: "aviso " + (a.tipo || "info") + (isApagado ? " aviso-apagado" : ""),
+      "data-aviso-idx": String(idx)
+    },
       h("div", { class: "aviso-header" },
         iconoAnuncio,
         badge,
+        badgeFecha,
+        badgeEstado,
         h("h3", {}, a.titulo)
       ),
       imgEl,
@@ -792,7 +875,168 @@ footer p{margin:.2rem 0}
     return art;
   }
 
+  let filtroCarreraActivo = "todos";
+  let incluirGenerales = true;
+
+  function coincideFiltroCarrera(a, filtroId, incGenerales, espacios = []) {
+    if (filtroId === "todos") return true;
+
+    const avisoEspacio = a.espacioId || "general";
+
+    if (filtroId === "general") {
+      return avisoEspacio === "general";
+    }
+
+    // Coincidencia directa por espacioId
+    if (avisoEspacio === filtroId) return true;
+
+    // Coincidencia si el aviso contiene tablas con filas para esa carrera (ej: Mesas de Examen)
+    if (a.contenido && a.contenido.filas && Array.isArray(a.contenido.filas)) {
+      const currentEsp = espacios.find(e => e.id === filtroId);
+      const espTitulo = currentEsp ? currentEsp.titulo.toLowerCase() : "";
+      const espCorto = currentEsp && currentEsp.tituloCorto ? currentEsp.tituloCorto.toLowerCase() : "";
+      const hasRow = a.contenido.filas.some(row => {
+        const carreraRow = (row[1] || "").toLowerCase();
+        if (!carreraRow) return false;
+        if (carreraRow.includes(filtroId)) return true;
+        if (espCorto && carreraRow.includes(espCorto)) return true;
+        if (filtroId === "digital" && carreraRow.includes("digital")) return true;
+        if (filtroId === "higiene" && (carreraRow.includes("higiene") || carreraRow.includes("seguridad"))) return true;
+        if (filtroId === "enfermeria" && carreraRow.includes("enfermer")) return true;
+        if (filtroId === "simulacion" && carreraRow.includes("simulac")) return true;
+        return false;
+      });
+      if (hasRow) return true;
+    }
+
+    // Si está activada la opción de incluir avisos institucionales / generales
+    if (incGenerales && avisoEspacio === "general") {
+      return true;
+    }
+
+    return false;
+  }
+
+  function renderFiltroAvisos(d, avisosConMeta, canEdit) {
+    const contenedor = $("filtro-avisos");
+    if (!contenedor) return;
+
+    const espacios = d.ofertaAcademica?.espacios || [];
+    if (!espacios.length) {
+      contenedor.style.display = "none";
+      return;
+    }
+
+    // Avisos base para conteos
+    const listaParaConteo = canEdit ? avisosConMeta : avisosConMeta.filter(item => item.aviso.activo !== false);
+
+    // Opciones de filtro
+    const opciones = [
+      { id: "todos", label: "🌟 Todos los anuncios", color: "var(--tinta)" },
+      { id: "general", label: "🏛️ Institucional", color: "var(--celeste)" }
+    ];
+
+    espacios.forEach(esp => {
+      const label = esp.tituloCorto || esp.titulo.replace(/^Tecnicatura Superior en\s+|^Tecnicatura en\s+/i, "");
+      opciones.push({
+        id: esp.id,
+        label: `🎓 ${label}`,
+        nombreLargo: esp.titulo,
+        color: esp.color || "var(--celeste)",
+        isDark: (esp.color || "").toLowerCase() === "#f6b40e"
+      });
+    });
+
+    const chipsElements = opciones.map(op => {
+      const count = listaParaConteo.filter(item => {
+        return coincideFiltroCarrera(item.aviso, op.id, false, espacios);
+      }).length;
+
+      const isActive = filtroCarreraActivo === op.id;
+      const chip = h("button", {
+        type: "button",
+        class: `chip-filtro ${isActive ? "active" : ""} ${op.isDark && isActive ? "dark-text" : ""}`,
+        style: `--c-chip:${op.color}`,
+        "data-filtro-id": op.id,
+        "aria-pressed": isActive ? "true" : "false",
+        title: `Filtrar por ${op.label} (${count} anuncios)`,
+        onclick: (e) => {
+          e.preventDefault();
+          filtroCarreraActivo = op.id;
+          render(d);
+          if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+            window.ISET_EDITOR_UI.refreshPills();
+          }
+        }
+      },
+        h("span", {}, op.label),
+        h("span", { class: "chip-filtro-count" }, String(count))
+      );
+      return chip;
+    });
+
+    const isCarreraEspecifica = filtroCarreraActivo !== "todos" && filtroCarreraActivo !== "general";
+    const headerTitle = h("h3", { class: "avisos-filtro-title" },
+      h("span", { style: "font-size:1.15rem" }, "🎯"),
+      "Filtrar anuncios por carrera:"
+    );
+
+    const checkGenerales = h("label", {
+      class: "avisos-filtro-incluir",
+      title: "Si está marcado, también muestra anuncios institucionales y generales junto a los de la carrera seleccionada"
+    },
+      h("input", {
+        type: "checkbox",
+        checked: incluirGenerales,
+        onchange: (e) => {
+          incluirGenerales = e.target.checked;
+          render(d);
+          if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+            window.ISET_EDITOR_UI.refreshPills();
+          }
+        }
+      }),
+      h("span", {}, "Incluir avisos generales e institucionales")
+    );
+
+    const header = h("div", { class: "avisos-filtro-header" },
+      headerTitle,
+      isCarreraEspecifica ? checkGenerales : null
+    );
+
+    const chipsWrap = h("div", { class: "avisos-filtro-chips" }, ...chipsElements);
+
+    let feedback = null;
+    if (filtroCarreraActivo !== "todos") {
+      const activeOp = opciones.find(o => o.id === filtroCarreraActivo);
+      const nombreFiltro = activeOp ? activeOp.label : filtroCarreraActivo;
+      feedback = h("div", { class: "avisos-filtro-resultado" },
+        h("span", {},
+          "Mostrando anuncios para: ",
+          h("strong", { style: "color:var(--tinta)" }, nombreFiltro),
+          incluirGenerales && isCarreraEspecifica ? " (incluyendo comunicados generales)" : ""
+        ),
+        h("button", {
+          type: "button",
+          class: "btn-limpiar-filtro",
+          onclick: (e) => {
+            e.preventDefault();
+            filtroCarreraActivo = "todos";
+            render(d);
+            if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+              window.ISET_EDITOR_UI.refreshPills();
+            }
+          }
+        }, "✖ Quitar filtro (Ver todos)")
+      );
+    }
+
+    contenedor.style.display = "block";
+    contenedor.replaceChildren(header, chipsWrap, feedback);
+  }
+
   function render(d) {
+    window.__iset_lastData = d;
     const i = d.institucion, g = d.informacionGeneral, o = d.ofertaAcademica;
     document.title = i.nombre + (i.nombreLargo ? " – " + i.nombreLargo : "");
     if ($("h-logo")) $("h-logo").alt = i.nombre + (i.nombreLargo ? " – " + i.nombreLargo : "");
@@ -800,7 +1044,59 @@ footer p{margin:.2rem 0}
     $("h-lema").textContent = i.lema || "";
     $("t-nov").textContent = g.titulo || "Novedades";
     $("i-nov").textContent = g.introduccion || "";
-    $("avisos").replaceChildren(...g.avisos.map(a => aviso(a, d)));
+
+    const canEdit = Boolean(window.ISET_AUTH && window.ISET_AUTH.canEdit && window.ISET_AUTH.canEdit());
+    const rawAvisos = g.avisos || [];
+    const avisosConMeta = rawAvisos.map((a, idx) => ({
+      aviso: a,
+      originalIdx: idx,
+      timestamp: obtenerTimestampAviso(a, idx)
+    }));
+
+    // Ordenar por orden de llegada: el más nuevo en la parte superior (timestamp descendente)
+    avisosConMeta.sort((a, b) => b.timestamp - a.timestamp);
+
+    // Barra de filtro general por carrera (bien visible)
+    renderFiltroAvisos(d, avisosConMeta, canEdit);
+
+    const avisosPorPermiso = canEdit
+      ? avisosConMeta
+      : avisosConMeta.filter(item => item.aviso.activo !== false);
+
+    const avisosAMostrar = avisosPorPermiso.filter(item => {
+      return coincideFiltroCarrera(item.aviso, filtroCarreraActivo, incluirGenerales, o.espacios || []);
+    });
+
+    if (avisosAMostrar.length) {
+      $("avisos").replaceChildren(...avisosAMostrar.map(item => aviso(item.aviso, d, item.originalIdx)));
+    } else {
+      const activeOp = (o.espacios || []).find(e => e.id === filtroCarreraActivo);
+      const nombreCarrera = activeOp ? (activeOp.tituloCorto || activeOp.titulo) : "esta carrera";
+      $("avisos").replaceChildren(
+        h("div", { class: "tabla-vacia", style: "padding:2.5rem 1rem" },
+          h("div", { style: "font-size:2.2rem;margin-bottom:0.6rem" }, "📭"),
+          h("strong", { style: "display:block;font-size:1.1rem;color:var(--tinta);margin-bottom:0.4rem" },
+            `No hay novedades específicas para ${nombreCarrera} en este momento.`
+          ),
+          h("p", { style: "color:var(--suave);margin:0 auto 1.25rem;max-width:55ch" },
+            "Podés consultar las novedades de otras carreras o volver a ver todos los anuncios."
+          ),
+          h("button", {
+            type: "button",
+            class: "enlace",
+            style: "cursor:pointer;border:none",
+            onclick: () => {
+              filtroCarreraActivo = "todos";
+              render(d);
+              if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+                window.ISET_EDITOR_UI.refreshPills();
+              }
+            }
+          }, "🌟 Ver todos los anuncios")
+        )
+      );
+    }
+
     $("t-of").textContent = o.titulo || "Oferta académica";
     $("i-of").textContent = o.introduccion || "";
     $("cards").replaceChildren(...o.espacios.map(card));
@@ -843,6 +1139,9 @@ footer p{margin:.2rem 0}
 
   loadInitialData();
   window.addEventListener("iset:content-loaded", (e) => {
+    if (e.detail && e.detail.data) render(e.detail.data);
+  });
+  window.addEventListener("iset:content-updated", (e) => {
     if (e.detail && e.detail.data) render(e.detail.data);
   });
 })();
