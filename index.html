@@ -104,24 +104,34 @@ tbody tr:nth-child(even){background:var(--fondo)}
 .enlace{display:flex;align-items:center;justify-content:center;width:fit-content;max-width:100%;min-height:44px;margin:1rem auto 0;padding:.5rem 1.4rem;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;text-align:center;transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease}
 .enlace:hover{transform:translateY(-4px) scale(1.03);background:var(--celeste);color:var(--tinta);box-shadow:0 8px 20px rgba(20,33,61,.2)}
 
-/* Filtro General de Avisos por Carrera */
-.avisos-filtro-wrap{margin:1.4rem 0 1.75rem;padding:1.15rem 1.4rem;background:linear-gradient(135deg,rgba(255,255,255,0.98),rgba(240,244,248,0.92));border:2px solid var(--borde);border-radius:14px;box-shadow:0 4px 16px rgba(20,33,61,.06);transition:border-color .2s ease}
-.avisos-filtro-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.85rem}
-.avisos-filtro-title{display:inline-flex;align-items:center;gap:.45rem;font:800 1.05rem var(--f-titulo);color:var(--tinta);margin:0}
-.avisos-filtro-incluir{display:inline-flex;align-items:center;gap:.45rem;font:600 .86rem var(--f-texto);color:var(--suave);cursor:pointer;user-select:none;transition:color .2s ease}
-.avisos-filtro-incluir:hover{color:var(--tinta)}
-.avisos-filtro-incluir input{accent-color:var(--celeste);cursor:pointer;width:17px;height:17px}
-.avisos-filtro-chips{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
-.chip-filtro{display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;border-radius:999px;font:700 .88rem var(--f-texto);border:1.5px solid var(--borde);background:#fff;color:var(--tinta);cursor:pointer;transition:transform .2s cubic-bezier(.34,1.5,.64,1),border-color .2s ease,box-shadow .2s ease,background-color .2s ease,color .2s ease;box-shadow:0 1px 4px rgba(20,33,61,.04);user-select:none}
-.chip-filtro:hover{transform:translateY(-2px);border-color:var(--c-chip,var(--celeste));box-shadow:0 4px 12px rgba(20,33,61,.1)}
-.chip-filtro.active{background:var(--c-chip,var(--tinta));color:#fff;border-color:var(--c-chip,var(--tinta));box-shadow:0 4px 14px rgba(20,33,61,.22);transform:scale(1.02)}
-.chip-filtro.active.dark-text{color:var(--tinta)}
-.chip-filtro-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 .4rem;border-radius:999px;font-size:.76rem;background:rgba(20,33,61,.08);color:inherit}
-.chip-filtro.active .chip-filtro-count{background:rgba(255,255,255,.28);color:#fff}
-.chip-filtro.active.dark-text .chip-filtro-count{background:rgba(20,33,61,.15);color:var(--tinta)}
-.avisos-filtro-resultado{margin-top:.8rem;padding-top:.7rem;border-top:1px solid rgba(20,33,61,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.86rem;color:var(--suave)}
-.btn-limpiar-filtro{background:none;border:none;color:var(--alerta,#b3261e);font-weight:700;cursor:pointer;text-decoration:underline;padding:0;font-size:.86rem}
-.btn-limpiar-filtro:hover{color:#8f1d16}
+/* Barra de Filtro Desplegable y Búsqueda Inteligente en una Sola Línea (tipo Google) */
+.avisos-filtro-bar-inline{margin:1.4rem 0 1.75rem;padding:.55rem .75rem;background:#fff;border:1.5px solid var(--borde);border-radius:999px;box-shadow:0 3px 14px rgba(20,33,61,.06);display:flex;align-items:center;gap:.65rem;flex-wrap:nowrap;transition:border-color .2s ease,box-shadow .2s ease}
+.avisos-filtro-bar-inline:focus-within{border-color:var(--celeste);box-shadow:0 4px 18px rgba(116,172,223,.25)}
+
+.filtro-select-wrap{display:inline-flex;align-items:center;gap:.45rem;position:relative;flex-shrink:0}
+.filtro-select-icon{font-size:1.05rem;display:inline-flex;align-items:center;color:var(--tinta)}
+.filtro-select{padding:.48rem 2.2rem .48rem .85rem;border:1.5px solid var(--borde);border-radius:999px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2314213d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right .85rem center;color:var(--tinta);font:700 .88rem var(--f-texto);cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;transition:border-color .2s ease,box-shadow .2s ease;max-width:280px}
+.filtro-select:focus{border-color:var(--celeste);box-shadow:0 0 0 2px rgba(116,172,223,.28)}
+
+.filtro-search-wrap{flex:1;min-width:180px;display:inline-flex;align-items:center;position:relative}
+.filtro-search-icon{position:absolute;left:.85rem;color:var(--suave);font-size:1rem;pointer-events:none;display:inline-flex;align-items:center}
+.filtro-search-input{width:100%;padding:.48rem 2.2rem .48rem 2.45rem;border:1.5px solid var(--borde);border-radius:999px;background:#fff;color:var(--tinta);font:.9rem var(--f-texto);outline:none;transition:border-color .2s ease,box-shadow .2s ease}
+.filtro-search-input:focus{border-color:var(--celeste);box-shadow:0 0 0 2px rgba(116,172,223,.28)}
+.filtro-search-input::placeholder{color:var(--suave);font-size:.86rem}
+.filtro-search-clear{position:absolute;right:.65rem;background:none;border:none;color:var(--suave);cursor:pointer;font-size:1rem;padding:.2rem;border-radius:50%;display:grid;place-items:center;transition:color .2s ease;width:24px;height:24px}
+.filtro-search-clear:hover{color:var(--tinta)}
+
+.filtro-reset-wrap{flex-shrink:0;display:inline-flex;align-items:center}
+.btn-limpiar-filtro-inline{background:none;border:none;color:var(--alerta,#b3261e);font-weight:700;cursor:pointer;font-size:.82rem;padding:.3rem .6rem;border-radius:999px;transition:background-color .2s ease;display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap}
+.btn-limpiar-filtro-inline:hover{background:#fee;color:#8f1d16}
+
+@media (max-width: 768px){
+  .avisos-filtro-bar-inline{border-radius:14px;padding:.75rem;flex-wrap:wrap;gap:.55rem}
+  .filtro-select-wrap{width:100%}
+  .filtro-select{width:100%;max-width:100%}
+  .filtro-search-wrap{width:100%;min-width:100%}
+  .filtro-reset-wrap{width:100%;justify-content:flex-end}
+}
 
 /* Oferta */
 .oferta{background:var(--celeste-suave)}
@@ -250,7 +260,7 @@ footer p{margin:.2rem 0}
     <div class="wrap">
       <h2 id="t-nov">Novedades</h2>
       <p class="intro" id="i-nov"></p>
-      <div id="filtro-avisos" class="avisos-filtro-wrap" style="display:none"></div>
+      <div id="filtro-avisos" class="avisos-filtro-bar-inline" style="display:none"></div>
       <div class="avisos" id="avisos" aria-live="polite"><p>Cargando información…</p></div>
     </div>
   </section>
@@ -890,9 +900,17 @@ footer p{margin:.2rem 0}
   }
 
   let filtroCarreraActivo = "todos";
-  let incluirGenerales = true;
+  let busquedaAvisosTexto = "";
 
-  function coincideFiltroCarrera(a, filtroId, incGenerales, espacios = []) {
+  function normalizarTextoBusqueda(str) {
+    if (!str) return "";
+    return String(str)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function coincideFiltroCarrera(a, filtroId, espacios = []) {
     if (filtroId === "todos") return true;
 
     const avisoEspacio = a.espacioId || "general";
@@ -923,12 +941,46 @@ footer p{margin:.2rem 0}
       if (hasRow) return true;
     }
 
-    // Si está activada la opción de incluir avisos institucionales / generales
-    if (incGenerales && avisoEspacio === "general") {
-      return true;
+    return false;
+  }
+
+  function avisoCoincideBusqueda(a, busquedaNorm, espacios = []) {
+    if (!busquedaNorm) return true;
+
+    const corpus = [];
+    if (a.titulo) corpus.push(a.titulo);
+    if (a.nota) corpus.push(a.nota);
+
+    if (a.espacioId && a.espacioId !== "general") {
+      const esp = espacios.find(e => e.id === a.espacioId);
+      if (esp) {
+        if (esp.titulo) corpus.push(esp.titulo);
+        if (esp.tituloCorto) corpus.push(esp.tituloCorto);
+      }
     }
 
-    return false;
+    if (typeof a.contenido === "string") {
+      corpus.push(a.contenido);
+    } else if (Array.isArray(a.contenido)) {
+      corpus.push(a.contenido.join(" "));
+    } else if (a.contenido && typeof a.contenido === "object") {
+      if (a.contenido.titulo) corpus.push(a.contenido.titulo);
+      if (a.contenido.columnas) corpus.push(a.contenido.columnas.join(" "));
+      if (a.contenido.filas && Array.isArray(a.contenido.filas)) {
+        a.contenido.filas.forEach(fila => {
+          if (Array.isArray(fila)) corpus.push(fila.join(" "));
+        });
+      }
+    }
+
+    if (a.enlace) {
+      if (a.enlace.texto) corpus.push(a.enlace.texto);
+      if (a.enlace.url) corpus.push(a.enlace.url);
+    }
+
+    const textoCompletoNorm = normalizarTextoBusqueda(corpus.join(" "));
+    const palabras = busquedaNorm.split(/\s+/).filter(Boolean);
+    return palabras.every(palabra => textoCompletoNorm.includes(palabra));
   }
 
   function renderFiltroAvisos(d, avisosConMeta, canEdit) {
@@ -936,18 +988,12 @@ footer p{margin:.2rem 0}
     if (!contenedor) return;
 
     const espacios = d.ofertaAcademica?.espacios || [];
-    if (!espacios.length) {
-      contenedor.style.display = "none";
-      return;
-    }
-
-    // Avisos base para conteos
     const listaParaConteo = canEdit ? avisosConMeta : avisosConMeta.filter(item => item.aviso.activo !== false);
 
-    // Opciones de filtro
+    // Opciones del desplegable
     const opciones = [
-      { id: "todos", label: "🌟 Todos los anuncios", color: "var(--tinta)" },
-      { id: "general", label: "🏛️ Institucional", color: "var(--celeste)" }
+      { id: "todos", label: "🌟 Todas las carreras y anuncios" },
+      { id: "general", label: "🏛️ Institucional / General" }
     ];
 
     espacios.forEach(esp => {
@@ -955,98 +1001,201 @@ footer p{margin:.2rem 0}
       opciones.push({
         id: esp.id,
         label: `🎓 ${label}`,
-        nombreLargo: esp.titulo,
-        color: esp.color || "var(--celeste)",
-        isDark: (esp.color || "").toLowerCase() === "#f6b40e"
+        nombreLargo: esp.titulo
       });
     });
 
-    const chipsElements = opciones.map(op => {
-      const count = listaParaConteo.filter(item => {
-        return coincideFiltroCarrera(item.aviso, op.id, false, espacios);
-      }).length;
+    const existingSelect = $("filtro-carrera-select");
+    const existingInput = $("filtro-search-input");
+    const existingClear = $("filtro-search-clear");
+    const existingReset = $("btn-limpiar-filtro-inline");
 
-      const isActive = filtroCarreraActivo === op.id;
-      const chip = h("button", {
-        type: "button",
-        class: `chip-filtro ${isActive ? "active" : ""} ${op.isDark && isActive ? "dark-text" : ""}`,
-        style: `--c-chip:${op.color}`,
-        "data-filtro-id": op.id,
-        "aria-pressed": isActive ? "true" : "false",
-        title: `Filtrar por ${op.label} (${count} anuncios)`,
-        onclick: (e) => {
-          e.preventDefault();
-          filtroCarreraActivo = op.id;
-          render(d);
-          if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
-            window.ISET_EDITOR_UI.refreshPills();
-          }
-        }
-      },
-        h("span", {}, op.label),
-        h("span", { class: "chip-filtro-count" }, String(count))
-      );
-      return chip;
-    });
-
-    const isCarreraEspecifica = filtroCarreraActivo !== "todos" && filtroCarreraActivo !== "general";
-    const headerTitle = h("h3", { class: "avisos-filtro-title" },
-      h("span", { style: "font-size:1.15rem" }, "🎯"),
-      "Filtrar anuncios por carrera:"
-    );
-
-    const checkGenerales = h("label", {
-      class: "avisos-filtro-incluir",
-      title: "Si está marcado, también muestra anuncios institucionales y generales junto a los de la carrera seleccionada"
-    },
-      h("input", {
-        type: "checkbox",
-        checked: incluirGenerales,
-        onchange: (e) => {
-          incluirGenerales = e.target.checked;
-          render(d);
-          if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
-            window.ISET_EDITOR_UI.refreshPills();
-          }
-        }
-      }),
-      h("span", {}, "Incluir avisos generales e institucionales")
-    );
-
-    const header = h("div", { class: "avisos-filtro-header" },
-      headerTitle,
-      isCarreraEspecifica ? checkGenerales : null
-    );
-
-    const chipsWrap = h("div", { class: "avisos-filtro-chips" }, ...chipsElements);
-
-    let feedback = null;
-    if (filtroCarreraActivo !== "todos") {
-      const activeOp = opciones.find(o => o.id === filtroCarreraActivo);
-      const nombreFiltro = activeOp ? activeOp.label : filtroCarreraActivo;
-      feedback = h("div", { class: "avisos-filtro-resultado" },
-        h("span", {},
-          "Mostrando anuncios para: ",
-          h("strong", { style: "color:var(--tinta)" }, nombreFiltro),
-          incluirGenerales && isCarreraEspecifica ? " (incluyendo comunicados generales)" : ""
-        ),
-        h("button", {
-          type: "button",
-          class: "btn-limpiar-filtro",
-          onclick: (e) => {
-            e.preventDefault();
-            filtroCarreraActivo = "todos";
-            render(d);
-            if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
-              window.ISET_EDITOR_UI.refreshPills();
-            }
-          }
-        }, "✖ Quitar filtro (Ver todos)")
-      );
+    if (existingSelect && existingInput) {
+      existingSelect.replaceChildren(...opciones.map(op => {
+        const count = listaParaConteo.filter(item => coincideFiltroCarrera(item.aviso, op.id, espacios)).length;
+        const opt = h("option", { value: op.id }, `${op.label} (${count})`);
+        if (op.id === filtroCarreraActivo) opt.selected = true;
+        return opt;
+      }));
+      existingSelect.value = filtroCarreraActivo;
+      if (existingClear) {
+        existingClear.style.display = busquedaAvisosTexto ? "grid" : "none";
+      }
+      if (existingReset) {
+        const tieneFiltro = filtroCarreraActivo !== "todos" || Boolean(busquedaAvisosTexto);
+        existingReset.style.display = tieneFiltro ? "inline-flex" : "none";
+      }
+      contenedor.style.display = "flex";
+      return;
     }
 
-    contenedor.style.display = "block";
-    contenedor.replaceChildren(header, chipsWrap, feedback);
+    const selectElem = h("select", {
+      id: "filtro-carrera-select",
+      class: "filtro-select",
+      "aria-label": "Filtrar por carrera",
+      onchange: (e) => {
+        filtroCarreraActivo = e.target.value;
+        const tieneFiltro = filtroCarreraActivo !== "todos" || Boolean(busquedaAvisosTexto);
+        const rBtn = $("btn-limpiar-filtro-inline");
+        if (rBtn) rBtn.style.display = tieneFiltro ? "inline-flex" : "none";
+        renderAvisosList(d, avisosConMeta, canEdit);
+        if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+          window.ISET_EDITOR_UI.refreshPills();
+        }
+      }
+    },
+      ...opciones.map(op => {
+        const count = listaParaConteo.filter(item => coincideFiltroCarrera(item.aviso, op.id, espacios)).length;
+        const opt = h("option", { value: op.id }, `${op.label} (${count})`);
+        if (op.id === filtroCarreraActivo) opt.selected = true;
+        return opt;
+      })
+    );
+
+    const selectWrap = h("div", { class: "filtro-select-wrap" },
+      h("span", { class: "filtro-select-icon", title: "Filtrar por carrera" }, "🎯"),
+      selectElem
+    );
+
+    const clearBtn = h("button", {
+      type: "button",
+      id: "filtro-search-clear",
+      class: "filtro-search-clear",
+      title: "Borrar búsqueda",
+      "aria-label": "Borrar búsqueda",
+      style: busquedaAvisosTexto ? "display:grid" : "display:none",
+      onclick: () => {
+        busquedaAvisosTexto = "";
+        const input = $("filtro-search-input");
+        if (input) {
+          input.value = "";
+          input.focus();
+        }
+        clearBtn.style.display = "none";
+        const tieneFiltro = filtroCarreraActivo !== "todos";
+        const rBtn = $("btn-limpiar-filtro-inline");
+        if (rBtn) rBtn.style.display = tieneFiltro ? "inline-flex" : "none";
+        renderAvisosList(d, avisosConMeta, canEdit);
+        if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+          window.ISET_EDITOR_UI.refreshPills();
+        }
+      }
+    }, "✕");
+
+    const searchInput = h("input", {
+      type: "search",
+      id: "filtro-search-input",
+      class: "filtro-search-input",
+      defaultValue: busquedaAvisosTexto,
+      value: busquedaAvisosTexto,
+      placeholder: "Buscar en anuncios (título, fechas, mesas, materias...)",
+      "aria-label": "Buscar anuncios",
+      autocomplete: "off",
+      oninput: (e) => {
+        busquedaAvisosTexto = e.target.value.trim();
+        clearBtn.style.display = busquedaAvisosTexto ? "grid" : "none";
+        const tieneFiltro = filtroCarreraActivo !== "todos" || Boolean(busquedaAvisosTexto);
+        const rBtn = $("btn-limpiar-filtro-inline");
+        if (rBtn) rBtn.style.display = tieneFiltro ? "inline-flex" : "none";
+        renderAvisosList(d, avisosConMeta, canEdit);
+        if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+          window.ISET_EDITOR_UI.refreshPills();
+        }
+      }
+    });
+
+    const searchWrap = h("div", { class: "filtro-search-wrap" },
+      h("span", { class: "filtro-search-icon" }, "🔍"),
+      searchInput,
+      clearBtn
+    );
+
+    const tieneFiltroInicial = filtroCarreraActivo !== "todos" || Boolean(busquedaAvisosTexto);
+    const resetBtn = h("button", {
+      type: "button",
+      id: "btn-limpiar-filtro-inline",
+      class: "btn-limpiar-filtro-inline",
+      style: tieneFiltroInicial ? "display:inline-flex" : "display:none",
+      title: "Restablecer filtros y búsqueda",
+      onclick: () => {
+        filtroCarreraActivo = "todos";
+        busquedaAvisosTexto = "";
+        const input = $("filtro-search-input");
+        if (input) input.value = "";
+        const select = $("filtro-carrera-select");
+        if (select) select.value = "todos";
+        clearBtn.style.display = "none";
+        resetBtn.style.display = "none";
+        render(d);
+        if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+          window.ISET_EDITOR_UI.refreshPills();
+        }
+      }
+    }, "✖ Limpiar");
+
+    const resetWrap = h("div", { class: "filtro-reset-wrap" }, resetBtn);
+
+    contenedor.className = "avisos-filtro-bar-inline";
+    contenedor.style.display = "flex";
+    contenedor.replaceChildren(selectWrap, searchWrap, resetWrap);
+  }
+
+  function renderAvisosList(d, avisosConMeta, canEdit) {
+    const o = d.ofertaAcademica || {};
+    const espacios = o.espacios || [];
+    const busqNorm = normalizarTextoBusqueda(busquedaAvisosTexto);
+
+    const avisosPorPermiso = canEdit
+      ? avisosConMeta
+      : avisosConMeta.filter(item => item.aviso.activo !== false);
+
+    const avisosAMostrar = avisosPorPermiso.filter(item => {
+      const matchCarrera = coincideFiltroCarrera(item.aviso, filtroCarreraActivo, espacios);
+      const matchBusqueda = avisoCoincideBusqueda(item.aviso, busqNorm, espacios);
+      return matchCarrera && matchBusqueda;
+    });
+
+    if (avisosAMostrar.length) {
+      $("avisos").replaceChildren(...avisosAMostrar.map(item => aviso(item.aviso, d, item.originalIdx)));
+    } else {
+      const activeOp = espacios.find(e => e.id === filtroCarreraActivo);
+      const nombreCarrera = activeOp ? (activeOp.tituloCorto || activeOp.titulo) : "";
+      let mensajeTitulo = "No se encontraron novedades";
+      let mensajeDetalle = "Probá buscando con otros términos o seleccionando otra carrera.";
+
+      if (busquedaAvisosTexto && nombreCarrera) {
+        mensajeTitulo = `No hay resultados para "${busquedaAvisosTexto}" en ${nombreCarrera}.`;
+      } else if (busquedaAvisosTexto) {
+        mensajeTitulo = `No hay novedades que coincidan con "${busquedaAvisosTexto}".`;
+      } else if (nombreCarrera) {
+        mensajeTitulo = `No hay novedades específicas para ${nombreCarrera} en este momento.`;
+      }
+
+      $("avisos").replaceChildren(
+        h("div", { class: "tabla-vacia", style: "padding:2.5rem 1rem" },
+          h("div", { style: "font-size:2.2rem;margin-bottom:0.6rem" }, "📭"),
+          h("strong", { style: "display:block;font-size:1.1rem;color:var(--tinta);margin-bottom:0.4rem" }, mensajeTitulo),
+          h("p", { style: "color:var(--suave);margin:0 auto 1.25rem;max-width:55ch" }, mensajeDetalle),
+          h("button", {
+            type: "button",
+            class: "enlace",
+            style: "cursor:pointer;border:none",
+            onclick: () => {
+              filtroCarreraActivo = "todos";
+              busquedaAvisosTexto = "";
+              const input = $("filtro-search-input");
+              if (input) input.value = "";
+              const select = $("filtro-carrera-select");
+              if (select) select.value = "todos";
+              render(d);
+              if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
+                window.ISET_EDITOR_UI.refreshPills();
+              }
+            }
+          }, "🌟 Ver todos los anuncios")
+        )
+      );
+    }
   }
 
   function render(d) {
@@ -1070,46 +1219,9 @@ footer p{margin:.2rem 0}
     // Ordenar por orden de llegada: el más nuevo en la parte superior (timestamp descendente)
     avisosConMeta.sort((a, b) => b.timestamp - a.timestamp);
 
-    // Barra de filtro general por carrera (bien visible)
+    // Barra de filtro y búsqueda en una sola línea (tipo Google)
     renderFiltroAvisos(d, avisosConMeta, canEdit);
-
-    const avisosPorPermiso = canEdit
-      ? avisosConMeta
-      : avisosConMeta.filter(item => item.aviso.activo !== false);
-
-    const avisosAMostrar = avisosPorPermiso.filter(item => {
-      return coincideFiltroCarrera(item.aviso, filtroCarreraActivo, incluirGenerales, o.espacios || []);
-    });
-
-    if (avisosAMostrar.length) {
-      $("avisos").replaceChildren(...avisosAMostrar.map(item => aviso(item.aviso, d, item.originalIdx)));
-    } else {
-      const activeOp = (o.espacios || []).find(e => e.id === filtroCarreraActivo);
-      const nombreCarrera = activeOp ? (activeOp.tituloCorto || activeOp.titulo) : "esta carrera";
-      $("avisos").replaceChildren(
-        h("div", { class: "tabla-vacia", style: "padding:2.5rem 1rem" },
-          h("div", { style: "font-size:2.2rem;margin-bottom:0.6rem" }, "📭"),
-          h("strong", { style: "display:block;font-size:1.1rem;color:var(--tinta);margin-bottom:0.4rem" },
-            `No hay novedades específicas para ${nombreCarrera} en este momento.`
-          ),
-          h("p", { style: "color:var(--suave);margin:0 auto 1.25rem;max-width:55ch" },
-            "Podés consultar las novedades de otras carreras o volver a ver todos los anuncios."
-          ),
-          h("button", {
-            type: "button",
-            class: "enlace",
-            style: "cursor:pointer;border:none",
-            onclick: () => {
-              filtroCarreraActivo = "todos";
-              render(d);
-              if (window.ISET_EDITOR_UI && typeof window.ISET_EDITOR_UI.refreshPills === "function") {
-                window.ISET_EDITOR_UI.refreshPills();
-              }
-            }
-          }, "🌟 Ver todos los anuncios")
-        )
-      );
-    }
+    renderAvisosList(d, avisosConMeta, canEdit);
 
     $("t-of").textContent = o.titulo || "Oferta académica";
     $("i-of").textContent = o.introduccion || "";
