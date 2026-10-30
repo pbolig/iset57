@@ -103,6 +103,8 @@ thead th{background:var(--tinta);color:#fff;border-top:0}
 tbody tr:nth-child(even){background:var(--fondo)}
 .enlace{display:flex;align-items:center;justify-content:center;width:fit-content;max-width:100%;min-height:44px;margin:1rem auto 0;padding:.5rem 1.4rem;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;text-align:center;transition:transform .28s cubic-bezier(.34,1.5,.64,1),background-color .2s ease,color .2s ease,box-shadow .28s ease}
 .enlace:hover{transform:translateY(-4px) scale(1.03);background:var(--celeste);color:var(--tinta);box-shadow:0 8px 20px rgba(20,33,61,.2)}
+.aviso-enlaces-wrap{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;justify-content:center;margin-top:1rem}
+.aviso-enlaces-wrap .enlace{margin:0}
 
 /* Barra de Filtro Desplegable y Búsqueda Inteligente en una Sola Línea (tipo Google) */
 .avisos-filtro-bar-inline{margin:1.4rem 0 1.75rem;padding:.55rem .75rem;background:#fff;border:1.5px solid var(--borde);border-radius:999px;box-shadow:0 3px 14px rgba(20,33,61,.06);display:flex;align-items:center;gap:.65rem;flex-wrap:nowrap;transition:border-color .2s ease,box-shadow .2s ease}
@@ -596,17 +598,27 @@ footer p{margin:.2rem 0}
       })
     ) : null;
 
-    let enlaceEl = null;
-    if (a.enlace && a.enlace.url) {
-      const urlNorm = normalizarUrl(a.enlace.url);
-      const isExt = esUrlExterna(urlNorm);
-      enlaceEl = h("a", {
-        class: "enlace",
-        href: urlNorm,
-        target: isExt ? "_blank" : null,
-        rel: isExt ? "noopener noreferrer" : null
-      }, a.enlace.texto || "Más información");
+    const listaEnlaces = [];
+    if (Array.isArray(a.enlaces) && a.enlaces.length) {
+      listaEnlaces.push(...a.enlaces);
+    } else if (a.enlace && a.enlace.url) {
+      listaEnlaces.push(a.enlace);
     }
+
+    const enlacesEl = listaEnlaces.length
+      ? h("div", { class: "aviso-enlaces-wrap" },
+          ...listaEnlaces.filter(l => l && l.url).map(l => {
+            const urlNorm = normalizarUrl(l.url);
+            const isExt = esUrlExterna(urlNorm);
+            return h("a", {
+              class: "enlace",
+              href: urlNorm,
+              target: isExt ? "_blank" : null,
+              rel: isExt ? "noopener noreferrer" : null
+            }, l.texto || "Más información");
+          })
+        )
+      : null;
 
     return h("article", {
       class: "aviso " + (a.tipo || "info") + (isApagado ? " aviso-apagado" : ""),
@@ -622,7 +634,7 @@ footer p{margin:.2rem 0}
       imgEl,
       contenido(a.contenido, d),
       a.nota ? h("p", { class: "nota" }, a.nota) : null,
-      enlaceEl
+      enlacesEl
     );
   }
 
@@ -973,7 +985,12 @@ footer p{margin:.2rem 0}
       }
     }
 
-    if (a.enlace) {
+    if (Array.isArray(a.enlaces) && a.enlaces.length) {
+      a.enlaces.forEach(l => {
+        if (l && l.texto) corpus.push(l.texto);
+        if (l && l.url) corpus.push(l.url);
+      });
+    } else if (a.enlace) {
       if (a.enlace.texto) corpus.push(a.enlace.texto);
       if (a.enlace.url) corpus.push(a.enlace.url);
     }
@@ -1216,8 +1233,8 @@ footer p{margin:.2rem 0}
       timestamp: obtenerTimestampAviso(a, idx)
     }));
 
-    // Ordenar por orden de llegada: el más nuevo en la parte superior (timestamp descendente)
-    avisosConMeta.sort((a, b) => b.timestamp - a.timestamp);
+    // El orden de la lista g.avisos es el orden canónico (los nuevos ingresan al tope y el diseñador puede reordenar libremente)
+    // Se conserva el orden exacto del array.
 
     // Barra de filtro y búsqueda en una sola línea (tipo Google)
     renderFiltroAvisos(d, avisosConMeta, canEdit);

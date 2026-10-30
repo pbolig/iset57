@@ -1163,3 +1163,266 @@ nav a:hover,
   display: none;
 }
 
+/* ==============================================================================
+   Reordenamiento y Drag & Drop de Avisos y Novedades
+   ============================================================================== */
+.aviso.iset-aviso-dragging {
+  opacity: 0.4 !important;
+  transform: scale(0.985);
+  border: 2px dashed var(--sol, #f6b40e) !important;
+  box-shadow: 0 4px 14px rgba(246, 180, 14, 0.25) !important;
+}
+
+.aviso.iset-aviso-dragover {
+  border: 2px solid var(--sol, #f6b40e) !important;
+  box-shadow: 0 0 0 4px rgba(246, 180, 14, 0.3), 0 8px 24px rgba(20, 33, 61, 0.16) !important;
+  transform: translateY(-2px);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+.iset-pill-drag-handle {
+  cursor: grab !important;
+  user-select: none;
+  background: rgba(20, 33, 61, 0.9) !important;
+}
+
+.iset-pill-drag-handle:active {
+  cursor: grabbing !important;
+}
+
+.iset-pill-move-btn {
+  padding: 0.32rem 0.52rem !important;
+  background: rgba(20, 33, 61, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.iset-pill-move-btn:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+/* Modal de Reordenamiento de Avisos */
+.iset-reorder-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.iset-reorder-item {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  border: 1.5px solid var(--borde, #d3dde9);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(20, 33, 61, 0.05);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.iset-reorder-item:hover {
+  border-color: var(--celeste, #74acdf);
+  box-shadow: 0 4px 14px rgba(20, 33, 61, 0.09);
+}
+
+.iset-reorder-item.is-dragged {
+  opacity: 0.45;
+  border-style: dashed;
+  border-color: var(--sol, #f6b40e);
+}
+
+.iset-reorder-item.is-dragover {
+  border-color: var(--sol, #f6b40e);
+  box-shadow: 0 0 0 3px rgba(246, 180, 14, 0.3);
+  transform: translateY(-2px);
+}
+
+.iset-reorder-pos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--tinta, #14213d);
+  color: var(--sol, #f6b40e);
+  font: 700 0.85rem var(--f-texto);
+  flex-shrink: 0;
+}
+
+.iset-reorder-grab {
+  cursor: grab;
+  font-size: 1.25rem;
+  color: var(--suave, #56647a);
+  user-select: none;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.iset-reorder-grab:hover {
+  background: rgba(20, 33, 61, 0.07);
+  color: var(--tinta, #14213d);
+}
+
+.iset-reorder-grab:active {
+  cursor: grabbing;
+}
+
+.iset-reorder-info {
+  min-width: 0;
+}
+
+.iset-reorder-title {
+  font: 700 0.94rem var(--f-texto);
+  color: var(--tinta, #14213d);
+  margin-bottom: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iset-reorder-meta {
+  font-size: 0.78rem;
+  color: var(--suave, #56647a);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.iset-reorder-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.iset-btn-reorder-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--borde, #d3dde9);
+  background: var(--fondo, #f5f8fb);
+  color: var(--tinta, #14213d);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.iset-btn-reorder-action:hover:not(:disabled) {
+  background: var(--tinta, #14213d);
+  color: #ffffff;
+  border-color: var(--tinta, #14213d);
+  transform: translateY(-1px);
+}
+
+.iset-btn-reorder-action:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Gestor de Múltiples Botones / Enlaces en Formularios de Avisos */
+.iset-enlaces-manager {
+  background: var(--fondo, #f5f8fb);
+  border: 1.5px solid var(--borde, #d3dde9);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1.25rem;
+}
+
+.iset-enlaces-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.iset-enlaces-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.iset-enlace-row {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr auto;
+  gap: 0.65rem;
+  align-items: center;
+  background: #ffffff;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--borde, #d3dde9);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.iset-enlace-row:hover {
+  border-color: var(--celeste, #74acdf);
+  box-shadow: 0 2px 8px rgba(20, 33, 61, 0.05);
+}
+
+.iset-btn-remove-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 8px;
+  border: 1px solid #ffcdd2;
+  background: #ffebee;
+  color: #c62828;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.iset-btn-remove-link:hover {
+  background: #c62828;
+  color: #ffffff;
+  border-color: #b71c1c;
+}
+
+.iset-btn-add-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px dashed var(--celeste, #74acdf);
+  background: rgba(116, 172, 223, 0.08);
+  color: var(--tinta, #14213d);
+  font: 700 0.84rem var(--f-texto);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.65rem;
+}
+
+.iset-btn-add-link:hover {
+  background: var(--celeste, #74acdf);
+  color: var(--tinta, #14213d);
+  border-style: solid;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .iset-enlace-row {
+    grid-template-columns: 1fr auto;
+  }
+  .iset-enlace-row .ed-av-link-url {
+    grid-column: 1 / -1;
+  }
+}
+
+
+

@@ -56,6 +56,62 @@
     constructor() {
       this.activeModal = null;
       this.init();
+      this.setupDragAutoScroll();
+    }
+
+    setupDragAutoScroll() {
+      if (window.__iset_dragAutoScrollInitialized) return;
+      window.__iset_dragAutoScrollInitialized = true;
+
+      let timer = null;
+      let speed = 0;
+
+      window.__iset_stopAutoScroll = () => {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+        speed = 0;
+      };
+
+      const setScrollSpeed = (s) => {
+        speed = s;
+        if (speed !== 0 && !timer) {
+          timer = setInterval(() => {
+            window.scrollBy({ top: speed, left: 0, behavior: "instant" });
+          }, 16);
+        } else if (speed === 0 && timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      };
+
+      document.addEventListener("dragover", (e) => {
+        if (!window.__iset_isDragging) return;
+        const threshold = 130;
+        const vh = window.innerHeight;
+        const y = e.clientY;
+
+        if (y < threshold && window.scrollY > 0) {
+          const ratio = Math.max(0.2, (threshold - y) / threshold);
+          setScrollSpeed(-Math.round(ratio * 28));
+        } else if (y > vh - threshold) {
+          const ratio = Math.max(0.2, (y - (vh - threshold)) / threshold);
+          setScrollSpeed(Math.round(ratio * 28));
+        } else {
+          setScrollSpeed(0);
+        }
+      });
+
+      document.addEventListener("dragend", () => {
+        window.__iset_isDragging = false;
+        window.__iset_stopAutoScroll();
+      });
+
+      document.addEventListener("drop", () => {
+        window.__iset_isDragging = false;
+        window.__iset_stopAutoScroll();
+      });
     }
 
     init() {
@@ -253,6 +309,7 @@
             const apagadosCount = avisosData.filter(a => a.activo === false).length;
             const toolbarPills = [
               this.createProminentPill("Modificar Título e Intro de Novedades", () => this.openNovedadesHeadEditor(), "✏️"),
+              this.createProminentPill("Organizar Orden de Anuncios", () => this.openReorderAvisosModal(), "↕️"),
               this.createProminentPill("Publicar Nuevo Aviso", () => this.openAddAvisoEditor(), "➕", true)
             ];
             if (apagadosCount > 0) {
@@ -306,6 +363,86 @@
             const isApagado = avData?.activo === false;
             const pillLabel = isTable ? "Modificar Mesas de Examen / Tabla" : (avData?.imagen ? "Modificar Publicación / Foto" : "Modificar Aviso");
 
+            // Tirador para "agarrar" y mover el aviso (Drag & Drop)
+            const dragHandle = h("div", {
+              class: "iset-edit-pill iset-pill-drag-handle",
+              title: "Arrastrá para reordenar este aviso hacia arriba o abajo",
+              draggable: "true"
+            },
+              h("span", { style: "font-size:1rem;line-height:1;margin-right:2px" }, "⠿"),
+              h("span", { style: "font-size:0.75rem" }, "Mover")
+            );
+
+            dragHandle.addEventListener("dragstart", (e) => {
+              window.__iset_isDragging = true;
+              e.dataTransfer.setData("text/plain", String(realIdx));
+              e.dataTransfer.effectAllowed = "move";
+              avisoEl.classList.add("iset-aviso-dragging");
+            });
+
+            dragHandle.addEventListener("dragend", () => {
+              window.__iset_isDragging = false;
+              if (typeof window.__iset_stopAutoScroll === "function") window.__iset_stopAutoScroll();
+              avisoEl.classList.remove("iset-aviso-dragging");
+              document.querySelectorAll(".iset-aviso-dragover").forEach(el => el.classList.remove("iset-aviso-dragover"));
+            });
+
+            avisoEl.addEventListener("dragover", (e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
+              if (!avisoEl.classList.contains("iset-aviso-dragging")) {
+                avisoEl.classList.add("iset-aviso-dragover");
+              }
+            });
+
+            avisoEl.addEventListener("dragleave", (e) => {
+              if (!avisoEl.contains(e.relatedTarget)) {
+                avisoEl.classList.remove("iset-aviso-dragover");
+              }
+            });
+
+            avisoEl.addEventListener("drop", (e) => {
+              e.preventDefault();
+              window.__iset_isDragging = false;
+              if (typeof window.__iset_stopAutoScroll === "function") window.__iset_stopAutoScroll();
+              avisoEl.classList.remove("iset-aviso-dragover");
+              const fromIdx = parseInt(e.dataTransfer.getData("text/plain"), 10);
+              const toIdx = realIdx;
+              if (!isNaN(fromIdx) && fromIdx !== toIdx) {
+                this.moveAviso(fromIdx, toIdx);
+              }
+            });
+
+            // Botones rápidos de subir y bajar
+            const isFirst = realIdx === 0;
+            const isLast = realIdx >= (avisosData.length - 1);
+
+            const moveUpBtn = h("button", {
+              type: "button",
+              class: "iset-edit-pill iset-pill-move-btn",
+              title: isFirst ? "Ya está en el primer lugar" : "Subir un lugar hacia arriba",
+              "aria-label": "Subir aviso",
+              disabled: isFirst,
+              onclick: (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isFirst) this.moveAviso(realIdx, realIdx - 1);
+              }
+            }, h("span", { style: "font-size:0.85rem;line-height:1" }, "🔼"));
+
+            const moveDownBtn = h("button", {
+              type: "button",
+              class: "iset-edit-pill iset-pill-move-btn",
+              title: isLast ? "Ya está en el último lugar" : "Bajar un lugar hacia abajo",
+              "aria-label": "Bajar aviso",
+              disabled: isLast,
+              onclick: (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isLast) this.moveAviso(realIdx, realIdx + 1);
+              }
+            }, h("span", { style: "font-size:0.85rem;line-height:1" }, "🔽"));
+
             const toggleBtn = h("button", {
               type: "button",
               class: `iset-edit-pill iset-pill-toggle ${isApagado ? "iset-pill-turn-on" : "iset-pill-turn-off"}`,
@@ -348,6 +485,9 @@
               class: "iset-pill-cluster iset-pill-corner",
               style: "display:inline-flex;gap:0.35rem;align-items:center"
             },
+              dragHandle,
+              moveUpBtn,
+              moveDownBtn,
               toggleBtn,
               this.createPill(pillLabel, () => this.openAvisoEditor(realIdx), "iset-pill-aviso"),
               deleteBtn
@@ -951,18 +1091,231 @@
             d.informacionGeneral.avisos.splice(avisoIndex, 1);
           } else {
             d.informacionGeneral.avisos[avisoIndex] = updatedAviso;
-            // Mantener avisos ordenados por orden de llegada (más nuevo arriba).
-            // Si el aviso conserva su fecha original, se mantiene en su posición.
-            this.sortAvisos(d.informacionGeneral.avisos);
+            // Se mantiene exactamente en su posición original, no se reordena.
           }
           return d;
         });
       }, false);
     }
 
+    async moveAviso(fromIndex, toIndex, showToast = true) {
+      const data = await this.getFreshData();
+      const avisos = data.informacionGeneral?.avisos || [];
+      if (fromIndex < 0 || fromIndex >= avisos.length || toIndex < 0 || toIndex >= avisos.length) return;
+      if (fromIndex === toIndex) return;
+
+      const titulo = avisos[fromIndex]?.titulo ? `"${avisos[fromIndex].titulo}"` : "El aviso";
+
+      await content.updateData(d => {
+        d.informacionGeneral = d.informacionGeneral || {};
+        d.informacionGeneral.avisos = d.informacionGeneral.avisos || [];
+        const [item] = d.informacionGeneral.avisos.splice(fromIndex, 1);
+        if (item) {
+          d.informacionGeneral.avisos.splice(toIndex, 0, item);
+        }
+        return d;
+      });
+
+      if (showToast) {
+        window.ISET_TOAST(`↕️ ${titulo} ahora está en la posición #${toIndex + 1}.`, "success");
+      }
+
+      if (typeof window.__iset_render === "function" && content.getData()) {
+        window.__iset_render(content.getData());
+      }
+      setTimeout(() => this.refreshPills(), 60);
+    }
+
+    async openReorderAvisosModal() {
+      const data = await this.getFreshData();
+      const avisos = [...(data.informacionGeneral?.avisos || [])];
+      if (!avisos.length) {
+        window.ISET_TOAST("No hay avisos cargados para organizar.", "info");
+        return;
+      }
+
+      if (this.activeModal) {
+        this.activeModal.remove();
+        this.activeModal = null;
+      }
+
+      const backdrop = h("div", { class: "iset-modal-backdrop open", style: "z-index:9998" });
+      const modal = h("div", { class: "iset-modal iset-modal-lg", style: "max-width:820px" });
+
+      const closeModal = () => {
+        backdrop.remove();
+        if (this.activeModal === backdrop) this.activeModal = null;
+        setTimeout(() => this.refreshPills(), 60);
+      };
+
+      const header = h("div", { class: "iset-modal-header" },
+        h("h3", { class: "iset-modal-title" }, "↕️ Organizar Orden de los Anuncios"),
+        h("button", {
+          class: "iset-modal-close",
+          title: "Cerrar",
+          onclick: () => closeModal()
+        }, "×")
+      );
+
+      const listContainer = h("div", { class: "iset-reorder-container" });
+
+      const renderList = () => {
+        const curData = content.getData() || {};
+        const curAvisos = curData.informacionGeneral?.avisos || [];
+        listContainer.replaceChildren(...curAvisos.map((av, idx) => {
+          const isFirst = idx === 0;
+          const isLast = idx >= curAvisos.length - 1;
+          const isApagado = av.activo === false;
+          const fechaStr = av.fechaPublicacion ? new Date(av.fechaPublicacion).toLocaleDateString() : "Sin fecha";
+
+          const itemEl = h("div", {
+            class: "iset-reorder-item",
+            "data-index": String(idx),
+            draggable: "true"
+          },
+            h("div", { class: "iset-reorder-pos", title: `Posición #${idx + 1}` }, `#${idx + 1}`),
+            h("div", { class: "iset-reorder-grab", title: "Arrastrá para reordenar" }, "⠿"),
+            h("div", { class: "iset-reorder-info" },
+              h("div", { class: "iset-reorder-title" }, av.titulo || "Aviso sin título"),
+              h("div", { class: "iset-reorder-meta" },
+                h("span", {
+                  style: `padding:2px 8px;border-radius:999px;font-size:0.72rem;font-weight:700;${isApagado ? "background:#ffebee;color:#c62828" : "background:#e8f5e9;color:#2e7d32"}`
+                }, isApagado ? "⏸️ Apagado" : "🟢 Visible"),
+                h("span", {}, `🕒 ${fechaStr}`),
+                av.espacioId && av.espacioId !== "general" ? h("span", { style: "color:var(--celeste,#74acdf);font-weight:700" }, `🎓 ${av.espacioId}`) : h("span", {}, "🏛️ General")
+              )
+            ),
+            h("div", { class: "iset-reorder-actions" },
+              h("button", {
+                type: "button",
+                class: "iset-btn-reorder-action",
+                title: "Subir a la primera posición (al tope)",
+                disabled: isFirst,
+                onclick: async () => {
+                  await this.moveAviso(idx, 0, false);
+                  renderList();
+                }
+              }, "🔝"),
+              h("button", {
+                type: "button",
+                class: "iset-btn-reorder-action",
+                title: "Subir 1 lugar",
+                disabled: isFirst,
+                onclick: async () => {
+                  await this.moveAviso(idx, idx - 1, false);
+                  renderList();
+                }
+              }, "🔼"),
+              h("button", {
+                type: "button",
+                class: "iset-btn-reorder-action",
+                title: "Bajar 1 lugar",
+                disabled: isLast,
+                onclick: async () => {
+                  await this.moveAviso(idx, idx + 1, false);
+                  renderList();
+                }
+              }, "🔽")
+            )
+          );
+
+          itemEl.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("text/plain", String(idx));
+            e.dataTransfer.effectAllowed = "move";
+            itemEl.classList.add("is-dragged");
+          });
+          itemEl.addEventListener("dragend", () => {
+            itemEl.classList.remove("is-dragged");
+            listContainer.querySelectorAll(".is-dragover").forEach(el => el.classList.remove("is-dragover"));
+          });
+          itemEl.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            itemEl.classList.add("is-dragover");
+          });
+          itemEl.addEventListener("dragleave", (e) => {
+            if (!itemEl.contains(e.relatedTarget)) {
+              itemEl.classList.remove("is-dragover");
+            }
+          });
+          itemEl.addEventListener("drop", async (e) => {
+            e.preventDefault();
+            itemEl.classList.remove("is-dragover");
+            const fromIdx = parseInt(e.dataTransfer.getData("text/plain"), 10);
+            const toIdx = idx;
+            if (!isNaN(fromIdx) && fromIdx !== toIdx) {
+              await this.moveAviso(fromIdx, toIdx, false);
+              renderList();
+            }
+          });
+
+          return itemEl;
+        }));
+      };
+
+      const intro = h("p", { style: "color:var(--suave);font-size:0.88rem;margin:0 0 0.85rem;line-height:1.5" },
+        "Arrastrá los anuncios con el ícono ",
+        h("strong", {}, "⠿"),
+        " o usá las flechas para subir y bajar de a un lugar. El orden que definas aquí se reflejará de inmediato para todos los visitantes."
+      );
+
+      const sortBtn = h("button", {
+        type: "button",
+        class: "iset-btn-secondary",
+        style: "font-size:0.82rem;padding:0.4rem 0.85rem",
+        title: "Reordenar automáticamente poniendo el anuncio más reciente arriba de todo",
+        onclick: async () => {
+          if (!confirm("¿Deseás ordenar todos los avisos automáticamente por fecha más reciente arriba?")) return;
+          await content.updateData(d => {
+            d.informacionGeneral = d.informacionGeneral || {};
+            d.informacionGeneral.avisos = this.sortAvisos(d.informacionGeneral.avisos || []);
+            return d;
+          });
+          window.ISET_TOAST("Avisos reordenados cronológicamente.", "info");
+          if (typeof window.__iset_render === "function" && content.getData()) {
+            window.__iset_render(content.getData());
+          }
+          renderList();
+        }
+      }, "🔄 Ordenar cronológicamente (más nuevo arriba)");
+
+      const topToolbar = h("div", { style: "display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem" },
+        h("span", { style: "font-size:0.82rem;font-weight:700;color:var(--tinta)" }, `Total: ${avisos.length} anuncio(s)`),
+        sortBtn
+      );
+
+      const body = h("div", { class: "iset-modal-body", style: "padding:1rem 1.25rem" },
+        intro,
+        topToolbar,
+        listContainer
+      );
+
+      const footer = h("div", { class: "iset-modal-footer" },
+        h("button", {
+          type: "button",
+          class: "iset-btn-primary",
+          style: "width:auto;padding:0.55rem 1.8rem",
+          onclick: () => closeModal()
+        }, "✓ Listo")
+      );
+
+      modal.appendChild(header);
+      modal.appendChild(body);
+      modal.appendChild(footer);
+      backdrop.appendChild(modal);
+      document.body.appendChild(backdrop);
+      this.activeModal = backdrop;
+
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      renderList();
+    }
+
     sortAvisos(avisos) {
       if (!Array.isArray(avisos)) return [];
-      return avisos.sort((a, b) => {
+      return [...avisos].sort((a, b) => {
         const tA = (a && (a.fechaPublicacion || a.creadoEn)) ? new Date(a.fechaPublicacion || a.creadoEn).getTime() : 0;
         const tB = (b && (b.fechaPublicacion || b.creadoEn)) ? new Date(b.fechaPublicacion || b.creadoEn).getTime() : 0;
         return (tB || 0) - (tA || 0);
@@ -1034,8 +1387,7 @@
         await content.updateData(d => {
           d.informacionGeneral = d.informacionGeneral || {};
           d.informacionGeneral.avisos = d.informacionGeneral.avisos || [];
-          d.informacionGeneral.avisos.unshift(newAviso);
-          this.sortAvisos(d.informacionGeneral.avisos);
+          d.informacionGeneral.avisos.unshift(newAviso); // Al crearse, entra al inicio (al tope de todos)
           return d;
         });
       }, true);
@@ -1107,6 +1459,80 @@
         );
       }
 
+      // Preparar gestor dinámico de múltiples botones / enlaces
+      let initialEnlaces = [];
+      if (Array.isArray(av.enlaces) && av.enlaces.length) {
+        initialEnlaces = av.enlaces.map(l => ({ texto: l.texto || "Más información", url: l.url || "" }));
+      } else if (av.enlace && (av.enlace.url || av.enlace.texto)) {
+        initialEnlaces = [{ texto: av.enlace.texto || "Más información", url: av.enlace.url || "" }];
+      } else {
+        initialEnlaces = [{ texto: "Más información", url: "" }];
+      }
+
+      const enlacesListContainer = h("div", { class: "iset-enlaces-list", id: "ed-av-enlaces-list" });
+
+      const createEnlaceRow = (linkData = { texto: "Más información", url: "" }) => {
+        const row = h("div", { class: "iset-enlace-row" });
+
+        const txtInput = h("input", {
+          type: "text",
+          class: "iset-input ed-av-link-txt",
+          placeholder: "Texto del botón (ej: Ver requisitos)",
+          defaultValue: linkData.texto || "Más información",
+          value: linkData.texto || "Más información"
+        });
+
+        const urlInput = h("input", {
+          type: "text",
+          class: "iset-input ed-av-link-url",
+          placeholder: "URL o página (ej: inscripcion.html o https://...)",
+          defaultValue: linkData.url || "",
+          value: linkData.url || ""
+        });
+
+        const removeBtn = h("button", {
+          type: "button",
+          class: "iset-btn-remove-link",
+          title: "Eliminar este botón/enlace",
+          onclick: (e) => {
+            e.preventDefault();
+            row.remove();
+            if (!enlacesListContainer.children.length) {
+              enlacesListContainer.appendChild(createEnlaceRow({ texto: "Más información", url: "" }));
+            }
+          }
+        }, "🗑️");
+
+        row.append(txtInput, urlInput, removeBtn);
+        return row;
+      };
+
+      initialEnlaces.forEach(link => enlacesListContainer.appendChild(createEnlaceRow(link)));
+
+      const addLinkBtn = h("button", {
+        type: "button",
+        class: "iset-btn-add-link",
+        onclick: (e) => {
+          e.preventDefault();
+          const newRow = createEnlaceRow({ texto: "Más información", url: "" });
+          enlacesListContainer.appendChild(newRow);
+          const inp = newRow.querySelector(".ed-av-link-txt");
+          if (inp) inp.focus();
+        }
+      }, "➕ Agregar otro botón / enlace");
+
+      const enlacesManager = h("div", { class: "iset-enlaces-manager" },
+        h("div", { class: "iset-enlaces-header" },
+          h("label", { class: "iset-label", style: "margin:0;font-size:0.92rem;font-weight:700" }, "🔗 Botones de Enlace (Links interactivos)"),
+          h("small", { style: "color:var(--suave);font-size:0.78rem" }, "Podés agregar más de un botón por anuncio")
+        ),
+        enlacesListContainer,
+        addLinkBtn,
+        h("small", { style: "color:var(--suave);font-size:0.78rem;display:block;margin-top:0.45rem" },
+          "💡 Páginas locales (ej: inscripcion.html) o sitios web externos (ej: instagram.com). Los botones sin destino se ignoran automáticamente."
+        )
+      );
+
       const form = h("form", {},
         h("div", { class: "iset-alert iset-alert-info" },
           isNew
@@ -1165,8 +1591,8 @@
             }),
             h("small", { style: "color:var(--suave);font-size:0.75rem;display:block;margin-top:0.25rem" },
               isNew
-                ? "🕒 Define el orden de llegada en pantalla (el más nuevo arriba)."
-                : "🕒 Al modificar se conserva la fecha original para no alterar su lugar."
+                ? "🕒 El aviso se publicará al inicio (al tope de las novedades)."
+                : "🕒 Al modificar se conserva su lugar en la lista. Si querés cambiar la fecha visible podés editarla aquí."
             )
           )
         ),
@@ -1174,21 +1600,12 @@
         // Contenedores dinámicos para Texto, Foto o Tabla
         h("div", { id: "aviso-content-container" }),
 
+        // Enlaces múltiples / botones interactivos
         h("div", { class: "iset-form-group", style: "margin-top:1rem" },
           h("label", { class: "iset-label" }, "Nota Aclaratoria al Pie (Opcional)"),
           h("input", { type: "text", id: "ed-av-nota", class: "iset-input", defaultValue: av.nota || "", value: av.nota || "", placeholder: "Ej: Consultar requisitos completos en Secretaría." })
         ),
-        h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:0.75rem" },
-          h("div", { class: "iset-form-group" },
-            h("label", { class: "iset-label" }, "Texto del Botón Enlace (Opcional)"),
-            h("input", { type: "text", id: "ed-av-link-txt", class: "iset-input", defaultValue: av.enlace?.texto || "Más información", value: av.enlace?.texto || "Más información" })
-          ),
-          h("div", { class: "iset-form-group" },
-            h("label", { class: "iset-label" }, "Destino del Enlace (URL o página)"),
-            h("input", { type: "text", id: "ed-av-link-url", class: "iset-input", defaultValue: av.enlace?.url || "", value: av.enlace?.url || "", placeholder: "inscripcion.html, instagram.com o https://..." }),
-            h("small", { style: "color:var(--suave);font-size:0.78rem;display:block;margin-top:0.25rem" }, "💡 Páginas locales (ej: inscripcion.html) o sitios web externos (ej: instagram.com)")
-          )
-        )
+        enlacesManager
       );
 
       const contentBox = form.querySelector("#aviso-content-container");
@@ -1500,14 +1917,14 @@
         const espacioVal = form.querySelector("#ed-av-espacio") ? form.querySelector("#ed-av-espacio").value : (av.espacioId || "general");
 
         const rawFecha = form.querySelector("#ed-av-fecha")?.value;
-        let finalFecha = av.fechaPublicacion;
+        let finalFecha = av.fechaPublicacion || null;
         if (rawFecha) {
           const parsed = new Date(rawFecha);
           if (!isNaN(parsed.getTime())) {
             finalFecha = parsed.toISOString();
           }
         }
-        if (!finalFecha) {
+        if (!finalFecha && isNew) {
           finalFecha = new Date().toISOString();
         }
 
@@ -1528,12 +1945,26 @@
           delete updated.imagen;
         }
 
-        const rawLinkUrl = form.querySelector("#ed-av-link-url").value.trim();
-        const linkTxt = form.querySelector("#ed-av-link-txt").value.trim();
-        if (rawLinkUrl) {
-          const cleanUrl = normalizarUrl(rawLinkUrl);
-          updated.enlace = { texto: linkTxt || "Más información", url: cleanUrl };
+        // Procesar lista de enlaces múltiples
+        const linkRows = form.querySelectorAll(".iset-enlace-row");
+        const validEnlaces = [];
+        linkRows.forEach(row => {
+          const rawUrl = (row.querySelector(".ed-av-link-url")?.value || "").trim();
+          const rawTxt = (row.querySelector(".ed-av-link-txt")?.value || "").trim();
+          if (rawUrl) {
+            const cleanUrl = normalizarUrl(rawUrl);
+            validEnlaces.push({
+              texto: rawTxt || "Más información",
+              url: cleanUrl
+            });
+          }
+        });
+
+        if (validEnlaces.length > 0) {
+          updated.enlaces = validEnlaces;
+          updated.enlace = validEnlaces[0]; // Retrocompatibilidad
         } else {
+          delete updated.enlaces;
           delete updated.enlace;
         }
 
